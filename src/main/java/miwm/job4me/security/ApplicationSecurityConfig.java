@@ -3,7 +3,6 @@ package miwm.job4me.security;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.jwt.JwtTokenVerifier;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-
 import miwm.job4me.messages.AppMessages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
