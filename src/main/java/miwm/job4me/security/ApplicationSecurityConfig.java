@@ -1,6 +1,7 @@
 package miwm.job4me.security;
 
 import miwm.job4me.jwt.JwtConfig;
+import miwm.job4me.jwt.JwtTokenVerifier;
 import miwm.job4me.messages.AppMessages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +32,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and().csrf().disable()
+                    .addFilterBefore(new JwtTokenVerifier(secretKey), BasicAuthenticationFilter.class)
 
                     .authorizeRequests()
                     .antMatchers("/employee/**").hasRole("EMPLOYEE")
