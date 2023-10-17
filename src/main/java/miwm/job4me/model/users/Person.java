@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
 import miwm.job4me.validators.ValidEmail;
-import miwm.job4me.validators.ValidName;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,20 +25,13 @@ import java.util.List;
 @MappedSuperclass
 public class Person extends BaseEntity implements UserDetails {
 
-    public Person(Long id, String name, String telephone, String email, String password, SimpleGrantedAuthority userRole) {
+    public Person(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole) {
         super(id);
-        this.name = name;
         this.telephone = telephone;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
     }
-
-    @ValidName
-    @NotBlank
-    @NotEmpty
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "telephone")
     private String telephone;

@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import miwm.job4me.validators.PasswordMatches;
 import miwm.job4me.validators.ValidEmail;
-import miwm.job4me.validators.ValidName;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -14,11 +13,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 @PasswordMatches
 public class UserDto {
-
-    @ValidName
-    @NotNull
-    @NotEmpty
-    private String name;
 
     @ValidEmail
     @NotNull
