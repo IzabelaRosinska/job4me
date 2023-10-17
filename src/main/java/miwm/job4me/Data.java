@@ -34,7 +34,14 @@ public class Data implements ApplicationListener<ContextRefreshedEvent> {
 
     public List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
-        Employee user = Employee.builder().id(1l).email("userTest@wp.pl").password(passwordEncoder.encode("userTest")).userRole(new SimpleGrantedAuthority("ROLE_EMPLOYEE")).build();
+        Employee user = Employee.builder()
+                .id(1l)
+                .email("userTest@wp.pl")
+                .password(passwordEncoder.encode("userTest"))
+                .userRole(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))
+                .firstName("Jan")
+                .lastName("Kowalski")
+                .build();
         employees.add(user);
         return employees;
     }
