@@ -4,8 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import miwm.job4me.messages.AppMessages;
-import miwm.job4me.messages.UserMessages;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,9 +34,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Cookie[] cookies = request.getCookies();
         String cookieToken = "";
-        for(Cookie cookie : cookies )
-            if((AppMessages.JWT_TOKEN_NAME).equals(cookie.getName()))
-                cookieToken = cookie.getValue();
+
+        if (cookies != null) {
+            for(Cookie cookie : cookies)
+                if(("token").equals(cookie.getName()))
+                    cookieToken = cookie.getValue();
+        }
 
         if(!cookieToken.equals("")) {
             try {
@@ -58,7 +59,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (JwtException exception) {
-                throw new IllegalStateException(String.format(UserMessages.INVALID_TOKEN, cookieToken));
+                throw new IllegalStateException(String.format("Token %s niezaufany", cookieToken));
             }
         }
         filterChain.doFilter(request, response);
