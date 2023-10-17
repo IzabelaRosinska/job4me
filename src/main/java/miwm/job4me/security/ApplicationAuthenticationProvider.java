@@ -27,7 +27,7 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
         String password = authentication.getCredentials().toString();
         Person user = userAuthService.loadUserByUsername(username);
 
-        if (passwordEncoder.matches(password, user.getPassword()))
+        if (user != null && passwordEncoder.matches(password, user.getPassword()))
             return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
         else
             throw new BadCredentialsException(UserMessages.INVALID_PASSWORD);

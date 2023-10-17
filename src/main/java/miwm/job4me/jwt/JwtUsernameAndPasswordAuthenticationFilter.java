@@ -1,5 +1,7 @@
 package miwm.job4me.jwt;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import miwm.job4me.messages.AppMessages;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
@@ -34,10 +37,22 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
+        StringBuilder buffer = new StringBuilder();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+            }
+            jsonNode = objectMapper.readTree(buffer.toString());
+        } catch (IOException e) {}
 
+        String username = jsonNode.get("username").asText();
+        String password = jsonNode.get("password").asText();
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
         setDetails(request, authentication);
         Authentication authenticate = authenticationManager.authenticate(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -61,7 +76,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addCookie(tokenCookie);
 
         if(authResult.getAuthorities().contains(EMPLOYEE.getUserRole()))
-            response.sendRedirect("/employee/account");
+            response.sendRedirect("/");
         else
             response.sendRedirect("/employer/account");
     }
