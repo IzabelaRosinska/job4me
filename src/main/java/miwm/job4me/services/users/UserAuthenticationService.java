@@ -47,7 +47,6 @@ public class UserAuthenticationService implements UserDetailsService {
         if (!emailExist(userDto.getEmail())) {
            if(userDto.getRole().equals("EMPLOYEE")) {
                Employee newEmployee = Employee.builder()
-                       .name(userDto.getName())
                        .email(userDto.getEmail())
                        .password(passwordEncoder.encode(userDto.getPassword()))
                        .userRole(ApplicationUserRole.EMPLOYEE.getUserRole()).build();
