@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @MappedSuperclass
-public class MultiEntrySection extends BaseEntity {
+public abstract class MultiEntrySection extends BaseEntity {
 
     public MultiEntrySection(Long id, String description, Employee employee) {
         super(id);
