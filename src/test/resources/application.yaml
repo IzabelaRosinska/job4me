@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: Spring Boot Rest API
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: "jdbc:h2:mem:test-api;"
+    name:
+    password:
+    username:
+    hikari:
+      schema: dbo
+  jpa:
+    database: H2
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  test:
+    database:
+      replace: none
+  sql:
+    init:
+      mode: never
