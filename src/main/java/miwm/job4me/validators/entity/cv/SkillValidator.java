@@ -2,35 +2,31 @@ package miwm.job4me.validators.entity.cv;
 
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Skill;
-import miwm.job4me.repositories.EmployeeRepository;
+import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.web.model.cv.SkillDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SkillValidator {
-    private EmployeeRepository employeeRepository;
-    private final int maxDescriptionLength = 50;
+    private final EmployeeValidator employeeValidator;
+    private final int MIN_DESCRIPTION_LENGTH = 1;
+    private final int MAX_DESCRIPTION_LENGTH = 50;
     private final String entityName = "Skill";
 
-    public SkillValidator(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public SkillValidator(EmployeeValidator employeeValidator) {
+        this.employeeValidator = employeeValidator;
     }
 
     public void validateDto(SkillDto skill) {
         validateNotNullDto(skill);
-        validateEmployeeExistsById(skill.getEmployeeId());
+        employeeValidator.validateEmployeeExistsById(skill.getEmployeeId());
         validateDescription(skill.getDescription());
     }
 
     public void validate(Skill skill) {
         validateNotNull(skill);
-        validateEmployeeExistsById(skill.getEmployee().getId());
+        employeeValidator.validateEmployeeExistsById(skill.getEmployee().getId());
         validateDescription(skill.getDescription());
-    }
-
-    private void validateEmployeeExistsById(Long id) {
-        employeeRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException(ExceptionMessages.elementNotFound("Employee", id)));
     }
 
     private void validateNotNullDto(SkillDto skillDto) {
@@ -46,8 +42,12 @@ public class SkillValidator {
     }
 
     private void validateDescription(String description) {
-        if (description.length() > maxDescriptionLength) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength));
+        if (description.length() < MIN_DESCRIPTION_LENGTH) {
+            throw new IllegalArgumentException(ExceptionMessages.textTooShort(entityName, "description", MIN_DESCRIPTION_LENGTH));
+        }
+
+        if (description.length() > MAX_DESCRIPTION_LENGTH) {
+            throw new IllegalArgumentException(ExceptionMessages.textTooLong(entityName, "description", MAX_DESCRIPTION_LENGTH));
         }
     }
 }

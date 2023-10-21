@@ -15,11 +15,11 @@ import java.util.Set;
 
 @Service
 public class SkillServiceImpl implements SkillService {
-    private SkillRepository skillRepository;
-    private SkillMapper skillMapper;
-    private SkillValidator skillValidator;
-    private IdValidator idValidator;
-    private final String entityName = "Skill";
+    private final SkillRepository skillRepository;
+    private final SkillMapper skillMapper;
+    private final SkillValidator skillValidator;
+    private final IdValidator idValidator;
+    private final String ENTITY_NAME = "Skill";
 
     public SkillServiceImpl(SkillRepository skillRepository, SkillMapper skillMapper, SkillValidator skillValidator, IdValidator idValidator) {
         this.skillRepository = skillRepository;
@@ -29,9 +29,9 @@ public class SkillServiceImpl implements SkillService {
     }
 
     private void existsById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         skillRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
@@ -45,24 +45,19 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public SkillDto findById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
+
         return skillRepository
                 .findById(id)
                 .map(skillMapper::toDto)
                 .orElseThrow(() ->
-                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
     public SkillDto save(Skill object) {
         skillValidator.validate(object);
-        return skillMapper.toDto(skillRepository.save(object));
-    }
 
-    @Transactional
-    public SkillDto update(Skill object) {
-        existsById(object.getId());
-        skillValidator.validate(object);
         return skillMapper.toDto(skillRepository.save(object));
     }
 
@@ -78,8 +73,18 @@ public class SkillServiceImpl implements SkillService {
         skillRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public SkillDto update(Skill object) {
+        existsById(object.getId());
+        skillValidator.validate(object);
+
+        return skillMapper.toDto(skillRepository.save(object));
+    }
+
+    @Override
     public Set<SkillDto> findAllByEmployeeId(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
 
         return skillRepository
                 .findAllByEmployeeId(id)
@@ -88,8 +93,9 @@ public class SkillServiceImpl implements SkillService {
                 .collect(java.util.stream.Collectors.toSet());
     }
 
+    @Override
     public void deleteAllByEmployeeId(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         skillRepository.deleteAllByEmployeeId(id);
     }
 }

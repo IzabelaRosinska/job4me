@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class EducationServiceImpl implements EducationService {
-    EducationRepository educationRepository;
-    EducationMapper educationMapper;
-    EducationValidator educationValidator;
-    IdValidator idValidator;
-    private final String entityName = "Education";
+    private final EducationRepository educationRepository;
+    private final EducationMapper educationMapper;
+    private final EducationValidator educationValidator;
+    private final IdValidator idValidator;
+    private final String ENTITY_NAME = "Education";
 
     public EducationServiceImpl(EducationRepository educationRepository, EducationMapper educationMapper, EducationValidator educationValidator, IdValidator idValidator) {
         this.educationRepository = educationRepository;
@@ -30,9 +30,9 @@ public class EducationServiceImpl implements EducationService {
     }
 
     private void existsById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         educationRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
@@ -46,12 +46,12 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public EducationDto findById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         return educationRepository
                 .findById(id)
                 .map(educationMapper::toDto)
                 .orElseThrow(() ->
-                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
@@ -74,6 +74,7 @@ public class EducationServiceImpl implements EducationService {
         educationRepository.deleteById(id);
     }
 
+    @Override
     @Transactional
     public EducationDto update(EducationDto education) {
         existsById(education.getId());
@@ -81,8 +82,9 @@ public class EducationServiceImpl implements EducationService {
         return educationMapper.toDto(educationRepository.save(educationMapper.toEntity(education)));
     }
 
+    @Override
     public Set<EducationDto> findAllByEmployeeId(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         return educationRepository
                 .findAllByEmployeeId(id)
                 .stream()
@@ -90,8 +92,9 @@ public class EducationServiceImpl implements EducationService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
     public void deleteAllByEmployeeId(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         educationRepository.deleteAllByEmployeeId(id);
     }
 }

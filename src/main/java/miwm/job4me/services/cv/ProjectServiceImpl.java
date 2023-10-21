@@ -16,11 +16,11 @@ import java.util.Set;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private ProjectRepository projectRepository;
-    private ProjectMapper projectMapper;
-    private ProjectValidator projectValidator;
-    private IdValidator idValidator;
-    private final String entityName = "Project";
+    private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
+    private final ProjectValidator projectValidator;
+    private final IdValidator idValidator;
+    private final String ENTITY_NAME = "Project";
 
     public ProjectServiceImpl(ProjectRepository projectRepository, ProjectMapper projectMapper, ProjectValidator projectValidator, IdValidator idValidator) {
         this.projectRepository = projectRepository;
@@ -30,9 +30,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void existsById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
         projectRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
@@ -46,18 +46,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto findById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
 
         return projectRepository
                 .findById(id)
                 .map(projectMapper::toDto)
                 .orElseThrow(() ->
-                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
     public ProjectDto save(Project object) {
         projectValidator.validate(object);
+
         return projectMapper.toDto(projectRepository.save(object));
     }
 
@@ -74,15 +75,19 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.deleteById(id);
     }
 
+    @Override
     @Transactional
     public ProjectDto update(ProjectDto project) {
         existsById(project.getId());
         projectValidator.validateDto(project);
+
         return projectMapper.toDto(projectRepository.save(projectMapper.toEntity(project)));
     }
 
+    @Override
     public Set<ProjectDto> findAllByEmployeeId(Long employeeId) {
-        idValidator.validateLongId(employeeId, entityName);
+        idValidator.validateLongId(employeeId, ENTITY_NAME);
+
         return projectRepository
                 .findAllByEmployeeId(employeeId)
                 .stream()
@@ -90,8 +95,9 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(java.util.stream.Collectors.toSet());
     }
 
+    @Override
     public void deleteAllByEmployeeId(Long employeeId) {
-        idValidator.validateLongId(employeeId, entityName);
+        idValidator.validateLongId(employeeId, ENTITY_NAME);
         projectRepository.deleteAllByEmployeeId(employeeId);
     }
 }
