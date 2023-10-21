@@ -1,12 +1,9 @@
 package miwm.job4me.model.users;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.validators.PasswordMatches;
 import miwm.job4me.validators.ValidEmail;
-import miwm.job4me.validators.ValidName;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -15,19 +12,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @PasswordMatches
-@NoArgsConstructor
-public class UserDto {
-    @Builder
-    public UserDto(String email, String role, String password) {
-        this.email = email;
-        this.role = role;
-        this.password = password;
-    }
-
-    @ValidName
-    @NotNull
-    @NotEmpty
-    private String name;
+public class RegisterData {
 
     @ValidEmail
     @NotNull

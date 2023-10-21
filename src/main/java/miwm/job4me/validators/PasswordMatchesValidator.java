@@ -1,6 +1,6 @@
 package miwm.job4me.validators;
 
-import miwm.job4me.model.users.UserDto;
+import miwm.job4me.model.users.RegisterData;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,7 +12,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
-        UserDto user = (UserDto) obj;
+        RegisterData user = (RegisterData) obj;
         return user.getPassword().equals(user.getMatchingPassword());
     }
 }
