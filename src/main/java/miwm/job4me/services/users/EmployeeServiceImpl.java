@@ -28,18 +28,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ExperienceService experienceService;
     private final ProjectService projectService;
     private final SkillService skillService;
+    private final UserAuthenticationService userAuthenticationService;
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
     private final String entityName = "Employee";
 
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
+        this.userAuthenticationService = userAuthenticationService;
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
@@ -59,6 +61,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .findById(id)
                 .orElseThrow(() ->
                         new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+    }
+
+    @Override
+    public EmployeeDto findCurrentEmployee() {
+        Long currentEmployeeId = userAuthenticationService.getAuthenticatedUser().getId();
+
+        return employeeRepository
+                .findById(currentEmployeeId)
+                .map(employeeMapper::toDto)
+                .orElseThrow(() ->
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, currentEmployeeId)));
     }
 
     @Override
@@ -83,36 +96,50 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDto updateCV(EmployeeDto employeeDto) {
         employeeValidator.validateForUpdateDto(employeeDto);
+        Employee oldEmployee = findById(employeeDto.getId());
+
         Employee employee = employeeMapper.toEntity(employeeDto);
+        employee.setEmail(oldEmployee.getEmail());
+        employee.setPassword(oldEmployee.getPassword());
+        employee.setUserRole(oldEmployee.getUserRole());
+        employee.setLocked(oldEmployee.isLocked());
 
         educationService.deleteAllByEmployeeId(employee.getId());
         experienceService.deleteAllByEmployeeId(employee.getId());
         projectService.deleteAllByEmployeeId(employee.getId());
         skillService.deleteAllByEmployeeId(employee.getId());
 
-        for (Education education : employee.getEducation()) {
-            education.setEmployee(employee);
-            educationService.save(education);
+        if (employee.getEducation() != null) {
+            for (Education education : employee.getEducation()) {
+                education.setEmployee(employee);
+                educationService.save(education);
+            }
         }
 
-        for (Experience experience : employee.getExperience()) {
-            experience.setEmployee(employee);
-            experienceService.save(experience);
+        if (employee.getExperience() != null) {
+            for (Experience experience : employee.getExperience()) {
+                experience.setEmployee(employee);
+                experienceService.save(experience);
+            }
         }
 
-        for (Project project : employee.getProjects()) {
-            project.setEmployee(employee);
-            projectService.save(project);
+        if (employee.getProjects() != null) {
+            for (Project project : employee.getProjects()) {
+                project.setEmployee(employee);
+                projectService.save(project);
+            }
         }
 
-        for (Skill skill : employee.getSkills()) {
-            skill.setEmployee(employee);
-            skillService.save(skill);
+        if (employee.getSkills() != null) {
+            for (Skill skill : employee.getSkills()) {
+                skill.setEmployee(employee);
+                skillService.save(skill);
+            }
         }
 
-        employeeRepository.save(employee);
+        Employee result = employeeRepository.save(employee);
 
-        return employeeMapper.toDto(employee);
+        return employeeMapper.toDto(result);
     }
 
 }
