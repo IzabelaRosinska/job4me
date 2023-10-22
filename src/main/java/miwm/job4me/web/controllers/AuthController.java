@@ -1,5 +1,6 @@
 package miwm.job4me.web.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.web.mappers.users.UserMapper;
@@ -7,7 +8,6 @@ import miwm.job4me.web.model.users.RegisterData;
 import miwm.job4me.web.model.users.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "Registers a new user", description = "Registers a new user in the database")
     public ResponseEntity<UserDto> registerUserAccount(@RequestBody RegisterData registerData) {
         UserDto user;
         try {
