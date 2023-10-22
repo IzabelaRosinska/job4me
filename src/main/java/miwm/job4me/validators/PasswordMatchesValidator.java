@@ -1,6 +1,6 @@
 package miwm.job4me.validators;
 
-import miwm.job4me.model.users.UserDto;
+import miwm.job4me.web.model.users.UserDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
