@@ -1,4 +1,4 @@
-package miwm.job4me.model.users;
+package miwm.job4me.web.model.users;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @PasswordMatches
-public class UserDto {
+public class RegisterData {
 
     @ValidEmail
     @NotNull

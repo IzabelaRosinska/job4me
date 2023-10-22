@@ -7,7 +7,7 @@ import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.repositories.EmployeeRepository;
+import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;

@@ -1,7 +1,7 @@
 package miwm.job4me.validators.entity.users;
 
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.repositories.EmployeeRepository;
+import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.stereotype.Component;

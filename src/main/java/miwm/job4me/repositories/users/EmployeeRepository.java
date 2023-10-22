@@ -1,4 +1,4 @@
-package miwm.job4me.repositories;
+package miwm.job4me.repositories.users;
 
 import miwm.job4me.model.users.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;

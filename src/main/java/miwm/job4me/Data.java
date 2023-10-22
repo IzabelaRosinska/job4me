@@ -2,7 +2,7 @@ package miwm.job4me;
 
 import lombok.extern.slf4j.Slf4j;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.repositories.EmployeeRepository;
+import miwm.job4me.repositories.users.EmployeeRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
