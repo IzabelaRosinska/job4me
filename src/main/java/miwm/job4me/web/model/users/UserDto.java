@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserDto {
     @Builder
-    public UserDto(String email, String role, String password) {
-        this.email = email;
+    public UserDto(String username, String role, String password) {
+        this.username = username;
         this.role = role;
         this.password = password;
     }
@@ -26,7 +26,7 @@ public class UserDto {
     @ValidEmail
     @NotNull
     @NotEmpty
-    private String email;
+    private String username;
 
     @NotNull
     @NotEmpty

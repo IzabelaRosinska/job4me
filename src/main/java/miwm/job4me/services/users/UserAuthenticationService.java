@@ -53,31 +53,32 @@ public class UserAuthenticationService implements UserDetailsService {
     }
 
     public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
-        if (!emailExist(userDto.getEmail())) {
+        if (!emailExist(userDto.getUsername())) {
             if(userDto.getRole().equals("EMPLOYEE")) {
                 Employee newEmployee = Employee.builder()
-                        .email(userDto.getEmail())
+                        .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
                         .userRole(ApplicationUserRole.EMPLOYEE.getUserRole()).build();
                 employeeRepository.save(newEmployee);
                 return newEmployee;
             }else if(userDto.getRole().equals("EMPLOYER")) {
                 Employer newEmployer = Employer.builder()
-                        .email(userDto.getEmail())
+                        .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
                         .userRole(ApplicationUserRole.EMPLOYER.getUserRole()).build();
                 employerRepository.save(newEmployer);
                 return newEmployer;
             }else if(userDto.getRole().equals("ORGANIZER")) {
                 Organizer newOrganizer = Organizer.builder()
-                        .email(userDto.getEmail())
+                        .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
                         .userRole(ApplicationUserRole.ORGANIZER.getUserRole()).build();
                 organizerRepository.save(newOrganizer);
                 return newOrganizer;
             }
         }else
-            throw new UserAlreadyExistException(UserMessages.ACCOUNT_FOR_EMAIL_EXISTS + userDto.getEmail());
+            throw new UserAlreadyExistException(UserMessages.ACCOUNT_FOR_EMAIL_EXISTS + userDto.getUsername());
+
         return null;
     }
 
