@@ -78,6 +78,7 @@ public class UserAuthenticationService implements UserDetailsService {
             }
         }else
             throw new UserAlreadyExistException(UserMessages.ACCOUNT_FOR_EMAIL_EXISTS + userDto.getUsername());
+
         return null;
     }
 
