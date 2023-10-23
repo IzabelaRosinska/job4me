@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.repositories.users.EmployeeRepository;
@@ -150,11 +151,11 @@ class EmployeeServiceImplTest {
     public void testUpdateCVFailWhenEmployeeValidatorFails() {
         employeeDto.setFirstName(null);
 
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.notNullNotEmpty(entityName, "name"))).when(employeeValidator).validateForUpdateDto(employeeDto);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(entityName, "name"))).when(employeeValidator).validateForUpdateDto(employeeDto);
 
         try {
             employeeServiceImpl.updateCV(employeeDto);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.notNullNotEmpty(entityName, "name"), e.getMessage());
         }
     }

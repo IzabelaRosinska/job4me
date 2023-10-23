@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.users.Employee;
@@ -130,7 +131,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test findById - id is null")
     public void testFindByIdNullId() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
 
         try {
             experienceServiceImpl.findById(null);
@@ -153,9 +154,9 @@ class ExperienceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - throw IllegalArgumentException when Experience object is null")
+    @DisplayName("Test save - throw InvalidArgumentException when Experience object is null")
     public void testSaveNull() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.nullArgument(entityName))).when(experienceValidator).validate(null);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(entityName))).when(experienceValidator).validate(null);
 
         try {
             experienceServiceImpl.save(null);
@@ -166,10 +167,10 @@ class ExperienceServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - throw IllegalArgumentException when Experience object is not valid")
+    @DisplayName("Test save - throw InvalidArgumentException when Experience object is not valid")
     public void testSaveThrowExceptionDescriptionTooLong() {
         experience1.setDescription("a".repeat(maxDescriptionLength + 1));
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(experienceValidator).validate(experience1);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(experienceValidator).validate(experience1);
 
         try {
             experienceServiceImpl.save(experience1);
@@ -206,7 +207,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
 
         try {
             experienceServiceImpl.deleteById(null);

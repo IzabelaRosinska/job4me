@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.users.Employee;
@@ -130,7 +131,7 @@ class ProjectServiceImplTest {
     @Test
     @DisplayName("Test findById - id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
 
         try {
             projectServiceImpl.findById(null);
@@ -153,9 +154,9 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - throw IllegalArgumentException when Project object is null")
+    @DisplayName("Test save - throw InvalidArgumentException when Project object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.nullArgument(entityName))).when(projectValidator).validate(null);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(entityName))).when(projectValidator).validate(null);
 
         try {
             projectServiceImpl.save(null);
@@ -166,10 +167,10 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - throw IllegalArgumentException, description too long")
+    @DisplayName("Test save - throw InvalidArgumentException, description too long")
     public void testSaveThrowExceptionDescriptionTooLong() {
         project1.setDescription("a".repeat(maxDescriptionLength + 1));
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(projectValidator).validate(project1);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(projectValidator).validate(project1);
 
         try {
             projectServiceImpl.save(project1);
@@ -206,7 +207,7 @@ class ProjectServiceImplTest {
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new IllegalArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
 
         try {
             projectServiceImpl.deleteById(null);
