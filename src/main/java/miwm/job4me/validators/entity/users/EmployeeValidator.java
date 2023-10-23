@@ -1,5 +1,6 @@
 package miwm.job4me.validators.entity.users;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.validators.entity.IdValidator;
@@ -41,7 +42,7 @@ public class EmployeeValidator {
 
     public void validateEmployeeExistsById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-        employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+        employeeRepository.findById(id).orElseThrow(() -> new InvalidArgumentException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     public void validateForUpdateDto(EmployeeDto employeeDto) {
@@ -59,21 +60,21 @@ public class EmployeeValidator {
 
     private void validateNotNullEmployee(EmployeeDto employeeDto) {
         if (employeeDto == null) {
-            throw new IllegalArgumentException("Employee can not be null");
+            throw new InvalidArgumentException("Employee can not be null");
         }
     }
 
     private void validateClassicRequiredFieldLengthRestrictions(String field, String fieldName, int minLength, int maxLength) {
         if (field == null || field.isEmpty()) {
-            throw new IllegalArgumentException(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName));
+            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName));
         }
 
         if (field.length() < minLength) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooShort(ENTITY_NAME, fieldName, minLength));
+            throw new InvalidArgumentException(ExceptionMessages.textTooShort(ENTITY_NAME, fieldName, minLength));
         }
 
         if (field.length() > maxLength) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxLength));
+            throw new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxLength));
         }
     }
 
@@ -81,25 +82,25 @@ public class EmployeeValidator {
         validateClassicRequiredFieldLengthRestrictions(email, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
 
         if (!email.contains("@")) {
-            throw new IllegalArgumentException(ExceptionMessages.mustContain(ENTITY_NAME, "email", "@"));
+            throw new InvalidArgumentException(ExceptionMessages.mustContain(ENTITY_NAME, "email", "@"));
         }
     }
 
     private void validateTelephone(String phoneNumber) {
         if (phoneNumber != null && phoneNumber.length() > MAX_PHONE_NUMBER_LENGTH) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "phoneNumber", MAX_PHONE_NUMBER_LENGTH));
+            throw new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "phoneNumber", MAX_PHONE_NUMBER_LENGTH));
         }
     }
 
     private void validateListSizeAndElemLength(ArrayList<String> list, String fieldName, int maxSize, int maxElemLength) {
         if (list != null && list.size() > maxSize) {
-            throw new IllegalArgumentException(ExceptionMessages.listTooLong(ENTITY_NAME, fieldName, maxSize));
+            throw new InvalidArgumentException(ExceptionMessages.listTooLong(ENTITY_NAME, fieldName, maxSize));
         }
 
         if (list != null) {
             for (String elem : list) {
                 if (elem.length() > maxElemLength) {
-                    throw new IllegalArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxElemLength));
+                    throw new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxElemLength));
                 }
             }
         }
