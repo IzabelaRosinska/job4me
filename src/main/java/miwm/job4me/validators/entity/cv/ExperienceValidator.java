@@ -3,7 +3,6 @@ package miwm.job4me.validators.entity.cv;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Experience;
-import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.web.model.cv.ExperienceDto;
 import org.springframework.stereotype.Component;
@@ -11,14 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExperienceValidator {
     private final EmployeeValidator employeeValidator;
-    private final IdValidator idValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
     private final int MAX_DESCRIPTION_LENGTH = 255;
     private final String entityName = "Experience";
 
-    public ExperienceValidator(EmployeeValidator employeeValidator, IdValidator idValidator) {
+    public ExperienceValidator(EmployeeValidator employeeValidator) {
         this.employeeValidator = employeeValidator;
-        this.idValidator = idValidator;
     }
 
     public void validateDto(ExperienceDto experience) {

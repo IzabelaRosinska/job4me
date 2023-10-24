@@ -15,7 +15,6 @@ import java.util.Set;
 @Component
 public class EmployeeMapper {
     public EmployeeDto toDto(Employee employee) {
-        System.out.println("<3");
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employee.getId());
         employeeDto.setFirstName(employee.getFirstName());
@@ -28,7 +27,6 @@ public class EmployeeMapper {
         employeeDto.setSkills(skillsSetToStringList(employee.getSkills()));
         employeeDto.setAboutMe(employee.getAboutMe());
         employeeDto.setInterests(employee.getInterests());
-        System.out.println("<3");
         return employeeDto;
     }
 

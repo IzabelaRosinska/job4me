@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<UserDto> registerUserAccount(@RequestBody RegisterData registerData) {
         UserDto user;
         try {
-            user = userMapper.userToUserDto(userAuthService.registerNewUserAccount(registerData));
+            user = userMapper.toDto(userAuthService.registerNewUserAccount(registerData));
         } catch (UserAlreadyExistException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ExperienceRepository extends JpaRepository<Experience, Long> {
-
     List<Experience> findAllByEmployeeId(Long employeeId);
 
     void deleteAllByEmployeeId(Long employeeId);

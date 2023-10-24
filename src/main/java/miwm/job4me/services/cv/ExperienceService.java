@@ -13,5 +13,4 @@ public interface ExperienceService extends BaseDtoService<Experience, Experience
 
     void deleteAllByEmployeeId(Long employeeId);
 
-
 }
