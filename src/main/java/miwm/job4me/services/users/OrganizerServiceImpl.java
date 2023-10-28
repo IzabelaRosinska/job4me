@@ -1,6 +1,7 @@
 package miwm.job4me.services.users;
 
 import miwm.job4me.model.users.Organizer;
+import miwm.job4me.web.model.users.OrganizerDto;
 
 import java.util.Set;
 
@@ -28,5 +29,15 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     public void deleteById(Long aLong) {
 
+    }
+
+    @Override
+    public OrganizerDto getOrganizerByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public OrganizerDto updateOrganizerData(OrganizerDto organizerDto) {
+        return null;
     }
 }
