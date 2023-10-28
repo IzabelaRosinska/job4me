@@ -8,6 +8,7 @@ import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
 import miwm.job4me.services.users.EmployeeServiceImpl;
+import miwm.job4me.services.users.OrganizerServiceImpl;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
@@ -33,6 +34,11 @@ public class ServiceConfiguration {
     @Bean
     UserMapper userMapper() {
         return new UserMapper();
+    }
+
+    @Bean
+    OrganizerServiceImpl organizerServiceImpl() {
+        return new OrganizerServiceImpl();
     }
 
 }
