@@ -29,6 +29,10 @@ public class ExceptionMessages {
         return String.format("%s %s must contain %s.", className, fieldName, mustContain);
     }
 
+    public static String mustMatchPattern(String className, String fieldName, String pattern) {
+        return String.format("%s %s must match pattern %s.", className, fieldName, pattern);
+    }
+
     public static String listTooLong(String className, String fieldName, int maxLength) {
         return String.format("%s %s is too long. Max list length is %d.", className, fieldName, maxLength);
     }

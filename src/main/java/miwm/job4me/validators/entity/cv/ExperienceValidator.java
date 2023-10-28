@@ -10,45 +10,39 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExperienceValidator {
     private final EmployeeValidator employeeValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
     private final int MAX_DESCRIPTION_LENGTH = 255;
-    private final String entityName = "Experience";
+    private final String ENTITY_NAME = "Experience";
+    private final String DESCRIPTION_FIELD_NAME = "description";
 
-    public ExperienceValidator(EmployeeValidator employeeValidator) {
+    public ExperienceValidator(EmployeeValidator employeeValidator, StringFieldValidator stringFieldValidator) {
         this.employeeValidator = employeeValidator;
+        this.stringFieldValidator = stringFieldValidator;
     }
 
     public void validateDto(ExperienceDto experience) {
         validateNotNullDto(experience);
         employeeValidator.validateEmployeeExistsById(experience.getEmployeeId());
-        validateDescription(experience.getDescription());
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Experience experience) {
         validateNotNull(experience);
         employeeValidator.validateEmployeeExistsById(experience.getEmployee().getId());
-        validateDescription(experience.getDescription());
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(ExperienceDto experienceDto) {
         if (experienceDto == null) {
-            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
     }
 
     private void validateNotNull(Experience experience) {
         if (experience == null) {
-            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
     }
 
-    private void validateDescription(String description) {
-        if (description.length() < MIN_DESCRIPTION_LENGTH) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, "description", MIN_DESCRIPTION_LENGTH));
-        }
-
-        if (description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", MAX_DESCRIPTION_LENGTH));
-        }
-    }
 }
