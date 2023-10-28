@@ -8,6 +8,7 @@ import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
 import miwm.job4me.services.users.EmployeeServiceImpl;
+import miwm.job4me.services.users.EmployerServiceImpl;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
@@ -28,6 +29,11 @@ public class ServiceConfiguration {
     @Bean
     EmployeeServiceImpl clientServiceImpl(final EmployeeRepository employeeRepository, final EducationService educationService, final ExperienceService experienceService, final ProjectService projectService, final SkillService skillService, final IdValidator idValidator, final EmployeeValidator employeeValidator, final EmployeeMapper employeeMapper) {
         return new EmployeeServiceImpl(employeeRepository, educationService, experienceService, projectService, skillService, idValidator, employeeValidator, employeeMapper);
+    }
+
+    @Bean
+    EmployerServiceImpl employerServiceImpl() {
+        return new EmployerServiceImpl();
     }
 
     @Bean
