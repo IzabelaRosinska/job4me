@@ -13,6 +13,7 @@ import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
+import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.mappers.users.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +33,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    EmployerServiceImpl employerServiceImpl() {
-        return new EmployerServiceImpl();
+    EmployerServiceImpl employerServiceImpl(final UserAuthenticationService userAuthService, final EmployerMapper employerMapper, final EmployerRepository employerRepository) {
+        return new EmployerServiceImpl(userAuthService, employerMapper, employerRepository);
     }
 
     @Bean
