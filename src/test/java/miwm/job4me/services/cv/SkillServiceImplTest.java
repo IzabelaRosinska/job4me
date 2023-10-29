@@ -1,6 +1,7 @@
 package miwm.job4me.services.cv;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
+import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
@@ -125,7 +126,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.findById(skill1.getId());
             fail();
-        } catch (Exception e) {
+        } catch (NoSuchElementFoundException e) {
             assertEquals(ExceptionMessages.elementNotFound("Skill", skill1.getId()), e.getMessage());
         }
     }
@@ -138,7 +139,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.findById(null);
             fail();
-        } catch (Exception e) {
+        } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }
@@ -163,7 +164,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.save(null);
             fail();
-        } catch (Exception e) {
+        } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
         }
     }
@@ -177,7 +178,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.save(skill1);
             fail();
-        } catch (Exception e) {
+        } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH), e.getMessage());
         }
     }
@@ -201,7 +202,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.deleteById(skill1.getId());
             fail();
-        } catch (Exception e) {
+        } catch (NoSuchElementFoundException e) {
             assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
         }
     }
@@ -214,7 +215,7 @@ class SkillServiceImplTest {
         try {
             skillServiceImpl.deleteById(null);
             fail();
-        } catch (Exception e) {
+        } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }

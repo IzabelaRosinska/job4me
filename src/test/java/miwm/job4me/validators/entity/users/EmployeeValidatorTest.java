@@ -152,13 +152,14 @@ class EmployeeValidatorTest {
 
     @Test
     @DisplayName("Validate for update dto - fail validation when StringFieldValidator fails (invalid firstName)")
-    public void validateForUpdateDtoInvalidNullOrEmptyFirstName() {
-        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "firstName");
+    public void validateForUpdateDtoInvalidFirstName() {
+        String fieldName = "firstName";
+        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
         employeeDto.setFirstName(null);
 
         Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
         Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
-        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, fieldName, MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
@@ -170,14 +171,15 @@ class EmployeeValidatorTest {
 
     @Test
     @DisplayName("Validate for update dto - fail validation when StringFieldValidator fails (invalid lastName)")
-    public void validateForUpdateDtoInvalidTooShortFirstName() {
-        String expectedMessage = ExceptionMessages.textTooShort(ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH);
-        int tooShortLength = Math.max(MIN_FIRST_NAME_LENGTH - 1, 0);
-        employeeDto.setFirstName("a".repeat(tooShortLength));
+    public void validateForUpdateDtoInvalidLastName() {
+        String fieldName = "lastName";
+        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
+        employeeDto.setLastName(null);
 
         Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
         Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
-        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, fieldName, MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
@@ -188,14 +190,17 @@ class EmployeeValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate for update dto - fail validation when StringFieldValidator fails (invalid lastName)")
-    public void validateForUpdateDtoInvalidTooLongFirstName() {
-        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "firstName", MAX_FIRST_NAME_LENGTH);
-        employeeDto.setFirstName("a".repeat(MAX_FIRST_NAME_LENGTH + 1));
+    @DisplayName("Validate for update dto - fail validation when StringFieldValidator fails (invalid email)")
+    public void validateForUpdateDtoInvalidEmail() {
+        String fieldName = "email";
+        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
+        employeeDto.setEmail(null);
 
         Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
         Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
-        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, fieldName, MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
@@ -265,7 +270,23 @@ class EmployeeValidatorTest {
             assertEquals(expectedMessage, e.getMessage());
         }
 
-        employeeDto.setEmail("@userTest@wppl@");
+        employeeDto.setEmail("UserTest.spanko@com");
+        try {
+            employeeValidator.validateForUpdateDto(employeeDto);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(expectedMessage, e.getMessage());
+        }
+
+        employeeDto.setEmail("userTest@wp.p");
+        try {
+            employeeValidator.validateForUpdateDto(employeeDto);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(expectedMessage, e.getMessage());
+        }
+
+        employeeDto.setEmail("uestTEst@.com");
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
             fail();
