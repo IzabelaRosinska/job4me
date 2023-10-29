@@ -1,5 +1,6 @@
 package miwm.job4me.validators.entity.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
@@ -31,23 +32,23 @@ public class ProjectValidator {
 
     private void validateNotNullDto(ProjectDto projectDto) {
         if (projectDto == null) {
-            throw new IllegalArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
         }
     }
 
     private void validateNotNull(Project project) {
         if (project == null) {
-            throw new IllegalArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
         }
     }
 
     private void validateDescription(String description) {
         if (description.length() < MIN_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooShort(entityName, "description", MIN_DESCRIPTION_LENGTH));
+            throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, "description", MIN_DESCRIPTION_LENGTH));
         }
 
         if (description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException(ExceptionMessages.textTooLong(entityName, "description", MAX_DESCRIPTION_LENGTH));
+            throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", MAX_DESCRIPTION_LENGTH));
         }
     }
 }

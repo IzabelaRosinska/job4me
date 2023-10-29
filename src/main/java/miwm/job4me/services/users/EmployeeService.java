@@ -9,4 +9,6 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     EmployeeDto getEmployeeDetails();
     EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto);
 
+    EmployeeDto findCurrentEmployee();
+
 }
