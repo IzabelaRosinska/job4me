@@ -36,8 +36,10 @@ class SkillServiceImplTest {
     private IdValidator idValidator;
     @InjectMocks
     private SkillServiceImpl skillServiceImpl;
-    private final String entityName = "Skill";
-    private final int maxDescriptionLength = 100;
+
+    private final String ENTITY_NAME = "Skill";
+    private final int MAX_DESCRIPTION_LENGTH = 50;
+
     private Employee employee;
     private Skill skill1;
     private Skill skill2;
@@ -131,13 +133,13 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test findById - id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillServiceImpl.findById(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }
 
@@ -156,27 +158,27 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Project object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(entityName))).when(skillValidator).validate(null);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validate(null);
 
         try {
             skillServiceImpl.save(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.nullArgument(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test save - throw InvalidArgumentException, description too long")
     public void testSaveThrowExceptionDescriptionTooLong() {
-        skill1.setDescription("a".repeat(maxDescriptionLength + 1));
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(skillValidator).validate(skill1);
+        skill1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(skillValidator).validate(skill1);
 
         try {
             skillServiceImpl.save(skill1);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength), e.getMessage());
+            assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH), e.getMessage());
         }
     }
 
@@ -184,7 +186,7 @@ class SkillServiceImplTest {
     @DisplayName("Test delete by id - Project object exists")
     public void testDeleteByIdExists() {
         when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.of(skill1));
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
         Mockito.doNothing().when(skillRepository).deleteById(skill1.getId());
 
         assertDoesNotThrow(() -> skillServiceImpl.deleteById(skill1.getId()));
@@ -194,26 +196,26 @@ class SkillServiceImplTest {
     @DisplayName("Test delete by id - Project object does not exist")
     public void testDeleteByIdDoesNotExist() {
         when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.empty());
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
             skillServiceImpl.deleteById(skill1.getId());
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.elementNotFound(entityName, skill1.getId()), e.getMessage());
+            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillServiceImpl.deleteById(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }
 }

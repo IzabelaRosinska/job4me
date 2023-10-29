@@ -35,9 +35,11 @@ class ProjectServiceImplTest {
     @Mock
     private IdValidator idValidator;
     @InjectMocks
-    private ProjectServiceImpl projectServiceImpl;
-    private final String entityName = "Project";
-    private final int maxDescriptionLength = 100;
+    private ProjectServiceImpl projectService;
+
+    private final String ENTITY_NAME = "Project";
+    private final int MAX_DESCRIPTION_LENGTH = 500;
+
     private Employee employee;
     private Project project1;
     private Project project2;
@@ -87,7 +89,7 @@ class ProjectServiceImplTest {
         when(projectMapper.toDto(project1)).thenReturn(projectDto1);
         when(projectMapper.toDto(project2)).thenReturn(projectDto2);
 
-        Set<ProjectDto> result = projectServiceImpl.findAll();
+        Set<ProjectDto> result = projectService.findAll();
 
         assertEquals(2, result.size());
         assertTrue(result.contains(projectDto1));
@@ -99,7 +101,7 @@ class ProjectServiceImplTest {
     public void testFindAllEmpty() {
         when(projectRepository.findAll()).thenReturn(List.of());
 
-        Set<ProjectDto> result = projectServiceImpl.findAll();
+        Set<ProjectDto> result = projectService.findAll();
 
         assertEquals(0, result.size());
     }
@@ -110,7 +112,7 @@ class ProjectServiceImplTest {
         when(projectRepository.findById(project1.getId())).thenReturn(java.util.Optional.of(project1));
         when(projectMapper.toDto(project1)).thenReturn(projectDto1);
 
-        ProjectDto result = projectServiceImpl.findById(project1.getId());
+        ProjectDto result = projectService.findById(project1.getId());
 
         assertEquals(projectDto1, result);
     }
@@ -121,7 +123,7 @@ class ProjectServiceImplTest {
         when(projectRepository.findById(project1.getId())).thenReturn(java.util.Optional.empty());
 
         try {
-            projectServiceImpl.findById(project1.getId());
+            projectService.findById(project1.getId());
             fail();
         } catch (Exception e) {
             assertEquals(ExceptionMessages.elementNotFound("Project", project1.getId()), e.getMessage());
@@ -131,13 +133,13 @@ class ProjectServiceImplTest {
     @Test
     @DisplayName("Test findById - id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
-            projectServiceImpl.findById(null);
+            projectService.findById(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }
 
@@ -148,7 +150,7 @@ class ProjectServiceImplTest {
         when(projectMapper.toDto(project1)).thenReturn(projectDto1);
         Mockito.doNothing().when(projectValidator).validate(project1);
 
-        ProjectDto result = projectServiceImpl.save(project1);
+        ProjectDto result = projectService.save(project1);
 
         assertEquals(projectDto1, result);
     }
@@ -156,27 +158,27 @@ class ProjectServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Project object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(entityName))).when(projectValidator).validate(null);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(projectValidator).validate(null);
 
         try {
-            projectServiceImpl.save(null);
+            projectService.save(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.nullArgument(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test save - throw InvalidArgumentException, description too long")
     public void testSaveThrowExceptionDescriptionTooLong() {
-        project1.setDescription("a".repeat(maxDescriptionLength + 1));
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength))).when(projectValidator).validate(project1);
+        project1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(projectValidator).validate(project1);
 
         try {
-            projectServiceImpl.save(project1);
+            projectService.save(project1);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.textTooLong(entityName, "description", maxDescriptionLength), e.getMessage());
+            assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH), e.getMessage());
         }
     }
 
@@ -184,36 +186,36 @@ class ProjectServiceImplTest {
     @DisplayName("Test delete by id - Project object exists")
     public void testDeleteByIdExists() {
         when(projectRepository.findById(project1.getId())).thenReturn(java.util.Optional.of(project1));
-        Mockito.doNothing().when(idValidator).validateLongId(project1.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(project1.getId(), ENTITY_NAME);
         Mockito.doNothing().when(projectRepository).deleteById(project1.getId());
 
-        assertDoesNotThrow(() -> projectServiceImpl.deleteById(project1.getId()));
+        assertDoesNotThrow(() -> projectService.deleteById(project1.getId()));
     }
 
     @Test
     @DisplayName("Test delete by id - Project object does not exist")
     public void testDeleteByIdDoesNotExist() {
         when(projectRepository.findById(project1.getId())).thenReturn(java.util.Optional.empty());
-        Mockito.doNothing().when(idValidator).validateLongId(project1.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(project1.getId(), ENTITY_NAME);
 
         try {
-            projectServiceImpl.deleteById(project1.getId());
+            projectService.deleteById(project1.getId());
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.elementNotFound(entityName, project1.getId()), e.getMessage());
+            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, project1.getId()), e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(entityName))).when(idValidator).validateLongId(null, entityName);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
-            projectServiceImpl.deleteById(null);
+            projectService.deleteById(null);
             fail();
         } catch (Exception e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(entityName), e.getMessage());
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
         }
     }
 }

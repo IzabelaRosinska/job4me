@@ -48,7 +48,7 @@ class EmployeeServiceImplTest {
     @InjectMocks
     private EmployeeServiceImpl employeeServiceImpl;
 
-    private final String entityName = "Employee";
+    private final String ENTITY_NAME = "Employee";
     private Employee employee;
     private EmployeeDto employeeDto;
 
@@ -98,7 +98,7 @@ class EmployeeServiceImplTest {
         Mockito.doNothing().when(experienceService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(projectService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(skillService).deleteAllByEmployeeId(employee.getId());
-        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
         Mockito.when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
 
         EmployeeDto result = employeeServiceImpl.updateCV(employeeDto);
@@ -138,7 +138,7 @@ class EmployeeServiceImplTest {
         Mockito.doNothing().when(experienceService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(projectService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(skillService).deleteAllByEmployeeId(employee.getId());
-        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), entityName);
+        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
         Mockito.when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
 
         EmployeeDto result = employeeServiceImpl.updateCV(employeeDto);
@@ -151,14 +151,12 @@ class EmployeeServiceImplTest {
     public void testUpdateCVFailWhenEmployeeValidatorFails() {
         employeeDto.setFirstName(null);
 
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(entityName, "name"))).when(employeeValidator).validateForUpdateDto(employeeDto);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "name"))).when(employeeValidator).validateForUpdateDto(employeeDto);
 
         try {
             employeeServiceImpl.updateCV(employeeDto);
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.notNullNotEmpty(entityName, "name"), e.getMessage());
+            assertEquals(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "name"), e.getMessage());
         }
     }
-
-
 }
