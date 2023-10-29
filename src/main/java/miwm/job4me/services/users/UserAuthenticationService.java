@@ -38,19 +38,22 @@ public class UserAuthenticationService implements UserDetailsService {
         return employeeRepository.selectEmployeeByUsername(username);
     }
 
-    public Long getAuthenticatedEmployeeId() throws AuthException {
+    public Employee getAuthenticatedEmployee() throws AuthException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         if(employee == null)
             throw new AuthException(UserMessages.BANNED_RESOURCES);
-        return employee.getId();
-    }
-
-    public Person getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         return employee;
     }
+
+    public Employer getAuthenticatedEmployer() throws AuthException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
+        if(employer == null)
+            throw new AuthException(UserMessages.BANNED_RESOURCES);
+        return employer;
+    }
+
 
     public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
         if (!emailExist(userDto.getUsername())) {

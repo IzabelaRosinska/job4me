@@ -6,6 +6,6 @@ import miwm.job4me.services.BaseService;
 import miwm.job4me.web.model.users.EmployerDto;
 
 public interface EmployerService  extends BaseService<Employer, Long> {
-    EmployerDto getEmployerByUsername(String username);
-    EmployerDto saveEmployerData(EmployerDto employerDto);
+    EmployerDto getEmployerDetails();
+    EmployerDto saveEmployerDetails(EmployerDto employerDto);
 }
