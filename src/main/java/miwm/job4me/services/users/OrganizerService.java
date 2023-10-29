@@ -5,6 +5,6 @@ import miwm.job4me.services.BaseService;
 import miwm.job4me.web.model.users.OrganizerDto;
 
 public interface OrganizerService extends BaseService<Organizer, Long> {
-    OrganizerDto getOrganizerByUsername(String username);
-    OrganizerDto updateOrganizerData(OrganizerDto organizerDto);
+    OrganizerDto getOrganizerDetails();
+    OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto);
 }

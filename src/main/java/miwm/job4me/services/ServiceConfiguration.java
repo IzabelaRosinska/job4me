@@ -13,6 +13,7 @@ import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
+import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.mappers.users.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,8 +38,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    OrganizerServiceImpl organizerServiceImpl() {
-        return new OrganizerServiceImpl();
+    OrganizerServiceImpl organizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper) {
+        return new OrganizerServiceImpl(userAuthenticationService, organizerMapper);
     }
 
 }
