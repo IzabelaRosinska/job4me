@@ -28,21 +28,47 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ExperienceService experienceService;
     private final ProjectService projectService;
     private final SkillService skillService;
+    private final UserAuthenticationService userAuthService;
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
     private final String entityName = "Employee";
 
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
+        this.userAuthService = userAuthService;
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
+    }
+
+    @Override
+    public EmployeeDto getEmployeeDetails() {
+        Employee employee = userAuthService.getAuthenticatedEmployee();
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        return employeeDto;
+    }
+
+    @Override
+    @Transactional
+    public EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto) {
+        Employee employee = userAuthService.getAuthenticatedEmployee();
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastName(employeeDto.getLastName());
+        employee.setContactEmail(employeeDto.getEmail());
+        employee.setTelephone(employeeDto.getTelephone());
+        employee.setAboutMe(employeeDto.getAboutMe());
+        employee.setInterests(employeeDto.getInterests());
+        employee.setEducation(employeeMapper.stringListToEducationSet(employeeDto.getEducation()));
+        employee.setExperience(employeeMapper.stringListToExperienceSet(employeeDto.getExperience()));
+        employee.setProjects(employeeMapper.stringListToProjectsSet(employeeDto.getProjects()));
+        employee.setSkills(employeeMapper.stringListToSkillsSet(employeeDto.getSkills()));
+        return employeeDto;
     }
 
     @Override

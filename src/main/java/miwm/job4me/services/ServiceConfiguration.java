@@ -26,8 +26,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    EmployeeServiceImpl clientServiceImpl(final EmployeeRepository employeeRepository, final EducationService educationService, final ExperienceService experienceService, final ProjectService projectService, final SkillService skillService, final IdValidator idValidator, final EmployeeValidator employeeValidator, final EmployeeMapper employeeMapper) {
-        return new EmployeeServiceImpl(employeeRepository, educationService, experienceService, projectService, skillService, idValidator, employeeValidator, employeeMapper);
+    EmployeeServiceImpl clientServiceImpl(final EmployeeRepository employeeRepository, final EducationService educationService, final ExperienceService experienceService, final ProjectService projectService, final SkillService skillService, UserAuthenticationService userAuthService, final IdValidator idValidator, final EmployeeValidator employeeValidator, final EmployeeMapper employeeMapper) {
+        return new EmployeeServiceImpl(employeeRepository, educationService, experienceService, projectService, skillService, userAuthService, idValidator, employeeValidator, employeeMapper);
     }
 
     @Bean
