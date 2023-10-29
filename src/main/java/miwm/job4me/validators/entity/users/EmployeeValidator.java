@@ -4,19 +4,27 @@ import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.validators.entity.IdValidator;
+import miwm.job4me.validators.entity.cv.StringFieldValidator;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class EmployeeValidator {
     private final EmployeeRepository employeeRepository;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
 
-    private final int MIN_FIRST_NAME_LENGTH = 1;
-    private final int MIN_LAST_NAME_LENGTH = 1;
-    private final int MIN_EMAIL_LENGTH = 1;
+    private Pattern pattern;
+    private Matcher matcher;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    private final int MIN_FIRST_NAME_LENGTH = 2;
+    private final int MIN_LAST_NAME_LENGTH = 2;
+    private final int MIN_EMAIL_LENGTH = 2;
 
     private final int MAX_FIRST_NAME_LENGTH = 100;
     private final int MAX_LAST_NAME_LENGTH = 100;
@@ -35,9 +43,10 @@ public class EmployeeValidator {
 
     private final String ENTITY_NAME = "Employee";
 
-    public EmployeeValidator(EmployeeRepository employeeRepository, IdValidator idValidator) {
+    public EmployeeValidator(EmployeeRepository employeeRepository, IdValidator idValidator, StringFieldValidator stringFieldValidator) {
         this.employeeRepository = employeeRepository;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
     }
 
     public void validateEmployeeExistsById(Long id) {
@@ -46,10 +55,10 @@ public class EmployeeValidator {
     }
 
     public void validateForUpdateDto(EmployeeDto employeeDto) {
-        validateEmployeeExistsById(employeeDto.getId());
         validateNotNullEmployee(employeeDto);
-        validateClassicRequiredFieldLengthRestrictions(employeeDto.getFirstName(), "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        validateClassicRequiredFieldLengthRestrictions(employeeDto.getLastName(), "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
+        validateEmployeeExistsById(employeeDto.getId());
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         validateEmail(employeeDto.getEmail());
         validateTelephone(employeeDto.getTelephone());
         validateListSizeAndElemLength(employeeDto.getEducation(), "education", MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
@@ -64,25 +73,17 @@ public class EmployeeValidator {
         }
     }
 
-    private void validateClassicRequiredFieldLengthRestrictions(String field, String fieldName, int minLength, int maxLength) {
-        if (field == null || field.isEmpty()) {
-            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName));
-        }
-
-        if (field.length() < minLength) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooShort(ENTITY_NAME, fieldName, minLength));
-        }
-
-        if (field.length() > maxLength) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxLength));
-        }
+    private boolean validateEmailPattern(String email) {
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private void validateEmail(String email) {
-        validateClassicRequiredFieldLengthRestrictions(email, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(email, ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
 
-        if (!email.contains("@")) {
-            throw new InvalidArgumentException(ExceptionMessages.mustContain(ENTITY_NAME, "email", "@"));
+        if (!validateEmailPattern(email)) {
+            throw new InvalidArgumentException(ExceptionMessages.mustMatchPattern(ENTITY_NAME, "email", EMAIL_PATTERN));
         }
     }
 
@@ -99,6 +100,10 @@ public class EmployeeValidator {
 
         if (list != null) {
             for (String elem : list) {
+                if (elem == null || elem.isEmpty()) {
+                    throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName + " list element"));
+                }
+
                 if (elem.length() > maxElemLength) {
                     throw new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, fieldName, maxElemLength));
                 }

@@ -81,4 +81,3 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             response.sendRedirect("/employer/account");
     }
 }
-

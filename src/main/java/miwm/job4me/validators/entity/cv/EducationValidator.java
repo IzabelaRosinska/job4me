@@ -10,45 +10,39 @@ import org.springframework.stereotype.Component;
 @Component
 public class EducationValidator {
     private final EmployeeValidator employeeValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
     private final int MAX_DESCRIPTION_LENGTH = 100;
-    private final String entityName = "Education";
+    private final String ENTITY_NAME = "Education";
+    private final String DESCRIPTION_FIELD_NAME = "description";
 
-    public EducationValidator(EmployeeValidator employeeValidator) {
+    public EducationValidator(EmployeeValidator employeeValidator, StringFieldValidator stringFieldValidator) {
         this.employeeValidator = employeeValidator;
+        this.stringFieldValidator = stringFieldValidator;
     }
 
     public void validateDto(EducationDto education) {
         validateNotNullDto(education);
         employeeValidator.validateEmployeeExistsById(education.getEmployeeId());
-        validateDescription(education.getDescription());
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Education education) {
         validateNotNull(education);
         employeeValidator.validateEmployeeExistsById(education.getEmployee().getId());
-        validateDescription(education.getDescription());
+        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(EducationDto educationDto) {
         if (educationDto == null) {
-            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
     }
 
     private void validateNotNull(Education education) {
         if (education == null) {
-            throw new InvalidArgumentException(ExceptionMessages.nullArgument(entityName));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
     }
 
-    private void validateDescription(String description) {
-        if (description.length() < MIN_DESCRIPTION_LENGTH) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, "description", MIN_DESCRIPTION_LENGTH));
-        }
-
-        if (description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, "description", MAX_DESCRIPTION_LENGTH));
-        }
-    }
 }

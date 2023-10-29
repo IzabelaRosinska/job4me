@@ -18,4 +18,14 @@ public class ApiExceptionHandler {
 
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NoSuchElementFoundException.class)
+    public ResponseEntity<?> handleNoSuchElementFoundException(NoSuchElementFoundException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("No such element found")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
+    }
 }
