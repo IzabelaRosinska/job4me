@@ -76,6 +76,7 @@ public class UserAuthenticationService implements UserDetailsService {
                 Employee newEmployee = Employee.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
+                        .locked(true)
                         .userRole(ApplicationUserRole.EMPLOYEE.getUserRole()).build();
                 employeeRepository.save(newEmployee);
                 return newEmployee;
@@ -83,6 +84,7 @@ public class UserAuthenticationService implements UserDetailsService {
                 Employer newEmployer = Employer.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
+                        .locked(true)
                         .userRole(ApplicationUserRole.EMPLOYER.getUserRole()).build();
                 employerRepository.save(newEmployer);
                 return newEmployer;
@@ -90,6 +92,7 @@ public class UserAuthenticationService implements UserDetailsService {
                 Organizer newOrganizer = Organizer.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
+                        .locked(true)
                         .userRole(ApplicationUserRole.ORGANIZER.getUserRole()).build();
                 organizerRepository.save(newOrganizer);
                 return newOrganizer;

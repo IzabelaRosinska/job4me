@@ -19,8 +19,8 @@ import javax.persistence.Table;
 public class Organizer extends Person {
 
     @Builder
-    public Organizer(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole) {
-        super(id, telephone, email, password, userRole);
+    public Organizer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {
+        super(id, telephone, email, password, locked, userRole);
     }
 
     @Column(name = "organizer_name", length = 100)

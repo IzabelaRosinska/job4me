@@ -19,9 +19,9 @@ import javax.persistence.Table;
 public class Employer extends Person {
 
     @Builder
-    public Employer(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole,
+    public Employer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole,
                     String companyName, String description, String displayDescription, String photo, String address) {
-        super(id, telephone, email, password, userRole);
+        super(id, telephone, email, password, locked, userRole);
         this.companyName = companyName;
         this.description = description;
         this.displayDescription = displayDescription;
