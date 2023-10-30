@@ -46,4 +46,3 @@ public class JwtConfig {
         return HttpHeaders.AUTHORIZATION;
     }
 }
-
