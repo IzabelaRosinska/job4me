@@ -46,7 +46,7 @@ public class EmployeeMapper {
         return employee;
     }
 
-    private ArrayList<String> educationSetToStringList(Set<Education> education) {
+    public ArrayList<String> educationSetToStringList(Set<Education> education) {
         ArrayList<String> educationList = new ArrayList<>();
 
         if (education != null) {
@@ -58,7 +58,7 @@ public class EmployeeMapper {
         return educationList;
     }
 
-    private ArrayList<String> experienceSetToStringList(Set<Experience> experience) {
+    public ArrayList<String> experienceSetToStringList(Set<Experience> experience) {
         ArrayList<String> experienceList = new ArrayList<>();
 
         if (experience != null) {
@@ -70,7 +70,7 @@ public class EmployeeMapper {
         return experienceList;
     }
 
-    private ArrayList<String> projectsSetToStringList(Set<Project> projects) {
+    public ArrayList<String> projectsSetToStringList(Set<Project> projects) {
         ArrayList<String> projectsList = new ArrayList<>();
 
         if (projects != null) {
@@ -82,7 +82,7 @@ public class EmployeeMapper {
         return projectsList;
     }
 
-    private ArrayList<String> skillsSetToStringList(Set<Skill> skills) {
+    public ArrayList<String> skillsSetToStringList(Set<Skill> skills) {
         ArrayList<String> skillsList = new ArrayList<>();
 
         if (skills != null) {
@@ -94,7 +94,7 @@ public class EmployeeMapper {
         return skillsList;
     }
 
-    private Set<Education> stringListToEducationSet(ArrayList<String> education) {
+    public Set<Education> stringListToEducationSet(ArrayList<String> education) {
         Set<Education> educationSet = new HashSet<>();
 
         if (education != null) {
@@ -107,7 +107,7 @@ public class EmployeeMapper {
         return educationSet;
     }
 
-    private Set<Experience> stringListToExperienceSet(ArrayList<String> experience) {
+    public Set<Experience> stringListToExperienceSet(ArrayList<String> experience) {
         Set<Experience> experienceSet = new HashSet<>();
 
         if (experience != null) {
@@ -120,7 +120,7 @@ public class EmployeeMapper {
         return experienceSet;
     }
 
-    private Set<Project> stringListToProjectsSet(ArrayList<String> projects) {
+    public Set<Project> stringListToProjectsSet(ArrayList<String> projects) {
         Set<Project> projectsSet = new HashSet<>();
 
         if (projects != null) {
@@ -133,7 +133,7 @@ public class EmployeeMapper {
         return projectsSet;
     }
 
-    private Set<Skill> stringListToSkillsSet(ArrayList<String> skills) {
+    public Set<Skill> stringListToSkillsSet(ArrayList<String> skills) {
         Set<Skill> skillsSet = new HashSet<>();
 
         if (skills != null) {
