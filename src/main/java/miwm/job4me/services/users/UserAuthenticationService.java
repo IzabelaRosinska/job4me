@@ -38,7 +38,6 @@ public class UserAuthenticationService implements UserDetailsService {
         return employeeRepository.selectEmployeeByUsername(username);
     }
 
-
     public Employee getAuthenticatedEmployee() throws AuthException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
@@ -47,11 +46,20 @@ public class UserAuthenticationService implements UserDetailsService {
         return employee;
     }
 
+    public Employer getAuthenticatedEmployer() throws AuthException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
+        if(employer == null)
+            throw new AuthException(UserMessages.BANNED_RESOURCES);
+        return employer;
+    }
+
     public Person getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         return employee;
     }
+
 
     public Organizer getAuthenticatedOrganizer() throws AuthException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -60,6 +68,7 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new AuthException(UserMessages.BANNED_RESOURCES);
         return organizer;
     }
+
 
     public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
         if (!emailExist(userDto.getUsername())) {

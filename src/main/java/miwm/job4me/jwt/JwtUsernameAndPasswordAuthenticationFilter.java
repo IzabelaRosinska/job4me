@@ -76,8 +76,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addCookie(tokenCookie);
 
         if(authResult.getAuthorities().contains(EMPLOYEE.getUserRole()))
-            response.sendRedirect("/");
-        else
+            response.sendRedirect("/employee/account");
+        else if(authResult.getAuthorities().contains(EMPLOYEE.getUserRole()))
             response.sendRedirect("/employer/account");
+        else
+            response.sendRedirect("/organizer/account");
     }
 }
