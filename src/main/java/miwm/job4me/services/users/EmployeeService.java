@@ -6,6 +6,8 @@ import miwm.job4me.web.model.users.EmployeeDto;
 
 public interface EmployeeService extends BaseService<Employee, Long> {
     EmployeeDto updateCV(EmployeeDto employeeDto);
+    EmployeeDto getEmployeeDetails();
+    EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto);
 
     EmployeeDto findCurrentEmployee();
 

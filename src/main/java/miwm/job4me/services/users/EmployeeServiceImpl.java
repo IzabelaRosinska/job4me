@@ -48,6 +48,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public EmployeeDto getEmployeeDetails() {
+        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        return employeeDto;
+    }
+
+    @Override
+    @Transactional
+    public EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto) {
+        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastName(employeeDto.getLastName());
+        employee.setContactEmail(employeeDto.getEmail());
+        employee.setTelephone(employeeDto.getTelephone());
+        employee.setAboutMe(employeeDto.getAboutMe());
+        employee.setInterests(employeeDto.getInterests());
+        employee.setEducation(employeeMapper.stringListToEducationSet(employeeDto.getEducation()));
+        employee.setExperience(employeeMapper.stringListToExperienceSet(employeeDto.getExperience()));
+        employee.setProjects(employeeMapper.stringListToProjectsSet(employeeDto.getProjects()));
+        employee.setSkills(employeeMapper.stringListToSkillsSet(employeeDto.getSkills()));
+        return employeeDto;
+    }
+
+    @Override
     public Set<Employee> findAll() {
         return new HashSet<>(employeeRepository
                 .findAll());
