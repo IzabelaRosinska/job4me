@@ -8,10 +8,12 @@ import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
 import miwm.job4me.services.users.EmployeeServiceImpl;
+import miwm.job4me.services.users.OrganizerServiceImpl;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.validators.entity.IdValidator;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
+import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.mappers.users.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +35,11 @@ public class ServiceConfiguration {
     @Bean
     UserMapper userMapper() {
         return new UserMapper();
+    }
+
+    @Bean
+    OrganizerServiceImpl organizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper) {
+        return new OrganizerServiceImpl(userAuthenticationService, organizerMapper);
     }
 
 }

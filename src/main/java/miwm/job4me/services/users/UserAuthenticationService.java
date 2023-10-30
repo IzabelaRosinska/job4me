@@ -52,6 +52,14 @@ public class UserAuthenticationService implements UserDetailsService {
         return employee;
     }
 
+    public Organizer getAuthenticatedOrganizer() throws AuthException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
+        if(organizer == null)
+            throw new AuthException(UserMessages.BANNED_RESOURCES);
+        return organizer;
+    }
+
     public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
         if (!emailExist(userDto.getUsername())) {
             if(userDto.getRole().equals("EMPLOYEE")) {
