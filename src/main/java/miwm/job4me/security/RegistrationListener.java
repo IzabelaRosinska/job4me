@@ -2,6 +2,7 @@ package miwm.job4me.security;
 
 import miwm.job4me.emails.EMailService;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Person;
 import miwm.job4me.services.users.UserAuthenticationService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -30,13 +31,12 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     }
 
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
-        Employee employee = event.getEmployee();
+        Person person = event.getPerson();
         String token = UUID.randomUUID().toString();
-        userAuthenticationService.createVerificationToken(employee, token);
-        String recipientAddress = employee.getEmail();
+        userAuthenticationService.createVerificationToken(person, token);
+        String recipientAddress = person.getEmail();
         String subject = "Registration Confirmation";
         String confirmationUrl = event.getAppUrl() + "/registrationConfirm?token=" + token;
-        //String message = messages.getMessage("message.regSucc", null, event.getLocale());
         String text = "Welcome in Job4Me!\n Please click link below to verify your account.\n\n" + "http://localhost:8080" + confirmationUrl;
 
         emailService.sendSimpleMessage(recipientAddress, subject, text);
