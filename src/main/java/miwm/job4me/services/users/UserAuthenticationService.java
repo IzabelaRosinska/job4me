@@ -133,13 +133,15 @@ public class UserAuthenticationService implements UserDetailsService {
         employeeRepository.save(savedEmployee);
     }
 
-    public void createVerificationToken(Employee employee, String token) {
-        VerificationToken myToken = VerificationToken.builder().token(token).employee(employee).build();
-        tokenRepository.save(myToken);
+    public void unlockEmployer(Employer employer) {
+        Employer savedEmployer = employerRepository.selectEmployerByUsername(employer.getEmail());
+        savedEmployer.setUserRole(new SimpleGrantedAuthority("ROLE_EMPLOYER_ENABLED"));
+        savedEmployer.setLocked(false);
+        employerRepository.save(savedEmployer);
     }
 
-    public Employee getEmployee(String verificationToken) {
-        Employee employee = tokenRepository.findByToken(verificationToken).getEmployee();
-        return employee;
+    public void createVerificationToken(Person person, String token) {
+        VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();
+        tokenRepository.save(myToken);
     }
 }

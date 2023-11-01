@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.model.VerificationToken;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.OnRegistrationCompleteEvent;
 import miwm.job4me.services.users.UserAuthenticationService;
@@ -40,10 +41,13 @@ public class AuthController {
         try {
             Person person = userAuthService.registerNewUserAccount(registerData);
             userDto = userMapper.toDto(person);
-            if(registerData.getRole().equals("EMPLOYEE")) {
-                String appUrl = request.getContextPath();
+
+            String appUrl = request.getContextPath();
+            if(registerData.getRole().equals("EMPLOYEE"))
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employee)person, request.getLocale(), appUrl));
-            }
+            else if(registerData.getRole().equals("EMPLOYER"))
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employer)person, request.getLocale(), appUrl));
+
         } catch (UserAlreadyExistException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -57,11 +61,16 @@ public class AuthController {
             response.sendRedirect("/");
         }
         Employee employee = verificationToken.getEmployee();
+        Employer employer = verificationToken.getEmployer();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             response.sendRedirect("/");
         }
-        userAuthService.unlockEmployee(employee);
+        if(employee != null)
+            userAuthService.unlockEmployee(employee);
+        else if(employer != null)
+            userAuthService.unlockEmployer(employer);
+
         response.sendRedirect("http://localhost:4200/login");
     }
 }

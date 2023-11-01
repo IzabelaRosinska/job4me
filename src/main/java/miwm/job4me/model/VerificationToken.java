@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Person;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -20,16 +24,26 @@ public class VerificationToken extends BaseEntity {
     private String token;
 
     @Builder
-    public VerificationToken(Long id, String token, Employee employee) {
+    public VerificationToken(Long id, String token, Person person) {
         super(id);
         this.token = token;
-        this.employee = employee;
+        if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYEE")) {
+            this.employee = (Employee) person;
+        }
+        else if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYER")) {
+            this.employer = (Employer) person;
+        }
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
     @OneToOne(targetEntity = Employee.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
+    @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @OneToOne(targetEntity = Employer.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "employer_id")
+    private Employer employer;
+
 
     private Date expiryDate;
 

@@ -2,7 +2,7 @@ package miwm.job4me.security;
 
 import lombok.Getter;
 import lombok.Setter;
-import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Person;
 import org.springframework.context.ApplicationEvent;
 import java.util.Locale;
 
@@ -11,12 +11,12 @@ import java.util.Locale;
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private String appUrl;
     private Locale locale;
-    private Employee employee;
+    private Person person;
 
-    public OnRegistrationCompleteEvent(Employee employee, Locale locale, String appUrl) {
-        super(employee);
+    public OnRegistrationCompleteEvent(Person person, Locale locale, String appUrl) {
+        super(person);
 
-        this.employee = employee;
+        this.person = person;
         this.locale = locale;
         this.appUrl = appUrl;
     }
