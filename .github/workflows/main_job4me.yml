@@ -62,3 +62,5 @@ jobs:
             AZURE_DB: ${{ secrets.AZURE_DB }}
             AZURE_DB_USER: ${{ secrets.AZURE_DB_USER }}
             AZURE_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
+            EMAIL_USER: ${{ secrets.EMAIL_USERNAME }}
+            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
