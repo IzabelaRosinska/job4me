@@ -3,6 +3,7 @@ package miwm.job4me.services;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.repositories.users.OrganizerRepository;
+import miwm.job4me.repositories.users.VerificationTokenRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
@@ -25,8 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ServiceConfiguration {
 
     @Bean
-    UserAuthenticationService userAuthenticationService(final EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository) {
-        return new UserAuthenticationService(employeeRepository, passwordEncoder, employerRepository, organizerRepository);
+    UserAuthenticationService userAuthenticationService(final EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository) {
+        return new UserAuthenticationService(employeeRepository, passwordEncoder, employerRepository, organizerRepository, verificationTokenRepository);
     }
 
     @Bean

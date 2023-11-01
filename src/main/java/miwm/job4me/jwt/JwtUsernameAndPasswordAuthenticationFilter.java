@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import static miwm.job4me.security.ApplicationUserRole.EMPLOYEE;
+import static miwm.job4me.security.ApplicationUserRole.EMPLOYER;
 
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -74,12 +75,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         Cookie tokenCookie = new Cookie(AppMessages.JWT_TOKEN_NAME, token);
         tokenCookie.setHttpOnly(true);
         response.addCookie(tokenCookie);
-
-        if(authResult.getAuthorities().contains(EMPLOYEE.getUserRole()))
-            response.sendRedirect("/employee/account");
-        else if(authResult.getAuthorities().contains(EMPLOYEE.getUserRole()))
-            response.sendRedirect("/employer/account");
-        else
-            response.sendRedirect("/organizer/account");
+        response.getWriter().write(authResult.getAuthorities().toArray()[0].toString().replace("ROLE_", ""));
     }
 }
