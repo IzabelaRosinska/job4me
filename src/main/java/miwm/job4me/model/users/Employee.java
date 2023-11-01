@@ -24,8 +24,8 @@ import java.util.Set;
 public class Employee extends Person {
 
     @Builder
-    public Employee(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole, String firstName, String lastName, String contactEmail, Set<Education> education, Set<Experience> experience, Set<Skill> skills, Set<Project> projects, String aboutMe, String interests) {
-        super(id, telephone, email, password, userRole);
+    public Employee(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole, String firstName, String lastName, String contactEmail, Set<Education> education, Set<Experience> experience, Set<Skill> skills, Set<Project> projects, String aboutMe, String interests) {
+        super(id, telephone, email, password, locked, userRole);
         this.firstName = firstName;
         this.lastName = lastName;
         this.contactEmail = contactEmail;

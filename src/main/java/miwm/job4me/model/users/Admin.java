@@ -17,8 +17,8 @@ import javax.persistence.Table;
 public class Admin extends Person {
 
     @Builder
-    public Admin(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole) {
-        super(id, telephone, email, password, userRole);
+    public Admin(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {
+        super(id, telephone, email, password, locked, userRole);
     }
 
     public String toString(){
