@@ -45,8 +45,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    OrganizerServiceImpl organizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper) {
-        return new OrganizerServiceImpl(userAuthenticationService, organizerMapper);
+    OrganizerServiceImpl organizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper, OrganizerRepository organizerRepository) {
+        return new OrganizerServiceImpl(userAuthenticationService, organizerMapper, organizerRepository);
     }
 
 }

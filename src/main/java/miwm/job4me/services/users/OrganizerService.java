@@ -7,4 +7,5 @@ import miwm.job4me.web.model.users.OrganizerDto;
 public interface OrganizerService extends BaseService<Organizer, Long> {
     OrganizerDto getOrganizerDetails();
     OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto);
+    void updateAccountStatusAfterPayment();
 }

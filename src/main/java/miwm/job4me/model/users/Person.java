@@ -25,12 +25,13 @@ import java.util.List;
 @MappedSuperclass
 public class Person extends BaseEntity implements UserDetails {
 
-    public Person(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole) {
+    public Person(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {
         super(id);
         this.telephone = telephone;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
+        this.locked = locked;
     }
 
     @Column(name = "telephone")
