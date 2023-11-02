@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Getter
@@ -26,7 +28,9 @@ public class ContractType extends BaseEntity {
         this.jobOffers = jobOffers;
     }
 
-    @Column(name = "name", length = 20)
+    @NotBlank
+    @Size(min = 1, max = 25, message = "ContractType name must be between 1 and 25 characters")
+    @Column(name = "name", length = 25)
     private String name;
 
     @ManyToMany(mappedBy = "contractTypes")

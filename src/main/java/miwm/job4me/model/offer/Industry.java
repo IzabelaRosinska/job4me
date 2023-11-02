@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Getter
@@ -25,6 +27,8 @@ public class Industry extends BaseEntity {
         this.name = name;
     }
 
+    @NotBlank(message = "Industry name cannot be blank")
+    @Size(min = 1, max = 100, message = "Industry name must be between 1 and 100 characters")
     @Column(name = "name", length = 100)
     private String name;
 

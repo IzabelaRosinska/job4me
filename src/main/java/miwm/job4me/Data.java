@@ -46,7 +46,7 @@ public class Data implements ApplicationListener<ContextRefreshedEvent> {
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .telephone("+48 123456789")
-                .contactEmail("jan.kowalski@gmail")
+                .contactEmail("jan.kowalski@gmail.com")
                 .aboutMe("Jestem studentem informatyki na Politechnice Wrocławskiej. Interesuje się programowaniem w Javie.")
                 .interests("Programowanie, sport, muzyka")
                 .build();

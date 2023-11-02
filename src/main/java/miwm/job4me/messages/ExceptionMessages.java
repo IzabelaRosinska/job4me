@@ -21,8 +21,16 @@ public class ExceptionMessages {
         return String.format("%s %s is too long. Max text length is %d.", className, fieldName, maxLength);
     }
 
+    public static String lengthOutOfRange(String className, String fieldName, int minLength, int maxLength) {
+        return String.format("%s %s length must be between %d and %d.", className, fieldName, minLength, maxLength);
+    }
+
     public static String notNullNotEmpty(String className, String fieldName) {
         return String.format("%s %s can not be null or empty.", className, fieldName);
+    }
+
+    public static String notNullNotBlank(String className, String fieldName) {
+        return String.format("%s %s can not be null or blank.", className, fieldName);
     }
 
     public static String mustContain(String className, String fieldName, String mustContain) {
@@ -35,5 +43,9 @@ public class ExceptionMessages {
 
     public static String listTooLong(String className, String fieldName, int maxLength) {
         return String.format("%s %s is too long. Max list length is %d.", className, fieldName, maxLength);
+    }
+
+    public static String notBlank(String fieldName, String className) {
+        return String.format("%s %s can not be blank.", className, fieldName);
     }
 }

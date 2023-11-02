@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Getter
@@ -20,14 +22,16 @@ import java.util.Set;
 public class EmploymentForm extends BaseEntity {
 
     @Builder
-    public EmploymentForm(Long id, String form, Set<JobOffer> jobOffers) {
+    public EmploymentForm(Long id, String name, Set<JobOffer> jobOffers) {
         super(id);
-        this.form = form;
+        this.name = name;
         this.jobOffers = jobOffers;
     }
 
-    @Column(name = "form", length = 20)
-    private String form;
+    @NotBlank
+    @Size(min = 1, max = 25, message = "EmploymentForm name must be between 1 and 25 characters")
+    @Column(name = "name", length = 25)
+    private String name;
 
     @ManyToMany(mappedBy = "employmentForms")
     private Set<JobOffer> jobOffers;
