@@ -1,4 +1,4 @@
-package miwm.job4me.validators.entity;
+package miwm.job4me.validators.fields;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;

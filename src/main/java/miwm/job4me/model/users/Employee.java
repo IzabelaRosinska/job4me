@@ -8,6 +8,7 @@ import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
+import miwm.job4me.validators.ValidEmail;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -43,6 +44,7 @@ public class Employee extends Person {
     @Column(name = "last_name", length = 100)
     private String lastName;
 
+    @ValidEmail
     @Column(name = "contact_email", length = 100)
     private String contactEmail;
 

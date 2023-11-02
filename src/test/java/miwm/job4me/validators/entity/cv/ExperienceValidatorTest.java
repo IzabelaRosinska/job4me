@@ -5,6 +5,7 @@ import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.cv.ExperienceDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

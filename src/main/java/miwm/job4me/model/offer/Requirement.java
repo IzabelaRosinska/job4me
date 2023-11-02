@@ -1,11 +1,10 @@
-package miwm.job4me.model.cv;
+package miwm.job4me.model.offer;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
-import miwm.job4me.model.users.Employee;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,23 +15,24 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "skills")
-public class Skill extends BaseEntity {
+@Table(name = "requirements")
+public class Requirement extends BaseEntity {
 
     @Builder
-    public Skill(Long id, String description, Employee employee) {
+    public Requirement(Long id, String description, JobOffer jobOffer) {
         super(id);
         this.description = description;
-        this.employee = employee;
+        this.jobOffer = jobOffer;
     }
 
-    @NotBlank(message = "Skill description cannot be blank")
-    @Size(min = 1, max = 50, message = "Skill description must be between 1 and 50 characters")
-    @Column(name = "description", length = 50)
+    @NotBlank(message = "Requirement description cannot be blank")
+    @Size(min = 1, max = 250, message = "Requirement description must be between 1 and 250 characters")
+    @Column(name = "description", length = 250)
     private String description;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @JoinColumn(name = "job_offer_id")
+    private JobOffer jobOffer;
+
 }

@@ -4,6 +4,7 @@ import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.cv.ProjectDto;
 import org.springframework.stereotype.Component;
 
