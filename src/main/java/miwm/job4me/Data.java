@@ -42,7 +42,7 @@ public class Data implements ApplicationListener<ContextRefreshedEvent> {
                 .id(1l)
                 .email("userTest@wp.pl")
                 .password(passwordEncoder.encode("userTest"))
-                .userRole(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))
+                .userRole(new SimpleGrantedAuthority("EMPLOYEE_ENABLED"))
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .telephone("+48 123456789")

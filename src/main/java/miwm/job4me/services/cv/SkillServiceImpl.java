@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Skill;
@@ -28,10 +29,18 @@ public class SkillServiceImpl implements SkillService {
         this.idValidator = idValidator;
     }
 
-    private void existsById(Long id) {
+    @Override
+    public boolean existsById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-        skillRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+
+        return skillRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 
     @Override
@@ -46,7 +55,6 @@ public class SkillServiceImpl implements SkillService {
     @Override
     public SkillDto findById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-
         return skillRepository
                 .findById(id)
                 .map(skillMapper::toDto)
@@ -55,37 +63,37 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public SkillDto save(Skill object) {
-        skillValidator.validate(object);
-
-        return skillMapper.toDto(skillRepository.save(object));
+    public SkillDto save(Skill skill) {
+        skillValidator.validate(skill);
+        return skillMapper.toDto(skillRepository.save(skill));
     }
 
     @Override
-    public void delete(Skill object) {
-        existsById(object.getId());
-        skillRepository.delete(object);
+    public void delete(Skill skill) {
+        if (skill == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(skill.getId());
+        skillRepository.delete(skill);
     }
 
     @Override
     public void deleteById(Long id) {
-        existsById(id);
+        strictExistsById(id);
         skillRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public SkillDto update(Skill object) {
-        existsById(object.getId());
-        skillValidator.validate(object);
-
-        return skillMapper.toDto(skillRepository.save(object));
+    public SkillDto update(SkillDto skill) {
+        skillValidator.validateDto(skill);
+        strictExistsById(skill.getId());
+        return skillMapper.toDto(skillRepository.save(skillMapper.toEntity(skill)));
     }
 
     @Override
     public Set<SkillDto> findAllByEmployeeId(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-
         return skillRepository
                 .findAllByEmployeeId(id)
                 .stream()

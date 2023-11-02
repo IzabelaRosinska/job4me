@@ -1,10 +1,13 @@
 package miwm.job4me.exceptions;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.ConstraintViolation;
@@ -54,6 +57,16 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<?> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("Invalid data access api usage")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
+    }
+
     private String extractConstraintViolationMessage(ConstraintViolationException e) {
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         StringBuilder errorMessage = new StringBuilder();
@@ -70,6 +83,17 @@ public class ApiExceptionHandler {
         }
 
         return errorMessage.toString();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("Method argument not valid")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
 }

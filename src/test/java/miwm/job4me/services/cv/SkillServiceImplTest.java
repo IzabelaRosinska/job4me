@@ -36,7 +36,7 @@ class SkillServiceImplTest {
     @Mock
     private IdValidator idValidator;
     @InjectMocks
-    private SkillServiceImpl skillServiceImpl;
+    private SkillServiceImpl skillService;
 
     private final String ENTITY_NAME = "Skill";
     private final int MAX_DESCRIPTION_LENGTH = 50;
@@ -84,60 +84,53 @@ class SkillServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test findAll - return all Project objects")
-    public void testFindAll() {
-        when(skillRepository.findAll()).thenReturn(List.of(skill1, skill2));
-        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
-        when(skillMapper.toDto(skill2)).thenReturn(skillDto2);
+    @DisplayName("Test existsById - return true when Skill object exists")
+    public void testExistsByIdExists() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(true);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
-        Set<SkillDto> result = skillServiceImpl.findAll();
-
-        assertEquals(2, result.size());
-        assertTrue(result.contains(skillDto1));
-        assertTrue(result.contains(skillDto2));
+        assertTrue(skillService.existsById(skill1.getId()));
     }
 
     @Test
-    @DisplayName("Test findAll - return empty set")
-    public void testFindAllEmpty() {
-        when(skillRepository.findAll()).thenReturn(List.of());
+    @DisplayName("Test existsById - return false when Skill object does not exist")
+    public void testExistsByIdDoesNotExist() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(false);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
-        Set<SkillDto> result = skillServiceImpl.findAll();
-
-        assertEquals(0, result.size());
+        assertFalse(skillService.existsById(skill1.getId()));
     }
 
     @Test
-    @DisplayName("Test findById - return Project object")
-    public void testFindById() {
-        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.of(skill1));
-        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
+    @DisplayName("Test strictExistsById - do nothing when Skill object exists")
+    public void testStrictExistsByIdExists() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(true);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
-        SkillDto result = skillServiceImpl.findById(skill1.getId());
-
-        assertEquals(skillDto1, result);
+        assertDoesNotThrow(() -> skillService.strictExistsById(skill1.getId()));
     }
 
     @Test
-    @DisplayName("Test findById - throw NoSuchElementFoundException")
-    public void testFindByIdNullId() {
-        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.empty());
+    @DisplayName("Test strictExistsById - throw NoSuchElementFoundException when Skill object does not exist")
+    public void testStrictExistsByIdDoesNotExist() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(false);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
-            skillServiceImpl.findById(skill1.getId());
+            skillService.strictExistsById(skill1.getId());
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound("Skill", skill1.getId()), e.getMessage());
+            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
         }
     }
 
     @Test
-    @DisplayName("Test findById - id is null")
-    public void testFindByIdNull() {
+    @DisplayName("Test strictExistsById - throw InvalidArgumentException when id is null")
+    public void testStrictExistsByIdNull() {
         Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
-            skillServiceImpl.findById(null);
+            skillService.strictExistsById(null);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
@@ -145,24 +138,85 @@ class SkillServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - return Project object when it is valid")
-    public void testSaveValid() {
-        when(skillRepository.save(skill1)).thenReturn(skill1);
+    @DisplayName("Test findAll - return all existing Skill objects")
+    public void testFindAll() {
+        when(skillRepository.findAll()).thenReturn(List.of(skill1, skill2));
         when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
-        Mockito.doNothing().when(skillValidator).validate(skill1);
+        when(skillMapper.toDto(skill2)).thenReturn(skillDto2);
 
-        SkillDto result = skillServiceImpl.save(skill1);
+        Set<SkillDto> result = skillService.findAll();
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(skillDto1));
+        assertTrue(result.contains(skillDto2));
+    }
+
+    @Test
+    @DisplayName("Test findAll - return empty set when there are no Skill objects")
+    public void testFindAllEmpty() {
+        when(skillRepository.findAll()).thenReturn(List.of());
+
+        Set<SkillDto> result = skillService.findAll();
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    @DisplayName("Test findById - return Skill object when it exists")
+    public void testFindById() {
+        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.of(skill1));
+        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
+
+        SkillDto result = skillService.findById(skill1.getId());
 
         assertEquals(skillDto1, result);
     }
 
     @Test
-    @DisplayName("Test save - throw InvalidArgumentException when Project object is null")
+    @DisplayName("Test findById - throw NoSuchElementFoundException when Skill object does not exist")
+    public void testFindByIdNullId() {
+        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.empty());
+
+        try {
+            skillService.findById(skill1.getId());
+            fail();
+        } catch (NoSuchElementFoundException e) {
+            assertEquals(ExceptionMessages.elementNotFound("Skill", skill1.getId()), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test findById - throw InvalidArgumentException when id is null")
+    public void testFindByIdNull() {
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+
+        try {
+            skillService.findById(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test save - return Skill object when it is valid")
+    public void testSaveValid() {
+        when(skillRepository.save(skill1)).thenReturn(skill1);
+        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
+        Mockito.doNothing().when(skillValidator).validate(skill1);
+
+        SkillDto result = skillService.save(skill1);
+
+        assertEquals(skillDto1, result);
+    }
+
+    @Test
+    @DisplayName("Test save - throw InvalidArgumentException when Skill object is null")
     public void testSaveThrowExceptionNull() {
         Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validate(null);
 
         try {
-            skillServiceImpl.save(null);
+            skillService.save(null);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
@@ -170,13 +224,13 @@ class SkillServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save - throw InvalidArgumentException, description too long")
-    public void testSaveThrowExceptionDescriptionTooLong() {
+    @DisplayName("Test save - throw InvalidArgumentException when SkillValidator fails")
+    public void testSaveThrowExceptionSkillValidatorFails() {
         skill1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
         Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(skillValidator).validate(skill1);
 
         try {
-            skillServiceImpl.save(skill1);
+            skillService.save(skill1);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH), e.getMessage());
@@ -184,23 +238,72 @@ class SkillServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test delete by id - Project object exists")
-    public void testDeleteByIdExists() {
-        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.of(skill1));
+    @DisplayName("Test delete - Skill object exists")
+    public void testDeleteSkillExists() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(true);
         Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(skillRepository).deleteById(skill1.getId());
+        Mockito.doNothing().when(skillRepository).delete(skill1);
 
-        assertDoesNotThrow(() -> skillServiceImpl.deleteById(skill1.getId()));
+        assertDoesNotThrow(() -> skillService.delete(skill1));
     }
 
     @Test
-    @DisplayName("Test delete by id - Project object does not exist")
-    public void testDeleteByIdDoesNotExist() {
-        when(skillRepository.findById(skill1.getId())).thenReturn(java.util.Optional.empty());
+    @DisplayName("Test delete - Skill object does not exist")
+    public void testDeleteSkillDoesNotExist() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(false);
         Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
-            skillServiceImpl.deleteById(skill1.getId());
+            skillService.delete(skill1);
+            fail();
+        } catch (NoSuchElementFoundException e) {
+            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test delete - Skill object is null")
+    public void testDeleteSkillNull() {
+        try {
+            skillService.delete(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test delete - Skill id is null")
+    public void testDeleteSkillIdNull() {
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        skill1.setId(null);
+
+        try {
+            skillService.delete(skill1);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test delete by id - Skill object exists")
+    public void testDeleteByIdSkillExists() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(true);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        Mockito.doNothing().when(skillRepository).deleteById(skill1.getId());
+
+        assertDoesNotThrow(() -> skillService.deleteById(skill1.getId()));
+    }
+
+    @Test
+    @DisplayName("Test delete by id - Skill object does not exist")
+    public void testDeleteByIdDoesNotExist() {
+        when(skillRepository.existsById(skill1.getId())).thenReturn(false);
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+
+        try {
+            skillService.deleteById(skill1.getId());
             fail();
         } catch (NoSuchElementFoundException e) {
             assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
@@ -213,7 +316,107 @@ class SkillServiceImplTest {
         Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
-            skillServiceImpl.deleteById(null);
+            skillService.deleteById(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test update - update and return SkillDto object when it is valid")
+    public void testUpdateSkillExists() {
+        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        when(skillRepository.existsById(skill1.getId())).thenReturn(true);
+        Mockito.doNothing().when(skillValidator).validateDto(skillDto1);
+        when(skillMapper.toEntity(skillDto1)).thenReturn(skill1);
+        when(skillRepository.save(skill1)).thenReturn(skill1);
+        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
+
+        SkillDto result = skillService.update(skillDto1);
+
+        assertEquals(skillDto1, result);
+    }
+
+    @Test
+    @DisplayName("Test update - throw NoSuchElementFoundException when IdValidator fails")
+    public void testUpdateSkillDoesNotExist() {
+        Mockito.doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()))).when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+
+        try {
+            skillService.update(skillDto1);
+            fail();
+        } catch (NoSuchElementFoundException e) {
+            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test update - throw InvalidArgumentException when SkillDto object is null and SkillValidator fails")
+    public void testUpdateSkillDtoNull() {
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validateDto(null);
+
+        try {
+            skillService.update(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test findAllByEmployeeId - return all existing Skill objects for given employee")
+    public void testFindAllByEmployeeId() {
+        when(skillRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of(skill1, skill2));
+        when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
+        when(skillMapper.toDto(skill2)).thenReturn(skillDto2);
+
+        Set<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(skillDto1));
+        assertTrue(result.contains(skillDto2));
+    }
+
+    @Test
+    @DisplayName("Test findAllByEmployeeId - return empty set when there are no Skill objects for given employee")
+    public void testFindAllByEmployeeIdEmpty() {
+        when(skillRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of());
+
+        Set<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    @DisplayName("Test findAllByEmployeeId - throw InvalidArgumentException when id is null")
+    public void testFindAllByEmployeeIdNull() {
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+
+        try {
+            skillService.findAllByEmployeeId(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Test deleteAllByEmployeeId - delete all Skill objects for given employee")
+    public void testDeleteAllByEmployeeId() {
+        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
+        Mockito.doNothing().when(skillRepository).deleteAllByEmployeeId(employee.getId());
+
+        assertDoesNotThrow(() -> skillService.deleteAllByEmployeeId(employee.getId()));
+    }
+
+    @Test
+    @DisplayName("Test deleteAllByEmployeeId - throw InvalidArgumentException when id is null")
+    public void testDeleteAllByEmployeeIdNull() {
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+
+        try {
+            skillService.deleteAllByEmployeeId(null);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());

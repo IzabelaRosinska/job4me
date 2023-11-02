@@ -2,8 +2,6 @@ package miwm.job4me.validators.entity.users;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.repositories.users.EmployeeRepository;
-import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.stereotype.Component;
@@ -14,8 +12,6 @@ import java.util.regex.Pattern;
 
 @Component
 public class EmployeeValidator {
-    private final EmployeeRepository employeeRepository;
-    private final IdValidator idValidator;
     private final StringFieldValidator stringFieldValidator;
 
     private Pattern pattern;
@@ -43,20 +39,12 @@ public class EmployeeValidator {
 
     private final String ENTITY_NAME = "Employee";
 
-    public EmployeeValidator(EmployeeRepository employeeRepository, IdValidator idValidator, StringFieldValidator stringFieldValidator) {
-        this.employeeRepository = employeeRepository;
-        this.idValidator = idValidator;
+    public EmployeeValidator(StringFieldValidator stringFieldValidator) {
         this.stringFieldValidator = stringFieldValidator;
-    }
-
-    public void validateEmployeeExistsById(Long id) {
-        idValidator.validateLongId(id, ENTITY_NAME);
-        employeeRepository.findById(id).orElseThrow(() -> new InvalidArgumentException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     public void validateForUpdateDto(EmployeeDto employeeDto) {
         validateNotNullEmployee(employeeDto);
-        validateEmployeeExistsById(employeeDto.getId());
         stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         validateEmail(employeeDto.getEmail());
