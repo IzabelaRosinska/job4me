@@ -20,12 +20,12 @@ public class SkillValidator {
 
     public void validateDto(SkillDto skill) {
         validateNotNullDto(skill);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(skill.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(skill.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Skill skill) {
         validateNotNull(skill);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(skill.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(skill.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(SkillDto skillDto) {

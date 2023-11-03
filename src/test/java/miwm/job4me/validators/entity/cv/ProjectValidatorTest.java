@@ -47,7 +47,7 @@ class ProjectValidatorTest {
     @Test
     @DisplayName("Validate dto - pass validation when dto is valid")
     void validateDtoValidDto() {
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(projectDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(projectDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         assertDoesNotThrow(() -> projectValidator.validateDto(projectDto));
     }
@@ -68,7 +68,7 @@ class ProjectValidatorTest {
     void validateDtoDescriptionValidatorFails() {
         projectDto.setDescription(null);
 
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(projectDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(projectDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         try {
             projectValidator.validateDto(projectDto);

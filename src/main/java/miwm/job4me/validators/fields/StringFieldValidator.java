@@ -9,7 +9,7 @@ public class StringFieldValidator {
     public StringFieldValidator() {
     }
 
-    public void validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(String description, String entityName, String descriptionFieldName, int minDescriptionLength, int maxDescriptionLength) {
+    public void validateClassicStringRestrictedField(String description, String entityName, String descriptionFieldName, int minDescriptionLength, int maxDescriptionLength) {
         if (description == null || description.isEmpty()) {
             throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(descriptionFieldName, entityName));
         }

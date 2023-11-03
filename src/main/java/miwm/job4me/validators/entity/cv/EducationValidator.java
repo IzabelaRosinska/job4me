@@ -21,12 +21,12 @@ public class EducationValidator {
 
     public void validateDto(EducationDto education) {
         validateNotNullDto(education);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Education education) {
         validateNotNull(education);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(education.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(EducationDto educationDto) {

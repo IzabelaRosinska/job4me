@@ -47,7 +47,7 @@ class ExperienceValidatorTest {
     @Test
     @DisplayName("Validate dto - pass validation when dto is valid")
     void validateDtoValidDto() {
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experienceDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(experienceDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         assertDoesNotThrow(() -> experienceValidator.validateDto(experienceDto));
     }
@@ -68,7 +68,7 @@ class ExperienceValidatorTest {
     void validateDtoDescriptionValidatorFails() {
         experienceDto.setDescription(null);
 
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experienceDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(experienceDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         try {
             experienceValidator.validateDto(experienceDto);

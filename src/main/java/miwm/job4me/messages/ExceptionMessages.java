@@ -29,6 +29,18 @@ public class ExceptionMessages {
         return String.format("%s %s can not be null or empty.", className, fieldName);
     }
 
+    public static String notNull(String className, String fieldName) {
+        return String.format("%s %s can not be null.", className, fieldName);
+    }
+
+    public static String invalidRange(String className, String fieldMinName, String fieldMaxName) {
+        return String.format("%s %s must be lower than %s.", className, fieldMinName, fieldMaxName);
+    }
+
+    public static String mustBePositive(String className, String fieldName) {
+        return String.format("%s %s must be positive.", className, fieldName);
+    }
+
     public static String notNullNotBlank(String className, String fieldName) {
         return String.format("%s %s can not be null or blank.", className, fieldName);
     }
@@ -47,5 +59,9 @@ public class ExceptionMessages {
 
     public static String notBlank(String fieldName, String className) {
         return String.format("%s %s can not be blank.", className, fieldName);
+    }
+
+    public static String atLeastOne(String className, String fieldName) {
+        return String.format("%s %s must contain at least one element.", className, fieldName);
     }
 }

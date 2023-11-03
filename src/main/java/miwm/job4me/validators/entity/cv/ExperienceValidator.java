@@ -21,12 +21,12 @@ public class ExperienceValidator {
 
     public void validateDto(ExperienceDto experience) {
         validateNotNullDto(experience);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Experience experience) {
         validateNotNull(experience);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(experience.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(ExperienceDto experienceDto) {
