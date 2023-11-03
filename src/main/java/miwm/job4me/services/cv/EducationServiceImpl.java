@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Education;
@@ -29,10 +30,18 @@ public class EducationServiceImpl implements EducationService {
         this.idValidator = idValidator;
     }
 
-    private void existsById(Long id) {
+    @Override
+    public boolean existsById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-        educationRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+
+        return educationRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 
     @Override
@@ -55,30 +64,34 @@ public class EducationServiceImpl implements EducationService {
     }
 
     @Override
-    public EducationDto save(Education object) {
-        educationValidator.validate(object);
-        return educationMapper.toDto(educationRepository.save(object));
+    public EducationDto save(Education education) {
+        educationValidator.validate(education);
+        return educationMapper.toDto(educationRepository.save(education));
     }
 
     @Override
     @Transactional
-    public void delete(Education object) {
-        existsById(object.getId());
-        educationRepository.delete(object);
+    public void delete(Education education) {
+        if (education == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(education.getId());
+        educationRepository.delete(education);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        existsById(id);
+        strictExistsById(id);
         educationRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public EducationDto update(EducationDto education) {
-        existsById(education.getId());
+        ;
         educationValidator.validateDto(education);
+        strictExistsById(education.getId());
         return educationMapper.toDto(educationRepository.save(educationMapper.toEntity(education)));
     }
 

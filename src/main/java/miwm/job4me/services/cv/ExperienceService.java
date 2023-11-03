@@ -7,7 +7,11 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import java.util.Set;
 
 public interface ExperienceService extends BaseDtoService<Experience, ExperienceDto, Long> {
-    ExperienceDto update(ExperienceDto object);
+    void strictExistsById(Long id);
+
+    boolean existsById(Long id);
+
+    ExperienceDto update(ExperienceDto experience);
 
     Set<ExperienceDto> findAllByEmployeeId(Long employeeId);
 

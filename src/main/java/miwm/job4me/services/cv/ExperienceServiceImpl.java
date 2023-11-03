@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Experience;
@@ -16,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExperienceServiceImpl implements ExperienceService {
-
     private final ExperienceRepository experienceRepository;
     private final ExperienceMapper experienceMapper;
     private final ExperienceValidator experienceValidator;
@@ -30,10 +30,18 @@ public class ExperienceServiceImpl implements ExperienceService {
         this.idValidator = idValidator;
     }
 
-    private void existsById(Long id) {
+    @Override
+    public boolean existsById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-        experienceRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+
+        return experienceRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 
     @Override
@@ -48,7 +56,6 @@ public class ExperienceServiceImpl implements ExperienceService {
     @Override
     public ExperienceDto findById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-
         return experienceRepository
                 .findById(id)
                 .map(experienceMapper::toDto)
@@ -57,37 +64,37 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public ExperienceDto save(Experience object) {
-        experienceValidator.validate(object);
-
-        return experienceMapper.toDto(experienceRepository.save(object));
+    public ExperienceDto save(Experience experience) {
+        experienceValidator.validate(experience);
+        return experienceMapper.toDto(experienceRepository.save(experience));
     }
 
     @Override
-    public void delete(Experience object) {
-        existsById(object.getId());
-        experienceRepository.delete(object);
+    public void delete(Experience experience) {
+        if (experience == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(experience.getId());
+        experienceRepository.delete(experience);
     }
 
     @Override
     public void deleteById(Long id) {
-        existsById(id);
+        strictExistsById(id);
         experienceRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public ExperienceDto update(ExperienceDto object) {
-        existsById(object.getId());
-        experienceValidator.validateDto(object);
-
-        return experienceMapper.toDto(experienceRepository.save(experienceMapper.toEntity(object)));
+    public ExperienceDto update(ExperienceDto experience) {
+        experienceValidator.validateDto(experience);
+        strictExistsById(experience.getId());
+        return experienceMapper.toDto(experienceRepository.save(experienceMapper.toEntity(experience)));
     }
 
     @Override
     public Set<ExperienceDto> findAllByEmployeeId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_NAME);
-
         return experienceRepository
                 .findAllByEmployeeId(employeeId)
                 .stream()
@@ -98,7 +105,6 @@ public class ExperienceServiceImpl implements ExperienceService {
     @Override
     public void deleteAllByEmployeeId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_NAME);
-
         experienceRepository.deleteAllByEmployeeId(employeeId);
     }
 }
