@@ -3,6 +3,7 @@ package miwm.job4me.validators.entity.users;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.validators.fields.ListValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class EmployeeValidatorTest {
     @Mock
     private StringFieldValidator stringFieldValidator;
+    @Mock
+    private ListValidator listValidator;
     @InjectMocks
     private EmployeeValidator employeeValidator;
     private Employee employee;
@@ -84,6 +87,10 @@ class EmployeeValidatorTest {
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getExperience(), "experience", ENTITY_NAME, MAX_COUNT_OF_EXPERIENCE, MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getProjects(), "projects", ENTITY_NAME, MAX_COUNT_OF_PROJECTS, MAX_LENGTH_OF_PROJECT_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getSkills(), "skills", ENTITY_NAME, MAX_COUNT_OF_SKILLS, MAX_LENGTH_OF_SKILL_DESCRIPTION);
 
         assertDoesNotThrow(() -> employeeValidator.validateForUpdateDto(employeeDto));
     }
@@ -257,7 +264,7 @@ class EmployeeValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate for update dto - fail validation when education list is too long")
+    @DisplayName("Validate for update dto - fail validation when ListValidator fails (invalid education list)")
     public void validateForUpdateDtoInvalidTooLongEducationList() {
         String expectedMessage = ExceptionMessages.listTooLong(ENTITY_NAME, "education", MAX_COUNT_OF_EDUCATION);
         ArrayList<String> educationList = new ArrayList<String>(MAX_COUNT_OF_EDUCATION + 1);
@@ -271,6 +278,7 @@ class EmployeeValidatorTest {
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
@@ -281,55 +289,7 @@ class EmployeeValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate for update dto - fail validation when education list element is too long")
-    public void validateForUpdateDtoInvalidTooLongEducationListElement() {
-        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "education", MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
-        ArrayList<String> educationList = new ArrayList<String>();
-        educationList.add("a".repeat(MAX_LENGTH_OF_EDUCATION_DESCRIPTION + 1));
-        employeeDto.setEducation(educationList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when education list element is null or empty")
-    public void validateForUpdateDtoInvalidNullOrEmptyEducationListElement() {
-        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "education list element");
-        ArrayList<String> educationList = new ArrayList<String>();
-        educationList.add(null);
-        employeeDto.setEducation(educationList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-
-        educationList.set(0, "");
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when experience list is too long")
+    @DisplayName("Validate for update dto - fail validation when IdValidator fails (invalid experience list)")
     public void validateForUpdateDtoInvalidTooLongExperienceList() {
         String expectedMessage = ExceptionMessages.listTooLong(ENTITY_NAME, "experience", MAX_COUNT_OF_EXPERIENCE);
         ArrayList<String> experienceList = new ArrayList<String>(MAX_COUNT_OF_EXPERIENCE + 1);
@@ -342,66 +302,20 @@ class EmployeeValidatorTest {
 
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(listValidator).validateListSizeAndElemLength(employeeDto.getExperience(), "experience", ENTITY_NAME, MAX_COUNT_OF_EXPERIENCE, MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(expectedMessage, e.getMessage());
+
         }
     }
 
     @Test
-    @DisplayName("Validate for update dto - fail validation when experience list element is too long")
-    public void validateForUpdateDtoInvalidTooLongExperienceListElement() {
-        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "experience", MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
-        ArrayList<String> experienceList = new ArrayList<String>();
-        experienceList.add("a".repeat(MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION + 1));
-        employeeDto.setExperience(experienceList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when experience list element is null or empty")
-    public void validateForUpdateDtoInvalidNullOrEmptyExperienceListElement() {
-        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "experience list element");
-        ArrayList<String> experienceList = new ArrayList<String>();
-        experienceList.add(null);
-        employeeDto.setExperience(experienceList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-
-        experienceList.set(0, "");
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when projects list is too long")
+    @DisplayName("Validate for update dto - fail validation when IdValidator fails (invalid projects list)")
     public void validateForUpdateDtoInvalidTooLongProjectsList() {
         String expectedMessage = ExceptionMessages.listTooLong(ENTITY_NAME, "projects", MAX_COUNT_OF_PROJECTS);
         ArrayList<String> projectsList = new ArrayList<String>(MAX_COUNT_OF_PROJECTS + 1);
@@ -411,69 +325,23 @@ class EmployeeValidatorTest {
         }
 
         employeeDto.setProjects(projectsList);
-
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getExperience(), "experience", ENTITY_NAME, MAX_COUNT_OF_EXPERIENCE, MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(listValidator).validateListSizeAndElemLength(employeeDto.getProjects(), "projects", ENTITY_NAME, MAX_COUNT_OF_PROJECTS, MAX_LENGTH_OF_PROJECT_DESCRIPTION);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(expectedMessage, e.getMessage());
+
         }
     }
 
     @Test
-    @DisplayName("Validate for update dto - fail validation when projects list element is too long")
-    public void validateForUpdateDtoInvalidTooLongProjectsListElement() {
-        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "projects", MAX_LENGTH_OF_PROJECT_DESCRIPTION);
-        ArrayList<String> projectsList = new ArrayList<String>();
-        projectsList.add("a".repeat(MAX_LENGTH_OF_PROJECT_DESCRIPTION + 1));
-        employeeDto.setProjects(projectsList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when projects list element is null or empty")
-    public void validateForUpdateDtoInvalidNullOrEmptyProjectsListElement() {
-        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "projects list element");
-        ArrayList<String> projectsList = new ArrayList<String>();
-        projectsList.add(null);
-        employeeDto.setProjects(projectsList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-
-        projectsList.set(0, "");
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when skills list is too long")
+    @DisplayName("Validate for update dto - fail validation when IdValidator fails (invalid skills list)")
     public void validateForUpdateDtoInvalidTooLongSkillsList() {
         String expectedMessage = ExceptionMessages.listTooLong(ENTITY_NAME, "skills", MAX_COUNT_OF_SKILLS);
         ArrayList<String> skillsList = new ArrayList<String>(MAX_COUNT_OF_SKILLS + 1);
@@ -483,64 +351,19 @@ class EmployeeValidatorTest {
         }
 
         employeeDto.setSkills(skillsList);
-
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getExperience(), "experience", ENTITY_NAME, MAX_COUNT_OF_EXPERIENCE, MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getProjects(), "projects", ENTITY_NAME, MAX_COUNT_OF_PROJECTS, MAX_LENGTH_OF_PROJECT_DESCRIPTION);
+        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(listValidator).validateListSizeAndElemLength(employeeDto.getSkills(), "skills", ENTITY_NAME, MAX_COUNT_OF_SKILLS, MAX_LENGTH_OF_SKILL_DESCRIPTION);
 
         try {
             employeeValidator.validateForUpdateDto(employeeDto);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(expectedMessage, e.getMessage());
-        }
-    }
 
-    @Test
-    @DisplayName("Validate for update dto - fail validation when skills list element is too long")
-    public void validateForUpdateDtoInvalidTooLongSkillsListElement() {
-        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "skills", MAX_LENGTH_OF_SKILL_DESCRIPTION);
-        ArrayList<String> skillsList = new ArrayList<String>();
-        skillsList.add("a".repeat(MAX_LENGTH_OF_SKILL_DESCRIPTION + 1));
-        employeeDto.setSkills(skillsList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate for update dto - fail validation when skills list element is null or empty")
-    public void validateForUpdateDtoInvalidNullOrEmptySkillsListElement() {
-        String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, "skills list element");
-        ArrayList<String> skillsList = new ArrayList<String>();
-        skillsList.add(null);
-        employeeDto.setSkills(skillsList);
-
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
-
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-
-        skillsList.set(0, "");
-        try {
-            employeeValidator.validateForUpdateDto(employeeDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -558,6 +381,11 @@ class EmployeeValidatorTest {
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getEducation(), "education", ENTITY_NAME, MAX_COUNT_OF_EDUCATION, MAX_LENGTH_OF_EDUCATION_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getExperience(), "experience", ENTITY_NAME, MAX_COUNT_OF_EXPERIENCE, MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getProjects(), "projects", ENTITY_NAME, MAX_COUNT_OF_PROJECTS, MAX_LENGTH_OF_PROJECT_DESCRIPTION);
+        Mockito.doNothing().when(listValidator).validateListSizeAndElemLength(employeeDto.getSkills(), "skills", ENTITY_NAME, MAX_COUNT_OF_SKILLS, MAX_LENGTH_OF_SKILL_DESCRIPTION);
+
 
         assertDoesNotThrow(() -> employeeValidator.validateForUpdateDto(employeeDto));
     }

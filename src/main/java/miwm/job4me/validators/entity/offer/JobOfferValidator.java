@@ -71,7 +71,7 @@ public class JobOfferValidator {
         listValidator.validateRequiredList(jobOffer.getEmploymentForms(), "employmentForms", ENTITY_NAME, MAX_LENGTH_EMPLOYMENT_FORM);
         listValidator.validateRequiredList(jobOffer.getContractTypes(), "contractTypes", ENTITY_NAME, MAX_LENGTH_CONTRACT_TYPE);
         listValidator.validateListSizeAndElemLength(jobOffer.getLevels(), "levels", ENTITY_NAME, MAX_SIZE_LEVELS, MAX_LENGTH_LEVEL);
-        listValidator.validateRequiredListMaxSize(jobOffer.getRequirements(), "requirements", ENTITY_NAME, MIN_SIZE_REQUIREMENTS, MAX_SIZE_REQUIREMENTS, MAX_LENGTH_REQUIREMENT);
+        listValidator.validateRequiredListMinMaxSize(jobOffer.getRequirements(), "requirements", ENTITY_NAME, MIN_SIZE_REQUIREMENTS, MAX_SIZE_REQUIREMENTS, MAX_LENGTH_REQUIREMENT);
         listValidator.validateListSizeAndElemLength(jobOffer.getExtraSkills(), "extraSkills", ENTITY_NAME, MAX_SIZE_EXTRA_SKILLS, MAX_LENGTH_EXTRA_SKILL);
     }
 

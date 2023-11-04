@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 @Component
 public class ListValidator {
-    private void validateRequiredElements(ArrayList<String> list, String fieldName, String entityName, int maxElemLength) {
+    private void validateProperElements(ArrayList<String> list, String fieldName, String entityName, int maxElemLength) {
         if (list != null) {
             for (String elem : list) {
                 if (elem == null || elem.isEmpty()) {
@@ -27,10 +27,14 @@ public class ListValidator {
             throw new InvalidArgumentException(ExceptionMessages.listTooLong(entityName, fieldName, maxSize));
         }
 
-        validateRequiredElements(list, fieldName, entityName, maxElemLength);
+        validateProperElements(list, fieldName, entityName, maxElemLength);
     }
 
-    public void validateRequiredListMaxSize(ArrayList<String> list, String fieldName, String entityName, int minSize, int maxSize, int maxElemLength) {
+    public void validateRequiredListMinMaxSize(ArrayList<String> list, String fieldName, String entityName, int minSize, int maxSize, int maxElemLength) {
+        if (list == null || list.isEmpty()) {
+            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(entityName, fieldName));
+        }
+
         validateListSizeAndElemLength(list, fieldName, entityName, maxSize, maxElemLength);
 
         if (list.size() < minSize) {
@@ -43,6 +47,6 @@ public class ListValidator {
             throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(entityName, fieldName));
         }
 
-        validateRequiredElements(list, fieldName, entityName, maxElemLength);
+        validateProperElements(list, fieldName, entityName, maxElemLength);
     }
 }
