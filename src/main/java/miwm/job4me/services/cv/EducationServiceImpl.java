@@ -82,6 +82,7 @@ public class EducationServiceImpl implements EducationService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         strictExistsById(id);
         educationRepository.deleteById(id);
     }
@@ -89,7 +90,6 @@ public class EducationServiceImpl implements EducationService {
     @Override
     @Transactional
     public EducationDto update(EducationDto education) {
-        ;
         educationValidator.validateDto(education);
         strictExistsById(education.getId());
         return educationMapper.toDto(educationRepository.save(educationMapper.toEntity(education)));
