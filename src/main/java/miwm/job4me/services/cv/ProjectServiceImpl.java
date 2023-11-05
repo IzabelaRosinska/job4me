@@ -1,5 +1,6 @@
 package miwm.job4me.services.cv;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Project;
@@ -15,7 +16,6 @@ import java.util.Set;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final ProjectValidator projectValidator;
@@ -29,10 +29,18 @@ public class ProjectServiceImpl implements ProjectService {
         this.idValidator = idValidator;
     }
 
-    private void existsById(Long id) {
+    @Override
+    public boolean existsById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-        projectRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+
+        return projectRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 
     @Override
@@ -47,7 +55,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDto findById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
-
         return projectRepository
                 .findById(id)
                 .map(projectMapper::toDto)
@@ -56,38 +63,38 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDto save(Project object) {
-        projectValidator.validate(object);
-
-        return projectMapper.toDto(projectRepository.save(object));
+    public ProjectDto save(Project project) {
+        projectValidator.validate(project);
+        return projectMapper.toDto(projectRepository.save(project));
     }
 
     @Override
-    public void delete(Project object) {
-        existsById(object.getId());
-        projectRepository.delete(object);
+    public void delete(Project project) {
+        if (project == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(project.getId());
+        projectRepository.delete(project);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        existsById(id);
+        strictExistsById(id);
         projectRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public ProjectDto update(ProjectDto project) {
-        existsById(project.getId());
         projectValidator.validateDto(project);
-
+        strictExistsById(project.getId());
         return projectMapper.toDto(projectRepository.save(projectMapper.toEntity(project)));
     }
 
     @Override
     public Set<ProjectDto> findAllByEmployeeId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_NAME);
-
         return projectRepository
                 .findAllByEmployeeId(employeeId)
                 .stream()

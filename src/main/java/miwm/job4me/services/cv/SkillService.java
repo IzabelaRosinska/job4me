@@ -7,7 +7,11 @@ import miwm.job4me.web.model.cv.SkillDto;
 import java.util.Set;
 
 public interface SkillService extends BaseDtoService<Skill, SkillDto, Long> {
-    SkillDto update(Skill object);
+    void strictExistsById(Long id);
+
+    boolean existsById(Long id);
+
+    SkillDto update(SkillDto skill);
 
     Set<SkillDto> findAllByEmployeeId(Long id);
 

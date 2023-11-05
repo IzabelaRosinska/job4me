@@ -4,7 +4,6 @@ import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.cv.EducationDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class EducationValidatorTest {
-    @Mock
-    private EmployeeValidator employeeValidator;
     @Mock
     private StringFieldValidator stringFieldValidator;
     @InjectMocks
@@ -50,7 +47,6 @@ class EducationValidatorTest {
     @Test
     @DisplayName("Validate dto - pass validation when dto is valid")
     void validateDtoValidDto() {
-        Mockito.doNothing().when(employeeValidator).validateEmployeeExistsById(educationDto.getEmployeeId());
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         assertDoesNotThrow(() -> educationValidator.validateDto(educationDto));
@@ -68,26 +64,10 @@ class EducationValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate dto - fail validation when EmployeeValidator fails (employee id is null)")
-    void validateDtoEmployeeValidatorFails() {
-        educationDto.setEmployeeId(null);
-
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument("Employee"))).when(employeeValidator).validateEmployeeExistsById(educationDto.getEmployeeId());
-
-        try {
-            educationValidator.validateDto(educationDto);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.nullArgument("Employee"), e.getMessage());
-        }
-    }
-
-    @Test
     @DisplayName("Validate dto - fail validation when DescriptionValidator fails (description is null)")
     void validateDtoDescriptionValidatorFails() {
         educationDto.setDescription(null);
 
-        Mockito.doNothing().when(employeeValidator).validateEmployeeExistsById(educationDto.getEmployeeId());
         Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         try {

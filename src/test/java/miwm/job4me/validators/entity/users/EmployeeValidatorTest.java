@@ -3,8 +3,6 @@ package miwm.job4me.validators.entity.users;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.repositories.users.EmployeeRepository;
-import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,16 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeValidatorTest {
-    @Mock
-    private EmployeeRepository employeeRepository;
-    @Mock
-    private IdValidator idValidator;
     @Mock
     private StringFieldValidator stringFieldValidator;
     @InjectMocks
@@ -84,52 +77,10 @@ class EmployeeValidatorTest {
         employeeDto.setInterests(employee.getInterests());
     }
 
-    @Test
-    @DisplayName("Validate employee exists by id - pass validation when valid id (not null) and employee exists in database")
-    public void validateEmployeeExistsByIdEmployeeExists() {
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
-
-        assertDoesNotThrow(() -> employeeValidator.validateEmployeeExistsById(id));
-    }
-
-    @Test
-    @DisplayName("Validate employee exists by id - fail validation when idValidator fails (invalid id - null)")
-    public void validateEmployeeExistsByIdInvalidNullId() {
-        Long nullId = null;
-        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
-
-        Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(idValidator).validateLongId(nullId, ENTITY_NAME);
-
-        try {
-            employeeValidator.validateEmployeeExistsById(nullId);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("Validate employee exists by id - fail validation when idValidator fails (valid id but employee doesn't exist in database")
-    public void validateEmployeeExistsByIdEmployeeDoesNotExist() {
-        String expectedMessage = ExceptionMessages.elementNotFound(ENTITY_NAME, id);
-
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.empty());
-
-        try {
-            employeeValidator.validateEmployeeExistsById(id);
-            fail();
-        } catch (InvalidArgumentException e) {
-            assertEquals(expectedMessage, e.getMessage());
-        }
-    }
 
     @Test
     @DisplayName("Validate for update dto - pas validation when valid employeeDto")
     public void validateForUpdateDtoValidEmployeeDto() {
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -157,8 +108,6 @@ class EmployeeValidatorTest {
         String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
         employeeDto.setFirstName(null);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, fieldName, MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
 
         try {
@@ -176,8 +125,6 @@ class EmployeeValidatorTest {
         String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
         employeeDto.setLastName(null);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, fieldName, MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
 
@@ -196,8 +143,6 @@ class EmployeeValidatorTest {
         String expectedMessage = ExceptionMessages.notNullNotEmpty(ENTITY_NAME, fieldName);
         employeeDto.setEmail(null);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doThrow(new InvalidArgumentException(expectedMessage)).when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, fieldName, MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -216,8 +161,6 @@ class EmployeeValidatorTest {
         String expectedMessage = ExceptionMessages.mustMatchPattern(ENTITY_NAME, "email", EMAIL_PATTERN);
         employeeDto.setEmail("userTestwppl");
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -301,8 +244,6 @@ class EmployeeValidatorTest {
         String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "phoneNumber", MAX_PHONE_NUMBER_LENGTH);
         employeeDto.setTelephone("a".repeat(MAX_PHONE_NUMBER_LENGTH + 1));
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -327,8 +268,6 @@ class EmployeeValidatorTest {
 
         employeeDto.setEducation(educationList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -349,8 +288,6 @@ class EmployeeValidatorTest {
         educationList.add("a".repeat(MAX_LENGTH_OF_EDUCATION_DESCRIPTION + 1));
         employeeDto.setEducation(educationList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -371,8 +308,6 @@ class EmployeeValidatorTest {
         educationList.add(null);
         employeeDto.setEducation(educationList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -405,8 +340,6 @@ class EmployeeValidatorTest {
 
         employeeDto.setExperience(experienceList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -427,8 +360,6 @@ class EmployeeValidatorTest {
         experienceList.add("a".repeat(MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION + 1));
         employeeDto.setExperience(experienceList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -449,8 +380,6 @@ class EmployeeValidatorTest {
         experienceList.add(null);
         employeeDto.setExperience(experienceList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -483,8 +412,6 @@ class EmployeeValidatorTest {
 
         employeeDto.setProjects(projectsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -505,8 +432,6 @@ class EmployeeValidatorTest {
         projectsList.add("a".repeat(MAX_LENGTH_OF_PROJECT_DESCRIPTION + 1));
         employeeDto.setProjects(projectsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -527,8 +452,6 @@ class EmployeeValidatorTest {
         projectsList.add(null);
         employeeDto.setProjects(projectsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -561,8 +484,6 @@ class EmployeeValidatorTest {
 
         employeeDto.setSkills(skillsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -583,8 +504,6 @@ class EmployeeValidatorTest {
         skillsList.add("a".repeat(MAX_LENGTH_OF_SKILL_DESCRIPTION + 1));
         employeeDto.setSkills(skillsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -605,8 +524,6 @@ class EmployeeValidatorTest {
         skillsList.add(null);
         employeeDto.setSkills(skillsList);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);
@@ -638,8 +555,6 @@ class EmployeeValidatorTest {
         employeeDto.setProjects(null);
         employeeDto.setSkills(null);
 
-        Mockito.doNothing().when(idValidator).validateLongId(id, ENTITY_NAME);
-        Mockito.when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getFirstName(), ENTITY_NAME, "firstName", MIN_FIRST_NAME_LENGTH, MAX_FIRST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getLastName(), ENTITY_NAME, "lastName", MIN_LAST_NAME_LENGTH, MAX_LAST_NAME_LENGTH);
         Mockito.doNothing().when(stringFieldValidator).validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(employeeDto.getEmail(), ENTITY_NAME, "email", MIN_EMAIL_LENGTH, MAX_EMAIL_LENGTH);

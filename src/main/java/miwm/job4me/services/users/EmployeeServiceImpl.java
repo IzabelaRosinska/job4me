@@ -1,6 +1,7 @@
 package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Education;
@@ -17,6 +18,10 @@ import miwm.job4me.services.cv.SkillService;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
+import miwm.job4me.web.model.cv.EducationDto;
+import miwm.job4me.web.model.cv.ExperienceDto;
+import miwm.job4me.web.model.cv.ProjectDto;
+import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 
 import javax.transaction.Transactional;
@@ -34,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
-    private final String entityName = "Employee";
+    private final String ENTITY_NAME = "Employee";
 
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
@@ -83,12 +88,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(Long id) {
-        idValidator.validateLongId(id, entityName);
+        idValidator.validateLongId(id, ENTITY_NAME);
 
         return employeeRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, id)));
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
@@ -99,7 +104,43 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .findById(currentEmployeeId)
                 .map(employeeMapper::toDto)
                 .orElseThrow(() ->
-                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, currentEmployeeId)));
+                        new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, currentEmployeeId)));
+    }
+
+    @Override
+    public EducationDto saveEducation(Education education) {
+        if (education == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(education.getEmployee().getId());
+        return educationService.save(education);
+    }
+
+    @Override
+    public ExperienceDto saveExperience(Experience experience) {
+        if (experience == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(experience.getEmployee().getId());
+        return experienceService.save(experience);
+    }
+
+    @Override
+    public ProjectDto saveProject(Project project) {
+        if (project == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(project.getEmployee().getId());
+        return projectService.save(project);
+    }
+
+    @Override
+    public SkillDto saveSkill(Skill skill) {
+        if (skill == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+        strictExistsById(skill.getEmployee().getId());
+        return skillService.save(skill);
     }
 
     @Override
@@ -121,14 +162,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void delete(Employee employee) {
-        employeeValidator.validateEmployeeExistsById(employee.getId());
+        strictExistsById(employee.getId());
         employeeRepository.delete(employee);
     }
 
     @Override
     public void deleteById(Long id) {
-        employeeValidator.validateEmployeeExistsById(id);
+        strictExistsById(id);
         employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
+
+        return employeeRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 
     @Override
@@ -151,28 +206,28 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getEducation() != null) {
             for (Education education : employee.getEducation()) {
                 education.setEmployee(employee);
-                educationService.save(education);
+                saveEducation(education);
             }
         }
 
         if (employee.getExperience() != null) {
             for (Experience experience : employee.getExperience()) {
                 experience.setEmployee(employee);
-                experienceService.save(experience);
+                saveExperience(experience);
             }
         }
 
         if (employee.getProjects() != null) {
             for (Project project : employee.getProjects()) {
                 project.setEmployee(employee);
-                projectService.save(project);
+                saveProject(project);
             }
         }
 
         if (employee.getSkills() != null) {
             for (Skill skill : employee.getSkills()) {
                 skill.setEmployee(employee);
-                skillService.save(skill);
+                saveSkill(skill);
             }
         }
 
