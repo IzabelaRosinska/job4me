@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.cv.Education;
@@ -7,6 +8,7 @@ import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
@@ -71,6 +73,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDto;
     }
 
+
+
     @Override
     public Set<Employee> findAll() {
         return new HashSet<>(employeeRepository
@@ -96,6 +100,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(employeeMapper::toDto)
                 .orElseThrow(() ->
                         new NoSuchElementFoundException(ExceptionMessages.elementNotFound(entityName, currentEmployeeId)));
+    }
+
+    @Override
+    @Transactional
+    public void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode) {
+        Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
+        String username = jsonNode.get("given_name").asText();
+        String familyName = jsonNode.get("family_name").asText();
+        employee.setFirstName(username);
+        employee.setLastName(familyName);
+        employeeRepository.save(employee);
     }
 
     @Override

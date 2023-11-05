@@ -1,6 +1,8 @@
 package miwm.job4me.services.users;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.model.users.EmployerDto;
@@ -43,6 +45,18 @@ public class EmployerServiceImpl implements EmployerService {
         employerRepository.save(employer);
         return employerDto;
     }
+
+    @Override
+    @Transactional
+    public void saveEmployerDataFromLinkedin(Person user, JsonNode jsonNode) {
+        Employer employer = employerRepository.selectEmployerByUsername(user.getUsername());
+        String name = jsonNode.get("name").asText();
+        String photo = jsonNode.get("picture").asText();
+        employer.setCompanyName(name);
+        employer.setPhoto(photo);
+        employerRepository.save(employer);
+    }
+
 
     @Override
     public Set<Employer> findAll() {
