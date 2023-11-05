@@ -20,12 +20,12 @@ public class ProjectValidator {
 
     public void validateDto(ProjectDto project) {
         validateNotNullDto(project);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(project.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(project.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     public void validate(Project project) {
         validateNotNull(project);
-        stringFieldValidator.validateClassicStringNotNullNotEmptyRequiredFieldLengthRestrictions(project.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(project.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
     }
 
     private void validateNotNullDto(ProjectDto projectDto) {
