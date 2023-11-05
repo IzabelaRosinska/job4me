@@ -1,7 +1,8 @@
 package miwm.job4me.validators.entity.offer;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.validators.fields.ListValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.offer.JobOfferDto;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JobOfferValidator {
-    private final IdValidator idValidator;
     private final StringFieldValidator stringFieldValidator;
     private final ListValidator listValidator;
     private final int MIN_OFFER_NAME_LENGTH = 1;
@@ -49,18 +49,16 @@ public class JobOfferValidator {
 
     private final String ENTITY_NAME = "JobOffer";
 
-    public JobOfferValidator(IdValidator idValidator, StringFieldValidator stringFieldValidator, ListValidator listValidator) {
-        this.idValidator = idValidator;
+    public JobOfferValidator(StringFieldValidator stringFieldValidator, ListValidator listValidator) {
         this.stringFieldValidator = stringFieldValidator;
         this.listValidator = listValidator;
     }
 
     public void validateDto(JobOfferDto jobOffer) {
         if (jobOffer == null) {
-            throw new IllegalArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        idValidator.validateLongId(jobOffer.getId(), ENTITY_NAME);
         stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getOfferName(), ENTITY_NAME, "offerName", MIN_OFFER_NAME_LENGTH, MAX_OFFER_NAME_LENGTH);
         stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getWorkingTime(), ENTITY_NAME, "workingTime", MIN_WORKING_TIME_LENGTH, MAX_WORKING_TIME_LENGTH);
         stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDuties(), ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
@@ -75,9 +73,21 @@ public class JobOfferValidator {
         listValidator.validateListSizeAndElemLength(jobOffer.getExtraSkills(), "extraSkills", ENTITY_NAME, MAX_SIZE_EXTRA_SKILLS, MAX_LENGTH_EXTRA_SKILL);
     }
 
+    public void validate(JobOffer jobOffer) {
+        if (jobOffer == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+
+        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getOfferName(), ENTITY_NAME, "name", MIN_OFFER_NAME_LENGTH, MAX_OFFER_NAME_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getWorkingTime(), ENTITY_NAME, "workingTime", MIN_WORKING_TIME_LENGTH, MAX_WORKING_TIME_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDuties(), ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        validateSalaryRange(jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
+    }
+
     private void validateSalaryRange(Integer salaryFrom, Integer salaryTo) {
         if (salaryFrom == null) {
-            throw new IllegalArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "salaryFrom"));
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "salaryFrom"));
         }
 
         validatePositive(salaryFrom, "salaryFrom");
@@ -85,14 +95,14 @@ public class JobOfferValidator {
         if (salaryTo != null) {
             validatePositive(salaryTo, "salaryTo");
             if (salaryFrom > salaryTo) {
-                throw new IllegalArgumentException(ExceptionMessages.invalidRange(ENTITY_NAME, "salaryFrom", "salaryTo"));
+                throw new InvalidArgumentException(ExceptionMessages.invalidRange(ENTITY_NAME, "salaryFrom", "salaryTo"));
             }
         }
     }
 
     private void validatePositive(Integer number, String fieldName) {
         if (number <= 0) {
-            throw new IllegalArgumentException(ExceptionMessages.mustBePositive(ENTITY_NAME, fieldName));
+            throw new InvalidArgumentException(ExceptionMessages.mustBePositive(ENTITY_NAME, fieldName));
         }
     }
 }

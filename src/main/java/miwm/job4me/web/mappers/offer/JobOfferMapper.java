@@ -22,6 +22,7 @@ public class JobOfferMapper {
         jobOfferDto.setSalaryFrom(jobOffer.getSalaryFrom());
         jobOfferDto.setSalaryTo(jobOffer.getSalaryTo());
         jobOfferDto.setContractTypes(contractTypesSetToStringList(jobOffer.getContractTypes()));
+        jobOfferDto.setWorkingTime(jobOffer.getWorkingTime());
         jobOfferDto.setLevels(levelsSetToStringList(jobOffer.getLevels()));
         jobOfferDto.setRequirements(requirementsSetToStringList(jobOffer.getRequirements()));
         jobOfferDto.setExtraSkills(extraSkillsSetToStringList(jobOffer.getExtraSkills()));
@@ -44,8 +45,8 @@ public class JobOfferMapper {
         jobOffer.setContractTypes(stringListToContractTypesSet(jobOfferDto.getContractTypes()));
         jobOffer.setWorkingTime(jobOfferDto.getWorkingTime());
         jobOffer.setLevels(stringListToLevelsSet(jobOfferDto.getLevels()));
-        jobOffer.setRequirements(stringListToRequirementsSet(jobOfferDto.getRequirements()));
-        jobOffer.setExtraSkills(stringListToExtraSkillsSet(jobOfferDto.getExtraSkills()));
+        jobOffer.setRequirements(stringListToRequirementsSet(jobOfferDto.getRequirements(), jobOffer));
+        jobOffer.setExtraSkills(stringListToExtraSkillsSet(jobOfferDto.getExtraSkills(), jobOffer));
         jobOffer.setDuties(jobOfferDto.getDuties());
         jobOffer.setDescription(jobOfferDto.getDescription());
 
@@ -201,12 +202,12 @@ public class JobOfferMapper {
         return levelsSet;
     }
 
-    public Set<Requirement> stringListToRequirementsSet(ArrayList<String> requirements) {
+    public Set<Requirement> stringListToRequirementsSet(ArrayList<String> requirements, JobOffer jobOffer) {
         Set<Requirement> requirementsSet = new HashSet<>();
 
         if (requirements != null) {
             for (String e : requirements) {
-                Requirement requirementEntity = Requirement.builder().description(e).build();
+                Requirement requirementEntity = Requirement.builder().description(e).jobOffer(jobOffer).build();
                 requirementsSet.add(requirementEntity);
             }
         }
@@ -214,12 +215,12 @@ public class JobOfferMapper {
         return requirementsSet;
     }
 
-    public Set<ExtraSkill> stringListToExtraSkillsSet(ArrayList<String> extraSkills) {
+    public Set<ExtraSkill> stringListToExtraSkillsSet(ArrayList<String> extraSkills, JobOffer jobOffer) {
         Set<ExtraSkill> extraSkillsSet = new HashSet<>();
 
         if (extraSkills != null) {
             for (String e : extraSkills) {
-                ExtraSkill extraSkillEntity = ExtraSkill.builder().description(e).build();
+                ExtraSkill extraSkillEntity = ExtraSkill.builder().description(e).jobOffer(jobOffer).build();
                 extraSkillsSet.add(extraSkillEntity);
             }
         }

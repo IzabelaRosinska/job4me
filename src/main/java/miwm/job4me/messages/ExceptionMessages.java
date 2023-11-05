@@ -9,6 +9,14 @@ public class ExceptionMessages {
         return String.format("%s with id %d not found", className, id);
     }
 
+    public static String elementNotFoundByName(String className, String name) {
+        return String.format("%s with name %s not found", className, name);
+    }
+
+    public static String elementNotFound(String className, String fieldName, String value) {
+        return String.format("%s with %s %s not found", className, fieldName, value);
+    }
+
     public static String nullArgument(String className) {
         return String.format("%s can not be null", className);
     }
@@ -63,5 +71,13 @@ public class ExceptionMessages {
 
     public static String atLeastOne(String className, String fieldName) {
         return String.format("%s %s must contain at least one element.", className, fieldName);
+    }
+
+    public static String elementAlreadyExists(String className, String fieldName, String value) {
+        return String.format("%s %s with given value %s already exists.", className, fieldName, value);
+    }
+
+    public static String idMustBeNullForCreate(String className) {
+        return String.format("%s id must be null for create.", className);
     }
 }

@@ -27,7 +27,7 @@ public class Experience extends BaseEntity {
     }
 
     @NotBlank(message = "Experience description cannot be blank")
-    @Size(min = 1, max = 300, message = "Experience description must be between 1 and 300 characters")
+    @Size(min = 1, max = 255, message = "Experience description must be between 1 and 255 characters")
     @Column(name = "description")
     private String description;
 

@@ -11,4 +11,10 @@ public class IdValidator {
             throw new InvalidArgumentException(ExceptionMessages.idCannotBeNull(className));
         }
     }
+
+    public void validateNoIdFroCreate(Long id, String className) {
+        if (id != null) {
+            throw new InvalidArgumentException(ExceptionMessages.idMustBeNullForCreate(className));
+        }
+    }
 }
