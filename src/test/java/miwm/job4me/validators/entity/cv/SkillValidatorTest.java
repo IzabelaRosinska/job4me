@@ -26,7 +26,7 @@ class SkillValidatorTest {
     private Skill skill;
     private SkillDto skillDto;
     private final int MIN_DESCRIPTION_LENGTH = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 50;
+    private final int MAX_DESCRIPTION_LENGTH = 100;
     private final String ENTITY_NAME = "Skill";
     private final String DESCRIPTION_FIELD_NAME = "description";
 

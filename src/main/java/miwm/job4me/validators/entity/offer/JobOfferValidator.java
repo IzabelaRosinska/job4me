@@ -39,13 +39,12 @@ public class JobOfferValidator {
     private final int MAX_SIZE_LEVELS = 10;
     private final int MAX_LENGTH_LEVEL = 50;
 
-
     private final int MIN_SIZE_REQUIREMENTS = 1;
     private final int MAX_SIZE_REQUIREMENTS = 10;
     private final int MAX_LENGTH_REQUIREMENT = 50;
 
     private final int MAX_SIZE_EXTRA_SKILLS = 10;
-    private final int MAX_LENGTH_EXTRA_SKILL = 50;
+    private final int MAX_LENGTH_EXTRA_SKILL = 200;
 
     private final String ENTITY_NAME = "JobOffer";
 

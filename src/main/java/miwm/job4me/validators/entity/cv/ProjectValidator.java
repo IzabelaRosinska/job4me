@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ProjectValidator {
     private final StringFieldValidator stringFieldValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 500;
+    private final int MAX_DESCRIPTION_LENGTH = 300;
     private final String ENTITY_NAME = "Project";
 
     public ProjectValidator(StringFieldValidator stringFieldValidator) {

@@ -117,4 +117,13 @@ public class JobOffer extends BaseEntity {
     @Column(name = "description", length = 500)
     private String description;
 
+    @Column(name = "duties_embeddings", length = 3072)
+    private byte[] dutiesEmbeddings;
+
+    @Column(name = "description_embeddings", length = 3072)
+    private byte[] descriptionEmbeddings;
+
+    @Column(name = "skills_embeddings", length = 3072)
+    private byte[] skillsEmbeddings;
+
 }

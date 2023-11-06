@@ -39,7 +39,7 @@ class SkillServiceImplTest {
     private SkillServiceImpl skillService;
 
     private final String ENTITY_NAME = "Skill";
-    private final int MAX_DESCRIPTION_LENGTH = 50;
+    private final int MAX_DESCRIPTION_LENGTH = 100;
 
     private Employee employee;
     private Skill skill1;

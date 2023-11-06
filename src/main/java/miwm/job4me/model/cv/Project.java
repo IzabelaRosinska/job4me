@@ -27,8 +27,8 @@ public class Project extends BaseEntity {
     }
 
     @NotBlank(message = "Project description cannot be blank")
-    @Size(min = 1, max = 500, message = "Project description must be between 1 and 500 characters")
-    @Column(name = "description", length = 500)
+    @Size(min = 1, max = 300, message = "Project description must be between 1 and 300 characters")
+    @Column(name = "description", length = 300)
     private String description;
 
     @NotNull(message = "Project employee cannot be null")

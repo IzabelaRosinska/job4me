@@ -26,7 +26,7 @@ class ProjectValidatorTest {
     private Project project;
     private ProjectDto projectDto;
     private final int MIN_DESCRIPTION_LENGTH = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 500;
+    private final int MAX_DESCRIPTION_LENGTH = 300;
     private final String ENTITY_NAME = "Project";
     private final String DESCRIPTION_FIELD_NAME = "description";
 
