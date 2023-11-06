@@ -20,9 +20,10 @@ public class Employer extends Person {
 
     @Builder
     public Employer(Long id, String telephone, String email, String password, SimpleGrantedAuthority userRole,
-                    String companyName, String description, String displayDescription, String photo, String address) {
+                    String companyName, String contactEmail, String description, String displayDescription, String photo, String address) {
         super(id, telephone, email, password, userRole);
         this.companyName = companyName;
+        this.contactEmail = contactEmail;
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
