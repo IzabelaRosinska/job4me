@@ -38,13 +38,10 @@ public class Person extends BaseEntity implements UserDetails {
     @Column(name = "telephone")
     private String telephone;
 
-    @ValidEmail
     @NotEmpty
     @Column(name = "email")
     private String email;
 
-    @NotBlank
-    @NotEmpty
     @Column(name = "password")
     private String password;
 
