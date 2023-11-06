@@ -63,13 +63,13 @@ public class Employee extends Person {
     private Set<Project> projects = new HashSet<>();
 
     @Lob
-    @Length(max = 1000)
-    @Column(name = "about_me")
+    @Length(max = 500)
+    @Column(name = "about_me", length = 500)
     private String aboutMe;
 
     @Lob
-    @Length(max = 1000)
-    @Column(name = "interests")
+    @Length(max = 500)
+    @Column(name = "interests", length = 500)
     private String interests;
 
     public String toString() {

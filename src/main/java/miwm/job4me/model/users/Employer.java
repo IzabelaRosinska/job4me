@@ -40,13 +40,13 @@ public class Employer extends Person {
     @Column(name = "display_description", length = 1000)
     private String displayDescription;
 
-    @Column(name = "photo")
+    @Column(name = "photo", length = 13000)
     private String photo;
 
     @Column(name = "address", length = 100)
     private String address;
 
-    public String toString(){
+    public String toString() {
         return getUsername();
     }
 }

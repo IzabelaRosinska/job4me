@@ -39,7 +39,7 @@ class ProjectServiceImplTest {
     private ProjectServiceImpl projectService;
 
     private final String ENTITY_NAME = "Project";
-    private final int MAX_DESCRIPTION_LENGTH = 500;
+    private final int MAX_DESCRIPTION_LENGTH = 300;
 
     private Employee employee;
     private Project project1;

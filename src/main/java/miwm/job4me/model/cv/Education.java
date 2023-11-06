@@ -27,8 +27,8 @@ public class Education extends BaseEntity {
     }
 
     @NotBlank(message = "Education description cannot be blank")
-    @Size(min = 1, max = 100, message = "Education description must be between 1 and 100 characters")
-    @Column(name = "description", length = 100)
+    @Size(min = 1, max = 150, message = "Education description must be between 1 and 150 characters")
+    @Column(name = "description", length = 150)
     private String description;
 
     @NotNull(message = "Education employee cannot be null")

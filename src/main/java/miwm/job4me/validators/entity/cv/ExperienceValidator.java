@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ExperienceValidator {
     private final StringFieldValidator stringFieldValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 255;
+    private final int MAX_DESCRIPTION_LENGTH = 300;
     private final String ENTITY_NAME = "Experience";
     private final String DESCRIPTION_FIELD_NAME = "description";
 

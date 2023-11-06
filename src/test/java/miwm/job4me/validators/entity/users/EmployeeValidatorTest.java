@@ -35,9 +35,9 @@ class EmployeeValidatorTest {
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    private final int MIN_FIRST_NAME_LENGTH = 2;
-    private final int MIN_LAST_NAME_LENGTH = 2;
-    private final int MIN_EMAIL_LENGTH = 2;
+    private final int MIN_FIRST_NAME_LENGTH = 1;
+    private final int MIN_LAST_NAME_LENGTH = 1;
+    private final int MIN_EMAIL_LENGTH = 1;
 
     private final int MAX_FIRST_NAME_LENGTH = 100;
     private final int MAX_LAST_NAME_LENGTH = 100;
@@ -49,10 +49,10 @@ class EmployeeValidatorTest {
     private final int MAX_COUNT_OF_PROJECTS = 10;
     private final int MAX_COUNT_OF_SKILLS = 20;
 
-    private final int MAX_LENGTH_OF_EDUCATION_DESCRIPTION = 100;
-    private final int MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION = 255;
-    private final int MAX_LENGTH_OF_PROJECT_DESCRIPTION = 500;
-    private final int MAX_LENGTH_OF_SKILL_DESCRIPTION = 50;
+    private final int MAX_LENGTH_OF_EDUCATION_DESCRIPTION = 150;
+    private final int MAX_LENGTH_OF_EXPERIENCE_DESCRIPTION = 300;
+    private final int MAX_LENGTH_OF_PROJECT_DESCRIPTION = 300;
+    private final int MAX_LENGTH_OF_SKILL_DESCRIPTION = 100;
 
     @BeforeEach
     public void setUp() {

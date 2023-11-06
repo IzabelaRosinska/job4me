@@ -12,7 +12,7 @@ public class ExtraSkillValidator {
     private final StringFieldValidator stringFieldValidator;
     private final int MIN_DESCRIPTION_LENGTH = 1;
     private final int MAX_DESCRIPTION_LENGTH = 200;
-    private final String ENTITY_NAME = "ContractType";
+    private final String ENTITY_NAME = "ExtraSkill";
 
     public ExtraSkillValidator(StringFieldValidator stringFieldValidator) {
         this.stringFieldValidator = stringFieldValidator;

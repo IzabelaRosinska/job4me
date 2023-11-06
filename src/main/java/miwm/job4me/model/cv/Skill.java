@@ -27,8 +27,8 @@ public class Skill extends BaseEntity {
     }
 
     @NotBlank(message = "Skill description cannot be blank")
-    @Size(min = 1, max = 50, message = "Skill description must be between 1 and 50 characters")
-    @Column(name = "description", length = 50)
+    @Size(min = 1, max = 100, message = "Skill description must be between 1 and 100 characters")
+    @Column(name = "description", length = 100)
     private String description;
 
     @NotNull

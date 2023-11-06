@@ -26,7 +26,7 @@ class EducationValidatorTest {
     private Education education;
     private EducationDto educationDto;
     private final int MIN_DESCRIPTION_LENGTH = 1;
-    private final int MAX_DESCRIPTION_LENGTH = 100;
+    private final int MAX_DESCRIPTION_LENGTH = 150;
     private final String ENTITY_NAME = "Education";
     private final String DESCRIPTION_FIELD_NAME = "description";
 

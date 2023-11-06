@@ -39,7 +39,7 @@ class ExperienceServiceImplTest {
     private ExperienceServiceImpl experienceService;
 
     private final String ENTITY_NAME = "Experience";
-    private final int MAX_DESCRIPTION_LENGTH = 255;
+    private final int MAX_DESCRIPTION_LENGTH = 300;
 
     private Employee employee;
     private Experience experience1;

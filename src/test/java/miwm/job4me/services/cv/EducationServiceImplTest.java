@@ -39,7 +39,7 @@ class EducationServiceImplTest {
     private EducationServiceImpl educationServiceImpl;
 
     private final String ENTITY_NAME = "Education";
-    private final int MAX_DESCRIPTION_LENGTH = 100;
+    private final int MAX_DESCRIPTION_LENGTH = 150;
 
     private Employee employee;
     private Education education1;
