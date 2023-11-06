@@ -2,11 +2,14 @@ package miwm.job4me.web.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import miwm.job4me.messages.AppMessages;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.UserAuthenticationService;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,7 +18,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +31,9 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Date;
+
 import static miwm.job4me.messages.AppMessages.*;
 
 @RestController
@@ -69,6 +79,17 @@ public class LinkedInController {
                 String email = jsonNode.get("email").asText();
 
                 Person user = authService.loadUserByUsername(email);
+                if(user == null)
+                    user = authService.registerLinkedinUser(jsonNode);
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if(authentication.getPrincipal().equals("anonymousUser")) {
+                    Cookie tokenCookie = authService.loginLinkedinUser(email);
+                    tokenCookie.setHttpOnly(true);
+                    tokenCookie.setPath("/");
+                    response.addCookie(tokenCookie);
+                }
+
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                     employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
                     response.sendRedirect("http://localhost:4200/api/employee/account");

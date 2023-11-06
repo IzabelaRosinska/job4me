@@ -1,7 +1,11 @@
 package miwm.job4me.services.users;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.jsonwebtoken.Jwts;
 import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
+import miwm.job4me.jwt.JwtConfig;
+import miwm.job4me.messages.AppMessages;
 import miwm.job4me.messages.UserMessages;
 import miwm.job4me.model.VerificationToken;
 import miwm.job4me.model.users.Employee;
@@ -14,28 +18,46 @@ import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.repositories.users.VerificationTokenRepository;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.web.model.users.RegisterData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import javax.servlet.http.Cookie;
+import java.time.LocalDate;
+import java.util.Date;
 
+@Service
 public class UserAuthenticationService implements UserDetailsService {
 
-    private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
     private final EmployerRepository employerRepository;
     private final OrganizerRepository organizerRepository;
     private final VerificationTokenRepository tokenRepository;
 
-    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository tokenRepository) {
+    private final PasswordEncoder passwordEncoder;
+    private final JwtConfig jwtConfig;
+    private final SecretKey secretKey;
+
+    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository tokenRepository, JwtConfig jwtConfig, SecretKey secretKey) {
         this.employeeRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.employerRepository = employerRepository;
         this.organizerRepository = organizerRepository;
         this.tokenRepository = tokenRepository;
+        this.jwtConfig = jwtConfig;
+        this.secretKey = secretKey;
     }
 
     @Override
@@ -143,5 +165,30 @@ public class UserAuthenticationService implements UserDetailsService {
     public void createVerificationToken(Person person, String token) {
         VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();
         tokenRepository.save(myToken);
+    }
+
+    public Person registerLinkedinUser(JsonNode jsonNode) {
+        Employee newEmployee = Employee.builder()
+                .email(jsonNode.get("email").asText())
+                .locked(false)
+                .userRole(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole()).build();
+        employeeRepository.save(newEmployee);
+        return newEmployee;
+    }
+
+    public Cookie loginLinkedinUser(String email) {
+        Employee employee = (Employee)loadUserByUsername(email);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, "", employee.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        String token = Jwts.builder()
+                .setSubject(auth.getName())
+                .claim("authorities", auth.getAuthorities())
+                .setIssuedAt(new Date())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+                .signWith(secretKey)
+                .compact();
+        Cookie tokenCookie = new Cookie(AppMessages.JWT_TOKEN_NAME, token);
+        return tokenCookie;
     }
 }

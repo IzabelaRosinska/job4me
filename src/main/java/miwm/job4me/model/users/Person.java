@@ -43,8 +43,6 @@ public class Person extends BaseEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @NotBlank
-    @NotEmpty
     @Column(name = "password")
     private String password;
 
