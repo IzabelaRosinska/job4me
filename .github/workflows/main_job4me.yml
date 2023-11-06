@@ -64,3 +64,5 @@ jobs:
             AZURE_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
             EMAIL_USER: ${{ secrets.EMAIL_USER }}
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+            LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+            LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
