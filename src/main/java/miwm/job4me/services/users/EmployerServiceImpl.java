@@ -34,6 +34,7 @@ public class EmployerServiceImpl implements EmployerService {
     public EmployerDto saveEmployerDetails(EmployerDto employerDto) {
         Employer employer = userAuthService.getAuthenticatedEmployer();
         employer.setCompanyName(employerDto.getCompanyName());
+        employer.setContactEmail(employer.getContactEmail());
         employer.setDescription(employerDto.getDescription());
         employer.setDisplayDescription(employerDto.getDisplayDescription());
         employer.setTelephone(employerDto.getTelephone());
