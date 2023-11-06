@@ -1,10 +1,12 @@
 package miwm.job4me.services.users;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Person;
 import miwm.job4me.services.BaseService;
 import miwm.job4me.web.model.cv.EducationDto;
 import miwm.job4me.web.model.cv.ExperienceDto;
@@ -25,6 +27,8 @@ public interface EmployeeService extends BaseService<Employee, Long> {
 
     EmployeeDto findCurrentEmployee();
 
+    void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode);
+
     EducationDto saveEducation(Education education);
 
     ExperienceDto saveExperience(Experience experience);
@@ -32,5 +36,6 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     ProjectDto saveProject(Project project);
 
     SkillDto saveSkill(Skill skill);
+
 
 }

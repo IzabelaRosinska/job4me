@@ -33,7 +33,7 @@ public class Data implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        employeeRepository.saveAll(getEmployees());
+       employeeRepository.saveAll(getEmployees());
     }
 
     public List<Employee> getEmployees() {
@@ -42,7 +42,7 @@ public class Data implements ApplicationListener<ContextRefreshedEvent> {
                 .id(1l)
                 .email("userTest@wp.pl")
                 .password(passwordEncoder.encode("userTest"))
-                .userRole(new SimpleGrantedAuthority("EMPLOYEE_ENABLED"))
+                .userRole(new SimpleGrantedAuthority("ROLE_EMPLOYEE_ENABLED"))
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .telephone("+48 123456789")
