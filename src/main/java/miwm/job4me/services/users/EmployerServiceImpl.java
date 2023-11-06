@@ -36,6 +36,7 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setDisplayDescription(employerDto.getDisplayDescription());
         employer.setTelephone(employerDto.getTelephone());
         employer.setEmail(employerDto.getEmail());
+        employer.setContactEmail(employer.getContactEmail());
         if(employerDto.getPhoto() != null)
             employer.setPhoto(employerDto.getPhoto());
         if(employerDto.getAddress() != null)

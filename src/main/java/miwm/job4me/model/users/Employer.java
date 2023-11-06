@@ -32,6 +32,9 @@ public class Employer extends Person {
     @Column(name = "company_name", length = 100)
     private String companyName;
 
+    @Column(name = "contact_email", length = 50)
+    private String contactEmail;
+
     @Lob
     @Column(name = "description", length = 500)
     private String description;
