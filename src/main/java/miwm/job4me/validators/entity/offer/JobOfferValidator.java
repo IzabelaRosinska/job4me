@@ -23,25 +23,22 @@ public class JobOfferValidator {
 
     private final int MIN_SIZE_INDUSTRIES = 1;
     private final int MAX_SIZE_INDUSTRIES = 10;
-    private final int MAX_LENGTH_INDUSTRY = 50;
+    private final int MAX_LENGTH_INDUSTRY = 100;
 
     private final int MIN_SIZE_LOCALIZATIONS = 1;
     private final int MAX_SIZE_LOCALIZATIONS = 10;
     private final int MAX_LENGTH_LOCALIZATION = 50;
 
     private final int MIN_SIZE_EMPLOYMENT_FORMS = 1;
-    private final int MAX_SIZE_EMPLOYMENT_FORMS = 10;
     private final int MAX_LENGTH_EMPLOYMENT_FORM = 50;
 
-    private final int MAX_SIZE_CONTRACT_TYPES = 10;
     private final int MAX_LENGTH_CONTRACT_TYPE = 50;
 
-    private final int MAX_SIZE_LEVELS = 10;
     private final int MAX_LENGTH_LEVEL = 50;
 
     private final int MIN_SIZE_REQUIREMENTS = 1;
-    private final int MAX_SIZE_REQUIREMENTS = 10;
-    private final int MAX_LENGTH_REQUIREMENT = 50;
+    private final int MAX_SIZE_REQUIREMENTS = 15;
+    private final int MAX_LENGTH_REQUIREMENT = 250;
 
     private final int MAX_SIZE_EXTRA_SKILLS = 10;
     private final int MAX_LENGTH_EXTRA_SKILL = 200;
@@ -63,11 +60,11 @@ public class JobOfferValidator {
         stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDuties(), ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
         stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
         validateSalaryRange(jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
-        listValidator.validateRequiredList(jobOffer.getIndustries(), "industries", ENTITY_NAME, MAX_LENGTH_INDUSTRY);
-        listValidator.validateRequiredList(jobOffer.getLocalizations(), "localizations", ENTITY_NAME, MAX_LENGTH_LOCALIZATION);
+        listValidator.validateRequiredListMinMaxSize(jobOffer.getIndustries(), "industries", ENTITY_NAME, MIN_SIZE_INDUSTRIES, MAX_SIZE_INDUSTRIES, MAX_LENGTH_INDUSTRY);
+        listValidator.validateRequiredListMinMaxSize(jobOffer.getLocalizations(), "localizations", ENTITY_NAME, MIN_SIZE_LOCALIZATIONS, MAX_SIZE_LOCALIZATIONS, MAX_LENGTH_LOCALIZATION);
         listValidator.validateRequiredList(jobOffer.getEmploymentForms(), "employmentForms", ENTITY_NAME, MAX_LENGTH_EMPLOYMENT_FORM);
         listValidator.validateRequiredList(jobOffer.getContractTypes(), "contractTypes", ENTITY_NAME, MAX_LENGTH_CONTRACT_TYPE);
-        listValidator.validateListSizeAndElemLength(jobOffer.getLevels(), "levels", ENTITY_NAME, MAX_SIZE_LEVELS, MAX_LENGTH_LEVEL);
+        listValidator.validateRequiredList(jobOffer.getLevels(), "levels", ENTITY_NAME, MAX_LENGTH_LEVEL);
         listValidator.validateRequiredListMinMaxSize(jobOffer.getRequirements(), "requirements", ENTITY_NAME, MIN_SIZE_REQUIREMENTS, MAX_SIZE_REQUIREMENTS, MAX_LENGTH_REQUIREMENT);
         listValidator.validateListSizeAndElemLength(jobOffer.getExtraSkills(), "extraSkills", ENTITY_NAME, MAX_SIZE_EXTRA_SKILLS, MAX_LENGTH_EXTRA_SKILL);
     }
