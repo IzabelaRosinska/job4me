@@ -51,7 +51,7 @@ public class JobOffer extends BaseEntity {
     @JoinColumn(name = "employer_id")
     private Employer employer;
 
-    @Size(min = 1, message = "JobOffer industries cannot be empty")
+    @Size(min = 1, max = 10, message = "JobOffer industries list length must be between 1 and 10")
     @ManyToMany
     @JoinTable(
             name = "job_offer_industries",
@@ -59,7 +59,7 @@ public class JobOffer extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "industry_id"))
     private Set<Industry> industries;
 
-    @Size(min = 1, message = "JobOffer localizations cannot be empty")
+    @Size(min = 1, max = 10, message = "JobOffer localizations list length must be between 1 and 10")
     @ManyToMany
     @JoinTable(
             name = "job_offer_localizations",
@@ -94,6 +94,7 @@ public class JobOffer extends BaseEntity {
     @Column(name = "working_time", length = 20)
     private String workingTime;
 
+    @Size(min = 1, message = "JobOffer levels cannot be empty")
     @ManyToMany
     @JoinTable(
             name = "job_offer_levels",
