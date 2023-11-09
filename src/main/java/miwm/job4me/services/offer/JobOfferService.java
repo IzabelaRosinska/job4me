@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, Long> {
     Page<JobOfferDto> findByFilters(int page, int size, String city, String employmentFormName, String levelName, String contractTypeName, Integer salaryFrom, Integer salaryTo, String industryName, String offerName);
 
+    Page<JobOfferDto> findByFiltersForEmployer(int page, int size, Long employerId, String city, String employmentFormName, String levelName, String contractTypeName, Integer salaryFrom, Integer salaryTo, String industryName, String offerName);
+
     JobOfferDto saveDto(JobOfferDto jobOfferDto);
 
     boolean existsById(Long id);

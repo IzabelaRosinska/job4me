@@ -44,6 +44,7 @@ public class Employer extends Person {
     @Column(name = "display_description", length = 1000)
     private String displayDescription;
 
+    @Lob
     @Column(name = "photo", length = 13000)
     private String photo;
 

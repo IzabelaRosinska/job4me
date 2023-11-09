@@ -96,6 +96,13 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
+    public Page<JobOfferDto> findByFiltersForEmployer(int page, int size, Long employerId, String city, String employmentFormName, String levelName, String contractTypeName, Integer salaryFrom, Integer salaryTo, String industryName, String offerName) {
+        return jobOfferRepository
+                .findByFiltersForEmployer(PageRequest.of(page, size), employerId, city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName)
+                .map(jobOfferMapper::toDto);
+    }
+
+    @Override
     public JobOfferDto saveDto(JobOfferDto jobOfferDto) {
         idValidator.validateNoIdFroCreate(jobOfferDto.getId(), ENTITY_NAME);
 

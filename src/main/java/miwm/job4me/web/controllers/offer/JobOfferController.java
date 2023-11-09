@@ -44,6 +44,29 @@ public class JobOfferController {
         return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
     }
 
+    @GetMapping("job-offers/employer/{id}")
+    @Operation(summary = "Get all job offers for employer", description = "Gets all job offers from database for employer")
+    public ResponseEntity<Page<JobOfferDto>> getAllJobOffersForEmployer(
+            @PathVariable Long id,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String employmentFormName,
+            @RequestParam(required = false) String levelName,
+            @RequestParam(required = false) String contractTypeName,
+            @RequestParam(required = false) Integer salaryFrom,
+            @RequestParam(required = false) Integer salaryTo,
+            @RequestParam(required = false) String industryName,
+            @RequestParam(required = false) String offerName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFiltersForEmployer(page, size, id, city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName);
+
+        if (jobOfferDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
+    }
+
     @GetMapping("job-offers/{id}")
     @Operation(summary = "Get job offer by id", description = "Gets job offer from database by id")
     public ResponseEntity<JobOfferDto> getJobOfferById(@PathVariable Long id) {
