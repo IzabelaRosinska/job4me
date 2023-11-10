@@ -2,13 +2,15 @@ package miwm.job4me.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.exceptions.UserAlreadyExistException;
-import miwm.job4me.model.VerificationToken;
+import miwm.job4me.model.token.PasswordResetToken;
+import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.OnRegistrationCompleteEvent;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.web.mappers.users.UserMapper;
+import miwm.job4me.web.model.users.PasswordDto;
 import miwm.job4me.web.model.users.RegisterData;
 import miwm.job4me.web.model.users.UserDto;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,8 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class AuthController {
@@ -72,5 +77,41 @@ public class AuthController {
             userAuthService.unlockEmployer(employer);
 
         response.sendRedirect("http://localhost:4200/login");
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
+        Person person = userAuthService.loadUserByUsername(userEmail);
+        if (person == null)
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        String token = UUID.randomUUID().toString();
+        String appUrl = request.getContextPath();
+        userAuthService.createPasswordResetTokenForUser(person, token);
+        userAuthService.sendResetToken(person, token, appUrl);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping("/changePassword")
+    public void showChangePasswordPage(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
+        String result = userAuthService.validatePasswordResetToken(token);
+        if(result != null)
+            response.sendRedirect("/");
+        else
+            response.sendRedirect("http://localhost:4200/updatePassword/?token=" + token);
+    }
+
+    @PostMapping("/savePassword")
+    public void savePassword(HttpServletResponse response, @Valid PasswordDto passwordDto) throws IOException {
+        String result = userAuthService.validatePasswordResetToken(passwordDto.getToken());
+        if(result != null)
+            response.sendRedirect("/");
+
+        Person user = userAuthService.getUserByPasswordResetToken(passwordDto.getToken());
+        if(user != null) {
+            userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
+            response.sendRedirect("http://localhost:4200/login");
+        } else
+            response.sendRedirect("/");
     }
 }

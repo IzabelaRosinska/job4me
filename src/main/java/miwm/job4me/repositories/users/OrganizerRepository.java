@@ -5,8 +5,13 @@ import miwm.job4me.model.users.Organizer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface OrganizerRepository extends JpaRepository<Organizer, Long> {
 
     @Query(nativeQuery = true, value = "select * from organizers where email = ?1")
     Organizer selectOrganizerByUsername(String username);
+
+    @Query(nativeQuery = true, value = "select organizer from password_reset_token p INNER JOIN organizer o ON p.organizer_id=o.id where e.email = ?1")
+    Optional<Organizer> getOrganizerByToken(String token);
 }

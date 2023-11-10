@@ -2,41 +2,36 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
+import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.messages.AppMessages;
 import miwm.job4me.messages.UserMessages;
-import miwm.job4me.model.VerificationToken;
+import miwm.job4me.model.token.PasswordResetToken;
+import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.model.users.Person;
-import miwm.job4me.repositories.users.EmployeeRepository;
-import miwm.job4me.repositories.users.EmployerRepository;
-import miwm.job4me.repositories.users.OrganizerRepository;
-import miwm.job4me.repositories.users.VerificationTokenRepository;
+import miwm.job4me.repositories.users.*;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.web.model.users.RegisterData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserAuthenticationService implements UserDetailsService {
@@ -44,20 +39,24 @@ public class UserAuthenticationService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
     private final EmployerRepository employerRepository;
     private final OrganizerRepository organizerRepository;
-    private final VerificationTokenRepository tokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordTokenRepository passwordTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
+    private final EMailService emailService;
 
-    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository tokenRepository, JwtConfig jwtConfig, SecretKey secretKey) {
+    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository, PasswordTokenRepository passwordTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService) {
         this.employeeRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.employerRepository = employerRepository;
         this.organizerRepository = organizerRepository;
-        this.tokenRepository = tokenRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.passwordTokenRepository = passwordTokenRepository;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
+        this.emailService = emailService;
     }
 
     @Override
@@ -107,7 +106,7 @@ public class UserAuthenticationService implements UserDetailsService {
     }
 
     public VerificationToken getVerificationToken(String VerificationToken) {
-        return tokenRepository.findByToken(VerificationToken);
+        return verificationTokenRepository.findByToken(VerificationToken);
     }
 
 
@@ -164,7 +163,64 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public void createVerificationToken(Person person, String token) {
         VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();
-        tokenRepository.save(myToken);
+        verificationTokenRepository.save(myToken);
+    }
+
+    public void createPasswordResetTokenForUser(Person person, String token) {
+        PasswordResetToken resetToken = PasswordResetToken.builder().token(token).person(person).build();
+        passwordTokenRepository.save(resetToken);
+    }
+
+    public void sendResetToken(Person person, String token, String contextPath) {
+        String recipientAddress = person.getEmail();
+        String subject = "Reset your password";
+        String confirmationUrl = contextPath + "/changePassword?token=" + token;
+        String text = "Reset your password\n Please click link below to change your password.\n\n" + "http://localhost:8080" + confirmationUrl;
+
+        emailService.sendSimpleMessage(recipientAddress, subject, text);
+    }
+
+    public String validatePasswordResetToken(String token) {
+        PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+        return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+    }
+
+    private boolean isTokenFound(PasswordResetToken passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(PasswordResetToken passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getExpiryDate().before(cal.getTime());
+    }
+
+    public Person getUserByPasswordResetToken(String token) {
+        Optional employee = employeeRepository.getEmployeeByToken(token);
+        Optional employer = employerRepository.getEmployerByToken(token);
+        Optional organizer = organizerRepository.getOrganizerByToken(token);
+        if(employee.isPresent())
+            return (Person)employee.get();
+        else if(employer.isPresent())
+            return (Person)employer.get();
+        else if(organizer.isPresent())
+            return (Person)organizer.get();
+        return null;
+    }
+
+    public void changeUserPassword(Person person, String password) {
+        Employee employee = employeeRepository.selectEmployeeByUsername(person.getEmail());
+        Employer employer = employerRepository.selectEmployerByUsername(person.getEmail());
+        Organizer organizer = organizerRepository.selectOrganizerByUsername(person.getEmail());
+        if(employee != null) {
+            employee.setPassword(passwordEncoder.encode(password));
+            employeeRepository.save(employee);
+        }else if(employer != null) {
+            employer.setPassword(passwordEncoder.encode(password));
+            employerRepository.save(employer);
+        }else if(organizer != null) {
+            organizer.setPassword(passwordEncoder.encode(password));
+            organizerRepository.save(organizer);
+        }
     }
 
     public Person registerLinkedinUser(JsonNode jsonNode) {
