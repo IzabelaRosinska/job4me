@@ -8,8 +8,12 @@ import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
+import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.model.offer.SavedOffer;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Person;
+import miwm.job4me.repositories.offer.JobOfferRepository;
+import miwm.job4me.repositories.offer.SavedOfferRepository;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
@@ -32,6 +36,8 @@ import java.util.Set;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final JobOfferRepository offerRepository;
+    private final SavedOfferRepository savedOfferRepository;
     private final EducationService educationService;
     private final ExperienceService experienceService;
     private final ProjectService projectService;
@@ -43,8 +49,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final String ENTITY_NAME = "Employee";
 
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, JobOfferRepository offerRepository, SavedOfferRepository savedOfferRepository) {
         this.employeeRepository = employeeRepository;
+        this.offerRepository = offerRepository;
+        this.savedOfferRepository = savedOfferRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
@@ -249,6 +257,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(result);
     }
 
+    @Override
+    @Transactional
+    public void addOfferToSaved(Long id) {
+        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        Optional<JobOffer> offer = offerRepository.findById(id);
+        if(offer.isPresent()) {
+            SavedOffer savedOffer = SavedOffer.builder().offer(offer.get()).employee(employee).build();
+            savedOfferRepository.save(savedOffer);
+        } else
+            throw new NoSuchElementFoundException();
+    }
 
+    @Override
+    @Transactional
+    public void deleteOfferFromSaved(Long id) {
+        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        Optional<SavedOffer> saved = savedOfferRepository.findByIds(id, employee.getId());
+        if(saved.isPresent()) {
+            savedOfferRepository.delete(saved.get());
+        } else
+            throw new NoSuchElementFoundException();
+    }
 
 }

@@ -1,5 +1,7 @@
 package miwm.job4me.services;
 
+import miwm.job4me.repositories.offer.JobOfferRepository;
+import miwm.job4me.repositories.offer.SavedOfferRepository;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.repositories.users.OrganizerRepository;
@@ -24,8 +26,8 @@ import org.springframework.context.annotation.Configuration;
 public class ServiceConfiguration {
 
     @Bean
-    EmployeeServiceImpl clientServiceImpl(final EmployeeRepository employeeRepository, final EducationService educationService, final ExperienceService experienceService, final ProjectService projectService, final SkillService skillService, UserAuthenticationService userAuthenticationService, final IdValidator idValidator, final EmployeeValidator employeeValidator, final EmployeeMapper employeeMapper) {
-        return new EmployeeServiceImpl(employeeRepository, educationService, experienceService, projectService, skillService, userAuthenticationService, idValidator, employeeValidator, employeeMapper);
+    EmployeeServiceImpl clientServiceImpl(final EmployeeRepository employeeRepository, final EducationService educationService, final ExperienceService experienceService, final ProjectService projectService, final SkillService skillService, UserAuthenticationService userAuthenticationService, final IdValidator idValidator, final EmployeeValidator employeeValidator, final EmployeeMapper employeeMapper, JobOfferRepository offerRepository, SavedOfferRepository savedOfferRepository) {
+        return new EmployeeServiceImpl(employeeRepository, educationService, experienceService, projectService, skillService, userAuthenticationService, idValidator, employeeValidator, employeeMapper, offerRepository, savedOfferRepository);
     }
 
     @Bean
