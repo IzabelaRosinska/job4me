@@ -40,4 +40,6 @@ public interface EmployeeService extends BaseService<Employee, Long> {
 
     EmployeeDto findEmployeeById(Long id);
 
+    void addEmployerToSaved(Long id);
+    void deleteEmployerFromSaved(Long id);
 }
