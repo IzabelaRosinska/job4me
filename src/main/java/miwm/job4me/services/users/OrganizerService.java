@@ -8,4 +8,6 @@ public interface OrganizerService extends BaseService<Organizer, Long> {
     OrganizerDto getOrganizerDetails();
     OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto);
     void updateAccountStatusAfterPayment();
+
+    OrganizerDto findOrganizerById(Long id);
 }

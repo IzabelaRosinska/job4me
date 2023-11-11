@@ -1,13 +1,17 @@
 package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
+import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.EmployerDto;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 
 public class EmployerServiceImpl implements EmployerService {
@@ -81,5 +85,14 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public void deleteById(Long aLong) {
 
+    }
+
+    @Override
+    public EmployerDto findEmployerById(Long id) {
+        Optional<Employer> employer = employerRepository.findById(id);
+        if(employer.isPresent())
+            return employerMapper.employerToEmployerDto(employer.get());
+        else
+            throw new NoSuchElementFoundException();
     }
 }
