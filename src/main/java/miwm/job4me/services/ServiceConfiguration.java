@@ -3,6 +3,7 @@ package miwm.job4me.services;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.repositories.users.OrganizerRepository;
+import miwm.job4me.repositories.users.SavedEmployeeRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
@@ -29,8 +30,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    EmployerServiceImpl employerServiceImpl(final UserAuthenticationService userAuthService, final EmployerMapper employerMapper, final EmployerRepository employerRepository) {
-        return new EmployerServiceImpl(userAuthService, employerMapper, employerRepository);
+    EmployerServiceImpl employerServiceImpl(final UserAuthenticationService userAuthService, final EmployerMapper employerMapper, final EmployerRepository employerRepository, EmployeeRepository employeeRepository, SavedEmployeeRepository savedEmployeeRepository) {
+        return new EmployerServiceImpl(userAuthService, employerMapper, employerRepository, employeeRepository, savedEmployeeRepository);
     }
 
     @Bean

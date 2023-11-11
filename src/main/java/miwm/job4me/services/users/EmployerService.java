@@ -15,4 +15,7 @@ public interface EmployerService  extends BaseService<Employer, Long> {
     void saveEmployerDataFromLinkedin(Person user, JsonNode jsonNode);
 
     EmployerDto findEmployerById(Long id);
+
+    void addEmployeeToSaved(Long id);
+    void deleteEmployeeFromSaved(Long id);
 }

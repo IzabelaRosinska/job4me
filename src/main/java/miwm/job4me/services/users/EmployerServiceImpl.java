@@ -5,9 +5,11 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.SavedEmployee;
+import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
+import miwm.job4me.repositories.users.SavedEmployeeRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
-import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.EmployerDto;
 
 import javax.transaction.Transactional;
@@ -19,11 +21,15 @@ public class EmployerServiceImpl implements EmployerService {
     private final UserAuthenticationService userAuthService;
     private final EmployerMapper employerMapper;
     private final EmployerRepository employerRepository;
+    private final EmployeeRepository employeeRepository;
+    private final SavedEmployeeRepository savedEmployeeRepository;
 
-    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository) {
+    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository, EmployeeRepository employeeRepository, SavedEmployeeRepository savedEmployeeRepository) {
         this.userAuthService = userAuthService;
         this.employerMapper = employerMapper;
         this.employerRepository = employerRepository;
+        this.employeeRepository = employeeRepository;
+        this.savedEmployeeRepository = savedEmployeeRepository;
     }
 
     @Override
@@ -94,6 +100,29 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employerMapper.employerToEmployerDto(employer.get());
         else
+            throw new NoSuchElementFoundException();
+    }
+
+    @Override
+    @Transactional
+    public void addEmployeeToSaved(Long id) {
+        Employer employer = userAuthService.getAuthenticatedEmployer();
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if(employee.isPresent()) {
+            SavedEmployee savedEmployee = SavedEmployee.builder().employee(employee.get()).employer(employer).build();
+            savedEmployeeRepository.save(savedEmployee);
+        } else
+            throw new NoSuchElementFoundException();
+    }
+
+    @Override
+    @Transactional
+    public void deleteEmployeeFromSaved(Long id) {
+        Employer employer = userAuthService.getAuthenticatedEmployer();
+        Optional<SavedEmployee> saved = savedEmployeeRepository.findByIds(employer.getId(), id);
+        if(saved.isPresent()) {
+            savedEmployeeRepository.delete(saved.get());
+        } else
             throw new NoSuchElementFoundException();
     }
 }

@@ -58,4 +58,26 @@ public class EmployerController {
     public ResponseEntity<EmployeeDto> getEmployeeWithIdForEmployer(@PathVariable String id) {
         return new ResponseEntity<>(employeeService.findEmployeeById(Long.valueOf(id)), HttpStatus.OK);
     }
+
+    @PostMapping("save/{id}")
+    public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable String id) {
+        try {
+            employerService.addEmployeeToSaved(Long.valueOf(id));
+        } catch (NoSuchElementFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable String id) {
+        try {
+            employerService.deleteEmployeeFromSaved(Long.valueOf(id));
+        } catch (NoSuchElementFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+
 }
