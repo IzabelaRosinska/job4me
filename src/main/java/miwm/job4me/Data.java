@@ -5,7 +5,11 @@ import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.users.Employee;
+import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.EmployeeRepository;
+import miwm.job4me.repositories.users.EmployerRepository;
+import miwm.job4me.repositories.users.OrganizerRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,17 +27,37 @@ import java.util.Set;
 public class Data implements ApplicationListener<ContextRefreshedEvent> {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployerRepository employerRepository;
+    private final OrganizerRepository organizerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Data(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
+    public Data(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository) {
         this.employeeRepository = employeeRepository;
+        this.employerRepository = employerRepository;
+        this.organizerRepository = organizerRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-       employeeRepository.saveAll(getEmployees());
+      // employeeRepository.saveAll(getEmployees());
+      // employerRepository.saveAll(getEmployers());
+      // organizerRepository.saveAll(getOrganizer());
+    }
+
+    public List<Employer> getEmployers() {
+        List<Employer> employers = new ArrayList<>();
+        Employer employer = Employer.builder().email("employer@wp.pl").password(passwordEncoder.encode("12345")).companyName("EMP").locked(false).userRole(new SimpleGrantedAuthority("ROLE_EMPLOYER_ENABLED")).build();
+        employers.add(employer);
+        return employers;
+    }
+
+    public List<Organizer> getOrganizer() {
+        List<Organizer> organizers = new ArrayList<>();
+        Organizer organizer = Organizer.builder().email("organizer@wp.pl").password(passwordEncoder.encode("12345")).locked(false).userRole(new SimpleGrantedAuthority("ROLE_ORGANIZER_ENABLED")).build();
+        organizers.add(organizer);
+        return organizers;
     }
 
     public List<Employee> getEmployees() {

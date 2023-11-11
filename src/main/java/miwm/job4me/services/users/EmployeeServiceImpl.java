@@ -26,6 +26,7 @@ import miwm.job4me.web.model.users.EmployeeDto;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class EmployeeServiceImpl implements EmployeeService {
@@ -144,6 +145,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public EmployeeDto findEmployeeById(Long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        System.out.print(employee.get().getId());
+        if(employee.isPresent())
+            return employeeMapper.toDto(employee.get());
+        else
+            throw new NoSuchElementFoundException();
+    }
+
+    @Override
     @Transactional
     public void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode) {
         Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
@@ -212,7 +223,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (employee.getExperience() != null) {
             for (Experience experience : employee.getExperience()) {
-                experience.setEmployee(employee);
+               experience.setEmployee(employee);
                 saveExperience(experience);
             }
         }
@@ -231,9 +242,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
+
+
         Employee result = employeeRepository.save(employee);
 
         return employeeMapper.toDto(result);
     }
+
+
 
 }

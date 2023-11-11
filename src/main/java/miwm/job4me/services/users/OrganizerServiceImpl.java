@@ -1,14 +1,18 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
+import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.transaction.Transactional;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class OrganizerServiceImpl implements OrganizerService {
@@ -21,6 +25,15 @@ public class OrganizerServiceImpl implements OrganizerService {
         this.userAuthenticationService = userAuthenticationService;
         this.organizerMapper = organizerMapper;
         this.organizerRepository = organizerRepository;
+    }
+
+    @Override
+    public OrganizerDto findOrganizerById(Long id) {
+        Optional<Organizer> organizer = organizerRepository.findById(id);
+        if(organizer.isPresent())
+            return organizerMapper.organizerToOrganizerDto(organizer.get());
+        else
+            throw new NoSuchElementFoundException();
     }
 
     @Override
