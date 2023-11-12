@@ -108,7 +108,7 @@ public class EmployerServiceImpl implements EmployerService {
     public void addEmployeeToSaved(Long id) {
         Employer employer = userAuthService.getAuthenticatedEmployer();
         Optional<Employee> employee = employeeRepository.findById(id);
-        if(employee.isPresent()) {
+        if(employee.isPresent() && employer != null) {
             SavedEmployee savedEmployee = SavedEmployee.builder().employee(employee.get()).employer(employer).build();
             savedEmployeeRepository.save(savedEmployee);
         } else
@@ -119,10 +119,12 @@ public class EmployerServiceImpl implements EmployerService {
     @Transactional
     public void deleteEmployeeFromSaved(Long id) {
         Employer employer = userAuthService.getAuthenticatedEmployer();
-        Optional<SavedEmployee> saved = savedEmployeeRepository.findByIds(employer.getId(), id);
-        if(saved.isPresent()) {
-            savedEmployeeRepository.delete(saved.get());
-        } else
-            throw new NoSuchElementFoundException();
+        if(employer != null) {
+            Optional<SavedEmployee> saved = savedEmployeeRepository.findByIds(employer.getId(), id);
+            if (saved.isPresent()) {
+                savedEmployeeRepository.delete(saved.get());
+            } else
+                throw new NoSuchElementFoundException();
+        }
     }
 }
