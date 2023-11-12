@@ -15,4 +15,7 @@ public interface OrganizerService extends BaseService<Organizer, Long> {
     Optional<Organizer> getOrganizerByToken(String token);
 
     void updatePassword(Organizer organizer, String password);
+  
+    OrganizerDto findOrganizerById(Long id);
+
 }

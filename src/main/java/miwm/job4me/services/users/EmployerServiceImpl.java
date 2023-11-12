@@ -1,10 +1,13 @@
 package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
+import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.EmployerDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +43,7 @@ public class EmployerServiceImpl implements EmployerService {
     public EmployerDto saveEmployerDetails(EmployerDto employerDto) {
         Employer employer = getAuthEmployer();
         employer.setCompanyName(employerDto.getCompanyName());
+        employer.setContactEmail(employer.getContactEmail());
         employer.setDescription(employerDto.getDescription());
         employer.setDisplayDescription(employerDto.getDisplayDescription());
         employer.setTelephone(employerDto.getTelephone());
@@ -104,9 +108,20 @@ public class EmployerServiceImpl implements EmployerService {
 
     }
 
+
     private Employer getAuthEmployer(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
         return employer;
+    }
+  
+    @Override
+    public EmployerDto findEmployerById(Long id) {
+        Optional<Employer> employer = employerRepository.findById(id);
+        if(employer.isPresent())
+            return employerMapper.employerToEmployerDto(employer.get());
+        else
+            throw new NoSuchElementFoundException();
+
     }
 }

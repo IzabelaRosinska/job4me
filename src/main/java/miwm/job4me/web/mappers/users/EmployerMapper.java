@@ -11,6 +11,7 @@ public class EmployerMapper {
         EmployerDto employerDto = new EmployerDto();
         employerDto.setId(employer.getId().toString());
         employerDto.setCompanyName(employer.getCompanyName());
+        employerDto.setContactEmail(employer.getContactEmail());
         employerDto.setDescription(employer.getDescription());
         employerDto.setDisplayDescription(employer.getDisplayDescription());
         employerDto.setTelephone(employer.getTelephone());

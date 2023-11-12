@@ -164,6 +164,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(passwordEncoder.encode(password));
         save(employee);
     }
+  
+    @Override
+    public EmployeeDto findEmployeeById(Long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        System.out.print(employee.get().getId());
+        if(employee.isPresent())
+            return employeeMapper.toDto(employee.get());
+        else
+            throw new NoSuchElementFoundException();
+    }
 
     @Override
     @Transactional
@@ -234,7 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (employee.getExperience() != null) {
             for (Experience experience : employee.getExperience()) {
-                experience.setEmployee(employee);
+               experience.setEmployee(employee);
                 saveExperience(experience);
             }
         }
@@ -253,6 +263,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
+
+
         Employee result = employeeRepository.save(employee);
 
         return employeeMapper.toDto(result);
@@ -263,5 +275,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         return employee;
     }
+
 
 }

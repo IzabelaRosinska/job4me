@@ -20,9 +20,10 @@ public class Employer extends Person {
 
     @Builder
     public Employer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole,
-                    String companyName, String description, String displayDescription, String photo, String address) {
+                    String companyName, String contactEmail, String description, String displayDescription, String photo, String address) {
         super(id, telephone, email, password, locked, userRole);
         this.companyName = companyName;
+        this.contactEmail = contactEmail;
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
@@ -31,6 +32,9 @@ public class Employer extends Person {
 
     @Column(name = "company_name", length = 100)
     private String companyName;
+
+    @Column(name = "contact_email", length = 100)
+    private String contactEmail;
 
     @Lob
     @Column(name = "description", length = 500)
