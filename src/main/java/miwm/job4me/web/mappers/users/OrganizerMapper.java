@@ -31,7 +31,6 @@ public class OrganizerMapper {
     }
 
     public Organizer organizerDtoToOrganizer(OrganizerDto organizerDto, Organizer organizer) {
-        organizer.setId(Long.valueOf(organizerDto.getId()));
         organizer.setName(organizerDto.getName());
         organizer.setDescription(organizerDto.getDescription());
         organizer.setTelephone(organizerDto.getTelephone());
