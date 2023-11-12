@@ -2,7 +2,6 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
-import javassist.NotFoundException;
 import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.UserAlreadyExistException;

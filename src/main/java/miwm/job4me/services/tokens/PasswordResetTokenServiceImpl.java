@@ -2,10 +2,13 @@ package miwm.job4me.services.tokens;
 
 import miwm.job4me.model.token.PasswordResetToken;
 import miwm.job4me.repositories.users.PasswordTokenRepository;
+import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 
     private final PasswordTokenRepository passwordTokenRepository;
