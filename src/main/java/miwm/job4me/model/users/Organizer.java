@@ -4,12 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import miwm.job4me.model.cv.Project;
+import miwm.job4me.model.fairs.JobFair;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,11 +26,20 @@ public class Organizer extends Person {
     }
 
     @Column(name = "organizer_name", length = 100)
-    private String organizerName;
+    private String name;
+
+    @Column(name = "contact_email", length = 100)
+    private String contactEmail;
+
+    @Column(name = "telephone", length = 20)
+    private String telephone;
 
     @Lob
     @Column(name = "description", length = 500)
     private String description;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organizer")
+    private Set<JobFair> fairs = new HashSet<>();
 
     public String toString(){
         return getUsername();
