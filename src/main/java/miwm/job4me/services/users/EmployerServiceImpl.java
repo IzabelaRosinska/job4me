@@ -47,7 +47,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employerDto.getPhoto() != null)
             employer.setPhoto(employerDto.getPhoto());
         if(employerDto.getAddress() != null)
-        employer.setAddress(employerDto.getAddress());
+            employer.setAddress(employerDto.getAddress());
         employerRepository.save(employer);
         return employerDto;
     }
