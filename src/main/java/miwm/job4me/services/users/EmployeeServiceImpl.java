@@ -23,9 +23,11 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class EmployeeServiceImpl implements EmployeeService {
@@ -39,10 +41,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
+    private final PasswordEncoder passwordEncoder;
     private final String ENTITY_NAME = "Employee";
 
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
@@ -52,6 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -141,6 +145,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         strictExistsById(skill.getEmployee().getId());
         return skillService.save(skill);
+    }
+
+    @Override
+    public Optional<Employee> getEmployeeByToken(String token) {
+        Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
+        if(employee.isPresent())
+            return employee;
+        else
+            return null;
+    }
+
+    @Override
+    public void updatePassword(Employee employee, String password) {
+        employee.setPassword(passwordEncoder.encode(password));
+        save(employee);
     }
 
     @Override

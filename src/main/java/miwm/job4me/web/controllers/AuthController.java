@@ -2,7 +2,6 @@ package miwm.job4me.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.exceptions.UserAlreadyExistException;
-import miwm.job4me.model.token.PasswordResetToken;
 import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -60,6 +58,7 @@ public class AuthController {
     }
 
     @GetMapping("/registrationConfirm")
+    @Operation(summary = "Confirms user registration", description = "Confirm registration and unlock user")
     public void confirmRegistration(WebRequest request, HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         VerificationToken verificationToken = userAuthService.getVerificationToken(token);
         if (verificationToken == null) {
@@ -79,11 +78,12 @@ public class AuthController {
         response.sendRedirect("http://localhost:4200/login");
     }
 
-    @PostMapping("/resetPassword")
+    @PostMapping("/reset-password")
+    @Operation(summary = "Send password rest token", description = "Create token and send to user via email")
     public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
         Person person = userAuthService.loadUserByUsername(userEmail);
         if (person == null)
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 
         String token = UUID.randomUUID().toString();
         String appUrl = request.getContextPath();
@@ -92,19 +92,19 @@ public class AuthController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/change-password")
+    @Operation(summary = "Enable changing password", description = "Display password to reset password if token valid")
     public void showChangePasswordPage(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
-        String result = userAuthService.validatePasswordResetToken(token);
-        if(result != null)
+        if(!userAuthService.isValidPasswordResetToken(token))
             response.sendRedirect("/");
         else
-            response.sendRedirect("http://localhost:4200/updatePassword/?token=" + token);
+            response.sendRedirect("http://localhost:4200/update-password?token=" + token);
     }
 
-    @PostMapping("/savePassword")
+    @PostMapping("/save-password")
+    @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
     public void savePassword(HttpServletResponse response, @Valid PasswordDto passwordDto) throws IOException {
-        String result = userAuthService.validatePasswordResetToken(passwordDto.getToken());
-        if(result != null)
+        if(!userAuthService.isValidPasswordResetToken(passwordDto.getToken()))
             response.sendRedirect("/");
 
         Person user = userAuthService.getUserByPasswordResetToken(passwordDto.getToken());
@@ -113,5 +113,16 @@ public class AuthController {
             response.sendRedirect("http://localhost:4200/login");
         } else
             response.sendRedirect("/");
+    }
+
+    @PostMapping("/update-password")
+    @Operation(summary = "Update password for authenticated user", description = "Update user password")
+    public ResponseEntity<?> updatePassword(@Valid PasswordDto passwordDto) {
+        Person user = userAuthService.getAuthenticatedUser();
+        if(user != null) {
+            userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 }

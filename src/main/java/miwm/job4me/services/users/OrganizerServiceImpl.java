@@ -1,14 +1,15 @@
 package miwm.job4me.services.users;
 
+import javassist.NotFoundException;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
-import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class OrganizerServiceImpl implements OrganizerService {
@@ -16,11 +17,13 @@ public class OrganizerServiceImpl implements OrganizerService {
     private final UserAuthenticationService userAuthenticationService;
     private final OrganizerMapper organizerMapper;
     private final OrganizerRepository organizerRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public OrganizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper, OrganizerRepository organizerRepository) {
+    public OrganizerServiceImpl(UserAuthenticationService userAuthenticationService, OrganizerMapper organizerMapper, OrganizerRepository organizerRepository, PasswordEncoder passwordEncoder) {
         this.userAuthenticationService = userAuthenticationService;
         this.organizerMapper = organizerMapper;
         this.organizerRepository = organizerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -76,5 +79,19 @@ public class OrganizerServiceImpl implements OrganizerService {
         organizerRepository.save(organizer);
     }
 
+    @Override
+    public Optional<Organizer> getOrganizerByToken(String token) {
+        Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);
+        if(organizer.isPresent())
+            return organizer;
+        else
+            return null;
+    }
 
+    @Override
+    @Transactional
+    public void updatePassword(Organizer organizer, String password) {
+        organizer.setPassword(passwordEncoder.encode(password));
+        save(organizer);
+    }
 }

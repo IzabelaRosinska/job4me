@@ -2,6 +2,7 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
+import javassist.NotFoundException;
 import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
@@ -16,6 +17,7 @@ import miwm.job4me.model.users.Organizer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.*;
 import miwm.job4me.security.ApplicationUserRole;
+import miwm.job4me.services.tokens.PasswordResetTokenService;
 import miwm.job4me.web.model.users.RegisterData;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,23 +42,29 @@ public class UserAuthenticationService implements UserDetailsService {
     private final EmployerRepository employerRepository;
     private final OrganizerRepository organizerRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final PasswordTokenRepository passwordTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
     private final EMailService emailService;
+    private final EmployeeService employeeService;
+    private final EmployerService employerService;
+    private final OrganizerService organizerService;
+    private final PasswordResetTokenService passwordResetTokenService;
 
-    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository, PasswordTokenRepository passwordTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService) {
+    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService, EmployeeService employeeService, EmployerService employerService, OrganizerService organizerService, PasswordResetTokenService passwordResetTokenService) {
         this.employeeRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.employerRepository = employerRepository;
         this.organizerRepository = organizerRepository;
         this.verificationTokenRepository = verificationTokenRepository;
-        this.passwordTokenRepository = passwordTokenRepository;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
         this.emailService = emailService;
+        this.employeeService = employeeService;
+        this.employerService = employerService;
+        this.organizerService = organizerService;
+        this.passwordResetTokenService = passwordResetTokenService;
     }
 
     @Override
@@ -168,21 +176,21 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public void createPasswordResetTokenForUser(Person person, String token) {
         PasswordResetToken resetToken = PasswordResetToken.builder().token(token).person(person).build();
-        passwordTokenRepository.save(resetToken);
+        passwordResetTokenService.save(resetToken);
     }
 
     public void sendResetToken(Person person, String token, String contextPath) {
         String recipientAddress = person.getEmail();
         String subject = "Reset your password";
-        String confirmationUrl = contextPath + "/changePassword?token=" + token;
+        String confirmationUrl = contextPath + "/change-password?token=" + token;
         String text = "Reset your password\n Please click link below to change your password.\n\n" + "http://localhost:8080" + confirmationUrl;
 
         emailService.sendSimpleMessage(recipientAddress, subject, text);
     }
 
-    public String validatePasswordResetToken(String token) {
-        PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
-        return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+    public boolean isValidPasswordResetToken(String token) {
+        PasswordResetToken passToken = passwordResetTokenService.findByToken(token);
+        return isTokenFound(passToken) && (!isTokenExpired(passToken));
     }
 
     private boolean isTokenFound(PasswordResetToken passToken) {
@@ -195,32 +203,25 @@ public class UserAuthenticationService implements UserDetailsService {
     }
 
     public Person getUserByPasswordResetToken(String token) {
-        Optional employee = employeeRepository.getEmployeeByToken(token);
-        Optional employer = employerRepository.getEmployerByToken(token);
-        Optional organizer = organizerRepository.getOrganizerByToken(token);
+        Optional<Employee> employee = employeeService.getEmployeeByToken(token);
+        Optional<Employer> employer = employerService.getEmployerByToken(token);
+        Optional<Organizer> organizer = organizerService.getOrganizerByToken(token);
         if(employee.isPresent())
-            return (Person)employee.get();
+            return employee.get();
         else if(employer.isPresent())
-            return (Person)employer.get();
+            return employer.get();
         else if(organizer.isPresent())
-            return (Person)organizer.get();
+            return organizer.get();
         return null;
     }
 
     public void changeUserPassword(Person person, String password) {
-        Employee employee = employeeRepository.selectEmployeeByUsername(person.getEmail());
-        Employer employer = employerRepository.selectEmployerByUsername(person.getEmail());
-        Organizer organizer = organizerRepository.selectOrganizerByUsername(person.getEmail());
-        if(employee != null) {
-            employee.setPassword(passwordEncoder.encode(password));
-            employeeRepository.save(employee);
-        }else if(employer != null) {
-            employer.setPassword(passwordEncoder.encode(password));
-            employerRepository.save(employer);
-        }else if(organizer != null) {
-            organizer.setPassword(passwordEncoder.encode(password));
-            organizerRepository.save(organizer);
-        }
+        if(person.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())) {
+            employeeService.updatePassword((Employee)person, password);
+        }else if(person.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
+            employerService.updatePassword((Employer)person, password);
+        }else if(person.getUserRole().equals(ApplicationUserRole.ORGANIZER_ENABLED.getUserRole()))
+            organizerService.updatePassword((Organizer)person, password);
     }
 
     public Person registerLinkedinUser(JsonNode jsonNode) {

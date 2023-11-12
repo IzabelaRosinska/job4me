@@ -6,8 +6,10 @@ import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.model.users.EmployerDto;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 
 public class EmployerServiceImpl implements EmployerService {
@@ -15,11 +17,13 @@ public class EmployerServiceImpl implements EmployerService {
     private final UserAuthenticationService userAuthService;
     private final EmployerMapper employerMapper;
     private final EmployerRepository employerRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository) {
+    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository, PasswordEncoder passwordEncoder) {
         this.userAuthService = userAuthService;
         this.employerMapper = employerMapper;
         this.employerRepository = employerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -55,6 +59,21 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setCompanyName(name);
         employer.setPhoto(photo);
         employerRepository.save(employer);
+    }
+
+    @Override
+    public Optional<Employer> getEmployerByToken(String token) {
+        Optional<Employer> employer = employerRepository.getEmployerByToken(token);
+        if(employer.isPresent())
+            return employer;
+        else
+            return null;
+    }
+
+    @Override
+    public void updatePassword(Employer employer, String password) {
+        employer.setPassword(passwordEncoder.encode(password));
+        save(employer);
     }
 
 

@@ -14,6 +14,8 @@ import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 
+import java.util.Optional;
+
 public interface EmployeeService extends BaseService<Employee, Long> {
     void strictExistsById(Long id);
 
@@ -38,4 +40,7 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     SkillDto saveSkill(Skill skill);
 
 
+    Optional<Employee> getEmployeeByToken(String token);
+
+    void updatePassword(Employee employee, String password);
 }
