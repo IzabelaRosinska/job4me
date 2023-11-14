@@ -6,9 +6,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class SalaryRangeValidator implements ConstraintValidator<ValidSalaryRange, JobOffer> {
-
     @Override
     public void initialize(ValidSalaryRange constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override

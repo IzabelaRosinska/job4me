@@ -2,6 +2,7 @@ package miwm.job4me.web.model.users;
 
 import lombok.Getter;
 import lombok.Setter;
+import miwm.job4me.web.model.event.JobFairDto;
 
 import java.util.ArrayList;
 

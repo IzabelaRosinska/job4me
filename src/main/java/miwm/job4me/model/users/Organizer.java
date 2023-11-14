@@ -4,12 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import miwm.job4me.model.cv.Project;
-import miwm.job4me.model.fairs.JobFair;
+import miwm.job4me.model.event.JobFair;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +39,7 @@ public class Organizer extends Person {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "organizer")
     private Set<JobFair> fairs = new HashSet<>();
 
-    public String toString(){
+    public String toString() {
         return getUsername();
     }
 }
