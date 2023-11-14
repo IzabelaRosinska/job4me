@@ -49,7 +49,7 @@ public class Employer extends Person {
 
     @Column(name = "address", length = 100)
     private String address;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employer")
     private Set<SavedEmployee> savedEmployees = new HashSet<>();
 
