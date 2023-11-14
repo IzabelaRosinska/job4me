@@ -2,34 +2,30 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
-import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
-import miwm.job4me.model.users.SavedEmployee;
-import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
-import miwm.job4me.repositories.users.SavedEmployeeRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.model.users.EmployerDto;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class EmployerServiceImpl implements EmployerService {
 
     private final UserAuthenticationService userAuthService;
     private final EmployerMapper employerMapper;
     private final EmployerRepository employerRepository;
-    private final EmployeeRepository employeeRepository;
-    private final SavedEmployeeRepository savedEmployeeRepository;
 
-    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository, EmployeeRepository employeeRepository, SavedEmployeeRepository savedEmployeeRepository) {
+    public EmployerServiceImpl(UserAuthenticationService userAuthService, EmployerMapper employerMapper, EmployerRepository employerRepository) {
         this.userAuthService = userAuthService;
         this.employerMapper = employerMapper;
         this.employerRepository = employerRepository;
-        this.employeeRepository = employeeRepository;
-        this.savedEmployeeRepository = savedEmployeeRepository;
     }
 
     @Override
@@ -104,27 +100,9 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    @Transactional
-    public void addEmployeeToSaved(Long id) {
-        Employer employer = userAuthService.getAuthenticatedEmployer();
-        Optional<Employee> employee = employeeRepository.findById(id);
-        if(employee.isPresent() && employer != null) {
-            SavedEmployee savedEmployee = SavedEmployee.builder().employee(employee.get()).employer(employer).build();
-            savedEmployeeRepository.save(savedEmployee);
-        } else
-            throw new NoSuchElementFoundException();
-    }
-
-    @Override
-    @Transactional
-    public void deleteEmployeeFromSaved(Long id) {
-        Employer employer = userAuthService.getAuthenticatedEmployer();
-        if(employer != null) {
-            Optional<SavedEmployee> saved = savedEmployeeRepository.findByIds(employer.getId(), id);
-            if (saved.isPresent()) {
-                savedEmployeeRepository.delete(saved.get());
-            } else
-                throw new NoSuchElementFoundException();
-        }
+    public Employer getAuthEmployer(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
+        return employer;
     }
 }

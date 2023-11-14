@@ -5,12 +5,16 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.OrganizerService;
-import miwm.job4me.web.model.users.EmployeeDto;
+import miwm.job4me.services.users.SavedEmployeeService;
+import miwm.job4me.web.mappers.users.EmployeeReviewMapper;
+import miwm.job4me.web.model.users.EmployeeReviewDto;
 import miwm.job4me.web.model.users.EmployerDto;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("employer")
@@ -18,11 +22,13 @@ public class EmployerController {
 
     private final EmployerService employerService;
     private final EmployeeService employeeService;
+    private final SavedEmployeeService savedEmployeeService;
     private final OrganizerService organizerService;
 
-    public EmployerController(EmployerService employerService, EmployeeService employeeService, OrganizerService organizerService) {
+    public EmployerController(EmployerService employerService, EmployeeService employeeService, SavedEmployeeService savedEmployeeService, OrganizerService organizerService) {
         this.employerService = employerService;
         this.employeeService = employeeService;
+        this.savedEmployeeService = savedEmployeeService;
         this.organizerService = organizerService;
     }
 
@@ -55,19 +61,25 @@ public class EmployerController {
 
     @GetMapping("employee/{id}/account")
     @Operation(summary = "Gets employee with given id", description = "Gets employee with given id")
-    public ResponseEntity<EmployeeDto> getEmployeeWithIdForEmployer(@PathVariable String id) {
-        return new ResponseEntity<>(employeeService.findEmployeeById(Long.valueOf(id)), HttpStatus.OK);
+    public ResponseEntity<EmployeeReviewDto> getEmployeeWithIdForEmployer(@PathVariable String id) {
+        return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(Long.valueOf(id)), HttpStatus.OK);
     }
 
     @PostMapping("save-employee/{id}")
     public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable String id) {
-        employerService.addEmployeeToSaved(Long.valueOf(id));
+        savedEmployeeService.addEmployeeToSaved(Long.valueOf(id));
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @DeleteMapping("delete-employee/{id}")
     public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable String id) {
-        employerService.deleteEmployeeFromSaved(Long.valueOf(id));
+        savedEmployeeService.deleteEmployeeFromSaved(Long.valueOf(id));
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping("get-saved-employees")
+    public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
+        List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
+        return new ResponseEntity<>(employees, HttpStatus.CREATED);
     }
 }

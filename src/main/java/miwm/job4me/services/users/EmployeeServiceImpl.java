@@ -23,12 +23,14 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -78,8 +80,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setSkills(employeeMapper.stringListToSkillsSet(employeeDto.getSkills()));
         return employeeDto;
     }
-
-
 
     @Override
     public Set<Employee> findAll() {
@@ -147,7 +147,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto findEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        System.out.print(employee.get().getId());
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
@@ -242,13 +241,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-
-
         Employee result = employeeRepository.save(employee);
 
         return employeeMapper.toDto(result);
     }
-
-
-
 }
