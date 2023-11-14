@@ -5,6 +5,7 @@ import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.SavedEmployee;
 import miwm.job4me.repositories.users.SavedEmployeeRepository;
+import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployeeReviewMapper;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
+
 @Service
 public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
@@ -21,44 +24,60 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     private final EmployeeReviewMapper employeeReviewMapper;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
+    private final IdValidator idValidator;
+    private final String ENTITY_EMPLOYEE = "Employee";
+    private final String ENTITY_EMPLOYER = "Employer";
+    private final String ENTITY_SAVED_EMPLOYEE = "SavedEmployee";
 
-    public SavedEmployeeServiceImpl(SavedEmployeeRepository savedEmployeeRepository, EmployeeService employeeService, EmployerService employerService, EmployeeReviewMapper employeeReviewMapper) {
+    public SavedEmployeeServiceImpl(SavedEmployeeRepository savedEmployeeRepository, EmployeeService employeeService, EmployerService employerService, EmployeeReviewMapper employeeReviewMapper, IdValidator idValidator) {
         this.savedEmployeeRepository = savedEmployeeRepository;
         this.employeeService = employeeService;
         this.employerService = employerService;
         this.employeeReviewMapper = employeeReviewMapper;
+        this.idValidator = idValidator;
     }
 
     @Override
     public Set<SavedEmployee> findAll() {
-        return null;
+        return (Set<SavedEmployee>) savedEmployeeRepository.findAll();
     }
 
     @Override
-    public SavedEmployee findById(Long aLong) {
+    public SavedEmployee findById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
+        Optional<SavedEmployee> savedEmployee = savedEmployeeRepository.findById(id);
+        if(savedEmployee.isPresent())
+            return savedEmployee.get();
         return null;
     }
 
     @Override
     @Transactional
     public SavedEmployee save(SavedEmployee savedEmployee) {
-        return savedEmployeeRepository.save(savedEmployee);
+        if(savedEmployee != null)
+            return savedEmployeeRepository.save(savedEmployee);
+        return null;
     }
 
     @Override
     @Transactional
     public void delete(SavedEmployee savedEmployee) {
-        savedEmployeeRepository.delete(savedEmployee);
+        if(savedEmployeeRepository.findById(savedEmployee.getId()).isPresent())
+            savedEmployeeRepository.delete(savedEmployee);
     }
 
     @Override
     @Transactional
-    public void deleteById(Long aLong) {
-
+    public void deleteById(Long id) {
+        idValidator.validateLongId(id, ENTITY_SAVED_EMPLOYEE);
+        if(savedEmployeeRepository.findById(id).isPresent())
+            savedEmployeeRepository.deleteById(id);
     }
 
     @Override
     public boolean checkIfSavedForEmployerWithId(Long employerId, Long employeeId) {
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
         Optional<SavedEmployee> savedEmployee = savedEmployeeRepository.findByIds(employerId, employeeId);
         if(!savedEmployee.isPresent())
             return false;
@@ -67,16 +86,20 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
     @Override
     public List<SavedEmployee> getSavedForEmployerWithId(Long employerId) {
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
         return savedEmployeeRepository.getSavedForEmployer(employerId);
     }
 
     @Override
     public Optional<SavedEmployee> findByIds(Long employerId, Long employeeId) {
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
         return savedEmployeeRepository.findByIds(employerId, employeeId);
     }
 
     @Override
     public Boolean checkIfSaved(Long id) {
+        idValidator.validateLongId(id, ENTITY_EMPLOYER);
         Long employerId = employerService.getAuthEmployer().getId();
         Optional<SavedEmployee> savedEmployee = findByIds(employerId, id);
         if(savedEmployee.isPresent())
@@ -86,12 +109,14 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
     @Override
     public Employee findEmployeeById(Long id) {
+        idValidator.validateLongId(id, ENTITY_EMPLOYEE);
         return employeeService.findById(id);
     }
 
 
     @Override
     public EmployeeReviewDto findEmployeeWithIdByUser(Long id) {
+        idValidator.validateLongId(id, ENTITY_EMPLOYEE);
         Employee employee = employeeService.findById(id);
         if(employee != null)
             return employeeReviewMapper.toDto(employee, checkIfSaved(id));
@@ -102,6 +127,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     @Override
     @Transactional
     public void addEmployeeToSaved(Long id) {
+        idValidator.validateLongId(id, ENTITY_EMPLOYER);
         Employer employer = employerService.getAuthEmployer();
         Employee employee = findEmployeeById(id);
         if(employee != null && employer != null) {
@@ -114,6 +140,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     @Override
     @Transactional
     public void deleteEmployeeFromSaved(Long id) {
+        idValidator.validateLongId(id, ENTITY_EMPLOYER);
         Employer employer = employerService.getAuthEmployer();
         if(employer != null) {
             Optional<SavedEmployee> saved = findByIds(employer.getId(), id);

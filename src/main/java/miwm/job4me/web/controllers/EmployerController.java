@@ -55,25 +55,25 @@ public class EmployerController {
 
     @GetMapping("organizer/{id}/account")
     @Operation(summary = "Gets organizer with given id", description = "Gets organizer with given id")
-    public ResponseEntity<OrganizerDto> getOrganizerWithIdForEmployer(@PathVariable String id) {
-        return new ResponseEntity<>(organizerService.findOrganizerById(Long.valueOf(id)), HttpStatus.OK);
+    public ResponseEntity<OrganizerDto> getOrganizerWithIdForEmployer(@PathVariable Long id) {
+        return new ResponseEntity<>(organizerService.findOrganizerById(id), HttpStatus.OK);
     }
 
     @GetMapping("employee/{id}/account")
     @Operation(summary = "Gets employee with given id", description = "Gets employee with given id")
-    public ResponseEntity<EmployeeReviewDto> getEmployeeWithIdForEmployer(@PathVariable String id) {
-        return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(Long.valueOf(id)), HttpStatus.OK);
+    public ResponseEntity<EmployeeReviewDto> getEmployeeWithIdForEmployer(@PathVariable Long id) {
+        return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(id), HttpStatus.OK);
     }
 
     @PostMapping("save-employee/{id}")
-    public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable String id) {
-        savedEmployeeService.addEmployeeToSaved(Long.valueOf(id));
+    public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable Long id) {
+        savedEmployeeService.addEmployeeToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @DeleteMapping("delete-employee/{id}")
-    public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable String id) {
-        savedEmployeeService.deleteEmployeeFromSaved(Long.valueOf(id));
+    public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable Long id) {
+        savedEmployeeService.deleteEmployeeFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
