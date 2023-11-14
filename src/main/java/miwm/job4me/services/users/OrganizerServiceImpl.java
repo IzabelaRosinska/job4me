@@ -1,17 +1,13 @@
 package miwm.job4me.services.users;
 
 import miwm.job4me.exceptions.NoSuchElementFoundException;
-import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
-import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
-import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -71,11 +67,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     @Transactional
     public OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto) {
-        Organizer organizer = userAuthenticationService.getAuthenticatedOrganizer();
-        organizer.setOrganizerName(organizerDto.getOrganizerName());
-        organizer.setDescription(organizerDto.getDescription());
-        organizer.setTelephone(organizerDto.getTelephone());
-        organizer.setEmail(organizerDto.getEmail());
+        Organizer organizer = organizerMapper.organizerDtoToOrganizer(organizerDto, userAuthenticationService.getAuthenticatedOrganizer());
         organizerRepository.save(organizer);
         return organizerDto;
     }
@@ -88,6 +80,4 @@ public class OrganizerServiceImpl implements OrganizerService {
         organizer.setLocked(false);
         organizerRepository.save(organizer);
     }
-
-
 }
