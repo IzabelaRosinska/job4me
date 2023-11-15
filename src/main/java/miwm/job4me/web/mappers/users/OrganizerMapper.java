@@ -1,8 +1,9 @@
 package miwm.job4me.web.mappers.users;
 
-import miwm.job4me.model.fairs.JobFair;
+import miwm.job4me.model.event.JobFair;
 import miwm.job4me.model.users.Organizer;
-import miwm.job4me.web.model.users.JobFairDto;
+import miwm.job4me.web.mappers.event.JobFairMapper;
+import miwm.job4me.web.model.event.JobFairDto;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +44,7 @@ public class OrganizerMapper {
         ArrayList<JobFairDto> fairList = new ArrayList<>();
         if (fairs != null)
             for (JobFair fair : fairs)
-                fairList.add(fairMapper.fairToFairDto(fair));
+                fairList.add(fairMapper.toDto(fair));
         return fairList;
     }
 
@@ -51,7 +52,7 @@ public class OrganizerMapper {
         Set<JobFair> fairList = new HashSet<>();
         if (fairs != null)
             for (JobFairDto fair : fairs)
-                fairList.add(fairMapper.fairDtoToFair(fair));
+                fairList.add(fairMapper.toEntity(fair));
         return fairList;
     }
 }
