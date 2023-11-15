@@ -51,7 +51,7 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public IndustryDto save(Industry industry) {
-        idValidator.validateNoIdFroCreate(industry.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(industry.getId(), ENTITY_NAME);
         industryValidator.validate(industry);
 
         if (existsByName(industry.getName())) {
@@ -70,7 +70,7 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public IndustryDto saveDto(IndustryDto industry) {
-        idValidator.validateNoIdFroCreate(industry.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(industry.getId(), ENTITY_NAME);
         industryValidator.validateDto(industry);
 
         if (existsByName(industry.getName())) {

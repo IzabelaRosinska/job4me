@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,9 +20,10 @@ public class Employer extends Person {
 
     @Builder
     public Employer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole,
-                    String companyName, String description, String displayDescription, String photo, String address) {
+                    String companyName, String contactEmail, String description, String displayDescription, String photo, String address) {
         super(id, telephone, email, password, locked, userRole);
         this.companyName = companyName;
+        this.contactEmail = contactEmail;
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
@@ -31,6 +32,9 @@ public class Employer extends Person {
 
     @Column(name = "company_name", length = 100)
     private String companyName;
+
+    @Column(name = "contact_email", length = 100)
+    private String contactEmail;
 
     @Lob
     @Column(name = "description", length = 500)
@@ -45,6 +49,9 @@ public class Employer extends Person {
 
     @Column(name = "address", length = 100)
     private String address;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employer")
+    private Set<SavedEmployee> savedEmployees = new HashSet<>();
 
     public String toString() {
         return getUsername();

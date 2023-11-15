@@ -62,15 +62,16 @@ public class Employee extends Person {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private Set<Project> projects = new HashSet<>();
 
-    @Lob
     @Length(max = 500)
     @Column(name = "about_me", length = 500)
     private String aboutMe;
 
-    @Lob
     @Length(max = 500)
     @Column(name = "interests", length = 500)
     private String interests;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private Set<SavedEmployee> savedEmployees = new HashSet<>();
 
     public String toString() {
         return getUsername();

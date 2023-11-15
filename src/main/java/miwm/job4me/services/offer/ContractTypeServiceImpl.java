@@ -51,7 +51,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public ContractTypeDto save(ContractType contractType) {
-        idValidator.validateNoIdFroCreate(contractType.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(contractType.getId(), ENTITY_NAME);
         contractTypeValidator.validate(contractType);
 
         if (existsByName(contractType.getName())) {
@@ -63,7 +63,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public ContractTypeDto saveDto(ContractTypeDto contractTypeDto) {
-        idValidator.validateNoIdFroCreate(contractTypeDto.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(contractTypeDto.getId(), ENTITY_NAME);
         contractTypeValidator.validateDto(contractTypeDto);
 
         if (existsByName(contractTypeDto.getName())) {

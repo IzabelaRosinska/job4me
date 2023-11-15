@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
@@ -25,6 +26,15 @@ public class OrganizerServiceImpl implements OrganizerService {
         this.organizerMapper = organizerMapper;
         this.organizerRepository = organizerRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public OrganizerDto findOrganizerById(Long id) {
+        Optional<Organizer> organizer = organizerRepository.findById(id);
+        if(organizer.isPresent())
+            return organizerMapper.organizerToOrganizerDto(organizer.get());
+        else
+            throw new NoSuchElementFoundException();
     }
 
     @Override
@@ -62,11 +72,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     @Transactional
     public OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto) {
-        Organizer organizer = getAuthOrganizer();
-        organizer.setOrganizerName(organizerDto.getOrganizerName());
-        organizer.setDescription(organizerDto.getDescription());
-        organizer.setTelephone(organizerDto.getTelephone());
-        organizer.setEmail(organizerDto.getEmail());
+        Organizer organizer = organizerMapper.organizerDtoToOrganizer(organizerDto, getAuthOrganizer());
         organizerRepository.save(organizer);
         return organizerDto;
     }
@@ -101,4 +107,5 @@ public class OrganizerServiceImpl implements OrganizerService {
         Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
         return organizer;
     }
+
 }

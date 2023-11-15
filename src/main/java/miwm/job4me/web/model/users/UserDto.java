@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @PasswordMatches
 @NoArgsConstructor
 public class UserDto {
+
     @Builder
     public UserDto(String username, String role, String password) {
         this.username = username;

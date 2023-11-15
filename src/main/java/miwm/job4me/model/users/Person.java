@@ -49,7 +49,6 @@ public class Person extends BaseEntity implements UserDetails {
     @Column(name = "locked")
     private boolean locked;
 
-    @NotNull
     @Column(name = "role")
     private SimpleGrantedAuthority userRole;
 

@@ -10,9 +10,9 @@ import static java.lang.annotation.ElementType.*;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = SalaryRangeValidator.class)
-public @interface ValidSalaryRange {
-    String message() default "Invalid JobOffer salary range";
+@Constraint(validatedBy = DateRangeValidator.class)
+public @interface ValidDateRange {
+    String message() default "Invalid JobFair date range";
 
     Class<?>[] groups() default {};
 

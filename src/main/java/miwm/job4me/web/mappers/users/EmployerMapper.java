@@ -9,14 +9,25 @@ public class EmployerMapper {
 
     public EmployerDto employerToEmployerDto(Employer employer) {
         EmployerDto employerDto = new EmployerDto();
-        employerDto.setId(employer.getId().toString());
+        employerDto.setId(employer.getId());
         employerDto.setCompanyName(employer.getCompanyName());
+        employerDto.setEmail(employer.getContactEmail());
         employerDto.setDescription(employer.getDescription());
         employerDto.setDisplayDescription(employer.getDisplayDescription());
         employerDto.setTelephone(employer.getTelephone());
-        employerDto.setEmail(employer.getEmail());
         employerDto.setPhoto(employer.getPhoto());
         employerDto.setAddress(employer.getAddress());
         return employerDto;
+    }
+
+    public Employer employerDtoToEmployer(EmployerDto employerDto, Employer employer) {
+        employer.setCompanyName(employerDto.getCompanyName());
+        employer.setDescription(employerDto.getDescription());
+        employer.setDisplayDescription(employerDto.getDisplayDescription());
+        employer.setTelephone(employerDto.getTelephone());
+        employer.setContactEmail(employerDto.getEmail());
+        employer.setPhoto(employerDto.getPhoto());
+        employer.setAddress(employerDto.getAddress());
+        return employer;
     }
 }

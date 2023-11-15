@@ -52,7 +52,7 @@ public class JobOfferController {
 
     @PutMapping("job-offers/{id}")
     @Operation(summary = "Update job offer", description = "Updates job offer in database")
-    public ResponseEntity<JobOfferDto> updateJobOffer(@PathVariable Long id, JobOfferDto jobOfferDto) {
+    public ResponseEntity<JobOfferDto> updateJobOffer(@PathVariable Long id, @RequestBody JobOfferDto jobOfferDto) {
         return new ResponseEntity<>(jobOfferService.update(id, jobOfferDto), HttpStatus.CREATED);
     }
 
