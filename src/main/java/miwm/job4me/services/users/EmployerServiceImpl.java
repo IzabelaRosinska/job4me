@@ -67,27 +67,40 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public Set<Employer> findAll() {
-        return null;
+        return (Set<Employer>) employerRepository.findAll();
     }
 
     @Override
-    public Employer findById(Long aLong) {
-        return null;
+    public Employer findById(Long id) {
+        Optional<Employer> employer = employerRepository.findById(id);
+        if(employer.isPresent())
+            return employer.get();
+        else
+            throw new NoSuchElementFoundException("Employer with given id not found");
     }
 
     @Override
-    public Employer save(Employer object) {
-        return null;
+    public Employer save(Employer employer) {
+        if(employer != null)
+            return employerRepository.save(employer);
+        else
+            throw new NoSuchElementFoundException("Employer cannot be null");
     }
 
     @Override
-    public void delete(Employer object) {
-
+    public void delete(Employer employer) {
+        if(employer != null)
+            employerRepository.delete(employer);
+        else
+            throw new NoSuchElementFoundException("Employer cannot be null");
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public void deleteById(Long id) {
+        if(findById(id) != null)
+            employerRepository.deleteById(id);
+        else
+            throw new NoSuchElementFoundException("Employer with given id does not exist");
     }
 
     @Override
@@ -96,7 +109,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employerMapper.employerToEmployerDto(employer.get());
         else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException("Employer with given id does not exist");
     }
 
     @Override

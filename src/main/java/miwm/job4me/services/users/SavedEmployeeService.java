@@ -17,8 +17,6 @@ public interface SavedEmployeeService extends BaseService<SavedEmployee, Long> {
 
     Boolean checkIfSaved(Long id);
 
-    Employee findEmployeeById(Long id);
-
     List<EmployeeReviewDto> getSavedEmployees();
     void deleteEmployeeFromSaved(Long id);
     void addEmployeeToSaved(Long id);

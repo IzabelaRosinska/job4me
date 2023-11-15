@@ -9,7 +9,7 @@ public class OrganizerMapper {
 
     public OrganizerDto organizerToOrganizerDto(Organizer organizer) {
         OrganizerDto organizerDto = new OrganizerDto();
-        organizerDto.setId(organizer.getId().toString());
+        organizerDto.setId(organizer.getId());
         organizerDto.setOrganizerName(organizer.getOrganizerName());
         organizerDto.setDescription(organizer.getDescription());
         organizerDto.setTelephone(organizer.getTelephone());

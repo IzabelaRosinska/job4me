@@ -44,11 +44,11 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
     @Override
     public SavedEmployee findById(Long id) {
-        idValidator.validateLongId(id, ENTITY_NAME);
+        idValidator.validateLongId(id, ENTITY_SAVED_EMPLOYEE);
         Optional<SavedEmployee> savedEmployee = savedEmployeeRepository.findById(id);
         if(savedEmployee.isPresent())
             return savedEmployee.get();
-        return null;
+        throw new NoSuchElementFoundException("Saved employee with that id does not exist");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public SavedEmployee save(SavedEmployee savedEmployee) {
         if(savedEmployee != null)
             return savedEmployeeRepository.save(savedEmployee);
-        return null;
+        throw new NoSuchElementFoundException("Given employee is null");
     }
 
     @Override
@@ -64,6 +64,8 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public void delete(SavedEmployee savedEmployee) {
         if(savedEmployeeRepository.findById(savedEmployee.getId()).isPresent())
             savedEmployeeRepository.delete(savedEmployee);
+        else
+            throw new NoSuchElementFoundException("There is no such employee in database");
     }
 
     @Override
@@ -72,6 +74,8 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         idValidator.validateLongId(id, ENTITY_SAVED_EMPLOYEE);
         if(savedEmployeeRepository.findById(id).isPresent())
             savedEmployeeRepository.deleteById(id);
+        else
+            throw new NoSuchElementFoundException("Employee with given id does not exist");
     }
 
     @Override
@@ -94,7 +98,10 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public Optional<SavedEmployee> findByIds(Long employerId, Long employeeId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
         idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
-        return savedEmployeeRepository.findByIds(employerId, employeeId);
+        if(employeeService.findById(employeeId) != null && employerService.findById(employerId) != null)
+            return savedEmployeeRepository.findByIds(employerId, employeeId);
+        else
+            throw new NoSuchElementFoundException("User with given id does not exist");
     }
 
     @Override
@@ -108,20 +115,13 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     }
 
     @Override
-    public Employee findEmployeeById(Long id) {
-        idValidator.validateLongId(id, ENTITY_EMPLOYEE);
-        return employeeService.findById(id);
-    }
-
-
-    @Override
     public EmployeeReviewDto findEmployeeWithIdByUser(Long id) {
         idValidator.validateLongId(id, ENTITY_EMPLOYEE);
         Employee employee = employeeService.findById(id);
         if(employee != null)
             return employeeReviewMapper.toDto(employee, checkIfSaved(id));
         else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException("Employee with given id does not exist");
     }
 
     @Override
@@ -129,12 +129,12 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public void addEmployeeToSaved(Long id) {
         idValidator.validateLongId(id, ENTITY_EMPLOYER);
         Employer employer = employerService.getAuthEmployer();
-        Employee employee = findEmployeeById(id);
+        Employee employee = employeeService.findById(id);
         if(employee != null && employer != null) {
             SavedEmployee savedEmployee = SavedEmployee.builder().employee(employee).employer(employer).build();
             save(savedEmployee);
         } else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException("User does not exist");
     }
 
     @Override
@@ -147,7 +147,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
             if (saved.isPresent()) {
                 delete(saved.get());
             } else
-                throw new NoSuchElementFoundException();
+                throw new NoSuchElementFoundException("Employee with given id does not exist");
         }
     }
 
