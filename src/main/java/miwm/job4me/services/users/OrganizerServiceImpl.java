@@ -6,11 +6,13 @@ import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class OrganizerServiceImpl implements OrganizerService {
 
     private final UserAuthenticationService userAuthenticationService;

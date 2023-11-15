@@ -70,6 +70,9 @@ public class Employee extends Person {
     @Column(name = "interests", length = 500)
     private String interests;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private Set<SavedEmployee> savedEmployees = new HashSet<>();
+
     public String toString() {
         return getUsername();
     }
