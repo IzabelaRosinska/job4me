@@ -85,8 +85,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDto;
     }
 
-
-
     @Override
     public Set<Employee> findAll() {
         return new HashSet<>(employeeRepository
@@ -168,7 +166,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto findEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        System.out.print(employee.get().getId());
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
@@ -263,8 +260,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-
-
         Employee result = employeeRepository.save(employee);
 
         return employeeMapper.toDto(result);
@@ -275,6 +270,4 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         return employee;
     }
-
-
 }

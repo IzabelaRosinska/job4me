@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import miwm.job4me.web.model.users.EmployerDto;
 
+
 public interface EmployeeService extends BaseService<Employee, Long> {
     void strictExistsById(Long id);
 
@@ -45,4 +46,5 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     Optional<Employee> getEmployeeByToken(String token);
 
     void updatePassword(Employee employee, String password);
+
 }
