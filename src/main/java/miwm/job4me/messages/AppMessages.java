@@ -3,6 +3,8 @@ package miwm.job4me.messages;
 public class AppMessages {
 
     public static final String JWT_TOKEN_NAME = "token";
+    public static final String BACKEND_HOST = "http://localhost:8080";
+    public static final String FRONT_HOST = "http://localhost:4200";
 
     public static final String BASIC_LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization";
     public static final String BASIC_LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";

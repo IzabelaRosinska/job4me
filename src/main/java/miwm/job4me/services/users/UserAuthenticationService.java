@@ -33,6 +33,9 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
+
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST;
 
 @Service
 public class UserAuthenticationService implements UserDetailsService {
@@ -178,11 +181,14 @@ public class UserAuthenticationService implements UserDetailsService {
         passwordResetTokenService.save(resetToken);
     }
 
-    public void sendResetToken(Person person, String token, String contextPath) {
+    public void sendResetToken(Person person, String contextPath) {
+        String token = UUID.randomUUID().toString();
+        createPasswordResetTokenForUser(person, token);
+
         String recipientAddress = person.getEmail();
         String subject = "Reset your password";
         String confirmationUrl = contextPath + "/change-password?token=" + token;
-        String text = "Reset your password\n Please click link below to change your password.\n\n" + "http://localhost:8080" + confirmationUrl;
+        String text = "Reset your password\n Please click link below to change your password.\n\n" + BACKEND_HOST + confirmationUrl;
 
         emailService.sendSimpleMessage(recipientAddress, subject, text);
     }

@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
 
+import static miwm.job4me.messages.AppMessages.FRONT_HOST;
+
 @RestController
 public class AuthController {
 
@@ -75,7 +77,7 @@ public class AuthController {
         else if(employer != null)
             userAuthService.unlockEmployer(employer);
 
-        response.sendRedirect("http://localhost:4200/login");
+        response.sendRedirect(FRONT_HOST + "/login");
     }
 
     @PostMapping("/reset-password")
@@ -85,10 +87,7 @@ public class AuthController {
         if (person == null)
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 
-        String token = UUID.randomUUID().toString();
-        String appUrl = request.getContextPath();
-        userAuthService.createPasswordResetTokenForUser(person, token);
-        userAuthService.sendResetToken(person, token, appUrl);
+        userAuthService.sendResetToken(person, request.getContextPath());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
@@ -98,7 +97,7 @@ public class AuthController {
         if(!userAuthService.isValidPasswordResetToken(token))
             response.sendRedirect("/");
         else
-            response.sendRedirect("http://localhost:4200/update-password?token=" + token);
+            response.sendRedirect(FRONT_HOST + "/update-password?token=" + token);
     }
 
     @PostMapping("/save-password")
@@ -110,7 +109,7 @@ public class AuthController {
         Person user = userAuthService.getUserByPasswordResetToken(passwordDto.getToken());
         if(user != null) {
             userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
-            response.sendRedirect("http://localhost:4200/login");
+            response.sendRedirect(FRONT_HOST + "/login");
         } else
             response.sendRedirect("/");
     }
