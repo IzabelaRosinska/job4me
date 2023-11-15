@@ -69,11 +69,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     @Transactional
     public OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto) {
-        Organizer organizer = userAuthenticationService.getAuthenticatedOrganizer();
-        organizer.setOrganizerName(organizerDto.getOrganizerName());
-        organizer.setDescription(organizerDto.getDescription());
-        organizer.setTelephone(organizerDto.getTelephone());
-        organizer.setEmail(organizerDto.getEmail());
+        Organizer organizer = organizerMapper.organizerDtoToOrganizer(organizerDto, userAuthenticationService.getAuthenticatedOrganizer());
         organizerRepository.save(organizer);
         return organizerDto;
     }
@@ -86,6 +82,4 @@ public class OrganizerServiceImpl implements OrganizerService {
         organizer.setLocked(false);
         organizerRepository.save(organizer);
     }
-
-
 }

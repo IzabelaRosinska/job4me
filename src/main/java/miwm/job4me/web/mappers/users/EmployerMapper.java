@@ -19,4 +19,15 @@ public class EmployerMapper {
         employerDto.setAddress(employer.getAddress());
         return employerDto;
     }
+
+    public Employer employerDtoToEmployer(EmployerDto employerDto, Employer employer) {
+        employer.setCompanyName(employerDto.getCompanyName());
+        employer.setDescription(employerDto.getDescription());
+        employer.setDisplayDescription(employerDto.getDisplayDescription());
+        employer.setTelephone(employerDto.getTelephone());
+        employer.setContactEmail(employerDto.getEmail());
+        employer.setPhoto(employerDto.getPhoto());
+        employer.setAddress(employerDto.getAddress());
+        return employer;
+    }
 }

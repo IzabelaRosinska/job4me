@@ -3,6 +3,9 @@ package miwm.job4me.web.model.users;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import miwm.job4me.web.model.event.JobFairDto;
+
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -12,7 +15,7 @@ public class OrganizerDto {
     private Long id;
 
     @Schema(description = "Name of the organizer", example = "ABC")
-    private String organizerName;
+    private String name;
 
     @Schema(description = "Description of the organizer", example = "The biggest organizer in industry")
     private String description;
@@ -21,5 +24,8 @@ public class OrganizerDto {
     private String telephone;
 
     @Schema(description = "Contact email of the organizer", example = "abc@gmail.com")
-    private String email;
+    private String contactEmail;
+  
+    @Schema(description = "List of organized job fairs", example = "{{'id': 3}}")
+    private ArrayList<JobFairDto> fairs;
 }

@@ -51,7 +51,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public LocalizationDto save(Localization Localization) {
-        idValidator.validateNoIdFroCreate(Localization.getId(), ENTITY_CITY);
+        idValidator.validateNoIdForCreate(Localization.getId(), ENTITY_CITY);
         localizationValidator.validate(Localization);
 
         if (existsByCity(Localization.getCity())) {
@@ -70,7 +70,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public LocalizationDto saveDto(LocalizationDto localization) {
-        idValidator.validateNoIdFroCreate(localization.getId(), ENTITY_CITY);
+        idValidator.validateNoIdForCreate(localization.getId(), ENTITY_CITY);
         localizationValidator.validateDto(localization);
 
         localization.setId(null);

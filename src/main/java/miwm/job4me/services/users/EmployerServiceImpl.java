@@ -39,17 +39,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Transactional
     public EmployerDto saveEmployerDetails(EmployerDto employerDto) {
         Employer employer = userAuthService.getAuthenticatedEmployer();
-        employer.setCompanyName(employerDto.getCompanyName());
-        employer.setContactEmail(employer.getContactEmail());
-        employer.setDescription(employerDto.getDescription());
-        employer.setDisplayDescription(employerDto.getDisplayDescription());
-        employer.setTelephone(employerDto.getTelephone());
-        employer.setEmail(employerDto.getEmail());
-        if(employerDto.getPhoto() != null)
-            employer.setPhoto(employerDto.getPhoto());
-        if(employerDto.getAddress() != null)
-        employer.setAddress(employerDto.getAddress());
-        employerRepository.save(employer);
+        employerRepository.save(employerMapper.employerDtoToEmployer(employerDto, employer));
         return employerDto;
     }
 
