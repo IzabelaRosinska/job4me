@@ -51,7 +51,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public LevelDto save(Level level) {
-        idValidator.validateNoIdFroCreate(level.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(level.getId(), ENTITY_NAME);
         levelValidator.validate(level);
 
         if (existsByName(level.getName())) {
@@ -70,7 +70,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public LevelDto saveDto(LevelDto level) {
-        idValidator.validateNoIdFroCreate(level.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(level.getId(), ENTITY_NAME);
         levelValidator.validateDto(level);
 
         if (existsByName(level.getName())) {

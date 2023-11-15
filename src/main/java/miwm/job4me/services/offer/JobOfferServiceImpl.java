@@ -70,7 +70,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public JobOfferDto save(JobOffer jobOffer) {
-        idValidator.validateNoIdFroCreate(jobOffer.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(jobOffer.getId(), ENTITY_NAME);
         jobOfferValidator.validate(jobOffer);
 
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
@@ -97,7 +97,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public JobOfferDto saveDto(JobOfferDto jobOfferDto) {
-        idValidator.validateNoIdFroCreate(jobOfferDto.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(jobOfferDto.getId(), ENTITY_NAME);
 
         return saveJobOfferDto(jobOfferDto);
     }

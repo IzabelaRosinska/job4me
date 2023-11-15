@@ -65,7 +65,7 @@ public class ExtraSkillServiceImpl implements ExtraSkillService {
 
     @Override
     public ExtraSkillDto save(ExtraSkill extraSkill) {
-        idValidator.validateNoIdFroCreate(extraSkill.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(extraSkill.getId(), ENTITY_NAME);
         extraSkillValidator.validate(extraSkill);
         return extraSkillMapper.toDto(extraSkillRepository.save(extraSkill));
     }
