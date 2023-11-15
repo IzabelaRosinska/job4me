@@ -80,4 +80,12 @@ public class ExceptionMessages {
     public static String idMustBeNullForCreate(String className) {
         return String.format("%s id must be null for create.", className);
     }
+
+    public static String dateStartAfterDateEnd(String className, String dateStartFieldName, String dateEndFieldName) {
+        return String.format("%s %s must be before %s.", className, dateStartFieldName, dateEndFieldName);
+    }
+
+    public static String dateFromPast(String className, String dateFieldName) {
+        return String.format("%s %s must be from future.", className, dateFieldName);
+    }
 }

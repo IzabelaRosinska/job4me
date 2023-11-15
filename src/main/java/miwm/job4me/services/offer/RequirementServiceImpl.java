@@ -65,7 +65,7 @@ public class RequirementServiceImpl implements RequirementService {
 
     @Override
     public RequirementDto save(Requirement requirement) {
-        idValidator.validateNoIdFroCreate(requirement.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(requirement.getId(), ENTITY_NAME);
         requirementValidator.validate(requirement);
         return requirementMapper.toDto(requirementRepository.save(requirement));
     }

@@ -13,7 +13,6 @@ public class EmployerDto {
     private String displayDescription;
     private String telephone;
     private String email;
-    private String contactEmail;
     private String photo;
     private String address;
 }

@@ -52,7 +52,7 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
 
     @Override
     public EmploymentFormDto save(EmploymentForm employmentForm) {
-        idValidator.validateNoIdFroCreate(employmentForm.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(employmentForm.getId(), ENTITY_NAME);
         employmentFormValidator.validate(employmentForm);
 
         if (existsByName(employmentForm.getName())) {
@@ -71,7 +71,7 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
 
     @Override
     public EmploymentFormDto saveDto(EmploymentFormDto employmentForm) {
-        idValidator.validateNoIdFroCreate(employmentForm.getId(), ENTITY_NAME);
+        idValidator.validateNoIdForCreate(employmentForm.getId(), ENTITY_NAME);
         employmentFormValidator.validateDto(employmentForm);
 
         if (existsByName(employmentForm.getName())) {
