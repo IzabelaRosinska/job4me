@@ -8,6 +8,7 @@ import miwm.job4me.model.cv.Education;
 import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
+import miwm.job4me.model.offer.SavedOffer;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -72,6 +73,9 @@ public class Employee extends Person {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private Set<SavedEmployee> savedEmployees = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private Set<SavedOffer> savedOffers = new HashSet<>();
 
     public String toString() {
         return getUsername();

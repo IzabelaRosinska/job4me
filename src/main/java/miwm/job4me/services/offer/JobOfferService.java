@@ -15,4 +15,6 @@ public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, L
     void strictExistsById(Long id);
 
     JobOfferDto update(Long id, JobOfferDto jobOffer);
+
+    JobOffer findOfferById(Long id);
 }
