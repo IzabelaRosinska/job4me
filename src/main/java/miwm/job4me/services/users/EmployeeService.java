@@ -38,4 +38,6 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     SkillDto saveSkill(Skill skill);
 
     EmployeeDto findEmployeeById(Long id);
+
+    Employee getAuthEmployee();
 }

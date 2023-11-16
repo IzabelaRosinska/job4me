@@ -10,5 +10,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query(nativeQuery = true, value = "select * from employees where email = ?1")
     Employee selectEmployeeByUsername(String username);
-
 }

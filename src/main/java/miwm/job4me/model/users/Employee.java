@@ -73,6 +73,10 @@ public class Employee extends Person {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private Set<SavedEmployee> savedEmployees = new HashSet<>();
 
+    @Size(max = 20)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private Set<SavedEmployer> savedEmployers = new HashSet<>();
+
     public String toString() {
         return getUsername();
     }
