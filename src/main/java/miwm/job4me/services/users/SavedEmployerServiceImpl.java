@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
@@ -54,7 +55,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
     public SavedEmployer save(SavedEmployer savedEmployer) {
         if(savedEmployer != null)
             return savedEmployerRepository.save(savedEmployer);
-        throw new IllegalArgumentException("Given employer is null");
+        throw new InvalidArgumentException("Given employer is null");
     }
 
     @Override
@@ -144,6 +145,6 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         if(employer != null)
             return employerReviewMapper.employerToEmployerReviewDto(employer, checkIfSaved(id));
         else
-            throw new NoSuchElementFoundException("Employee with given id does not exist");
+            throw new NoSuchElementFoundException("Employer with given id does not exist");
     }
 }
