@@ -1,9 +1,10 @@
-package miwm.job4me.model;
+package miwm.job4me.model.token;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
