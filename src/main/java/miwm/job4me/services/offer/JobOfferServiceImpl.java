@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -155,5 +156,15 @@ public class JobOfferServiceImpl implements JobOfferService {
         requirementService.deleteAllByJobOfferId(id);
         extraSkillService.deleteAllByJobOfferId(id);
         return saveJobOfferDto(jobOffer);
+    }
+
+    @Override
+    public JobOffer findOfferById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
+        Optional<JobOffer> jobOffer = jobOfferRepository.findById(id);
+        if(jobOffer.isPresent())
+            return jobOffer.get();
+        else
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 }

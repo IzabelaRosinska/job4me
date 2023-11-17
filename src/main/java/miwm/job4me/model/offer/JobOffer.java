@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -40,6 +41,9 @@ public class JobOffer extends BaseEntity {
         this.duties = duties;
         this.description = description;
     }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "offer")
+    private Set<SavedOffer> savedOffers = new HashSet<>();
 
     @NotBlank(message = "JobOffer name cannot be blank")
     @Size(min = 1, max = 120, message = "JobOffer name must be between 1 and 120 characters")
