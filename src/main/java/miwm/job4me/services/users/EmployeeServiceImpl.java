@@ -269,7 +269,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(result);
     }
 
-
     @Override
     public Employee getAuthEmployee(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

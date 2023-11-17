@@ -1,10 +1,8 @@
 package miwm.job4me.services.users;
 
-import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.SavedEmployee;
 import miwm.job4me.services.BaseService;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
-
 import java.util.List;
 import java.util.Optional;
 
