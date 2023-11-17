@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @Table(name = "job_fairs")
 public class JobFair extends BaseEntity {
     @Builder
-    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo) {
+    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
         super(id);
         this.name = name;
         this.organizer = organizer;
@@ -32,6 +33,7 @@ public class JobFair extends BaseEntity {
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
+        this.jobFairEmployerParticipation = jobFairEmployerParticipation;
     }
 
     @NotBlank
@@ -70,4 +72,7 @@ public class JobFair extends BaseEntity {
     @Size(max = 13000, message = "JobFair photo must be less than 13000 characters")
     @Column(name = "photo", length = 13000)
     private String photo;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobFair")
+    private Set<JobFairEmployerParticipation> jobFairEmployerParticipation;
 }
