@@ -7,6 +7,7 @@ import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.model.users.EmployerDto;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,11 +61,11 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employer;
         else
-            return null;
+            throw new NoSuchElementFoundException("Employer with given token not found");
     }
 
     @Override
-    public void updatePassword(Employer employer, String password) {
+    public void updatePassword(Employer employer, @Length(min = 5, max = 15) String password) {
         employer.setPassword(passwordEncoder.encode(password));
         save(employer);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
 import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.AuthException;
+import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.messages.AppMessages;
@@ -217,7 +218,7 @@ public class UserAuthenticationService implements UserDetailsService {
             return employer.get();
         else if(organizer.isPresent())
             return organizer.get();
-        return null;
+        throw new NoSuchElementFoundException("Employer with given id not found token");
     }
 
     public void changeUserPassword(Person person, String password) {

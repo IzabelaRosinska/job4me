@@ -23,12 +23,14 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -154,11 +156,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee.isPresent())
             return employee;
         else
-            return null;
+            throw new NoSuchElementFoundException("No employee with given token");
     }
 
     @Override
-    public void updatePassword(Employee employee, String password) {
+    public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
         employee.setPassword(passwordEncoder.encode(password));
         save(employee);
     }
@@ -169,7 +171,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException("No employee with given id");
     }
 
     @Override

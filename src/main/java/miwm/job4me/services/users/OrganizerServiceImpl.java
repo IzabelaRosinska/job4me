@@ -5,6 +5,7 @@ import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.model.users.OrganizerDto;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,12 +93,12 @@ public class OrganizerServiceImpl implements OrganizerService {
         if(organizer.isPresent())
             return organizer;
         else
-            return null;
+            throw new NoSuchElementFoundException("Organizer with given token id not found");
     }
 
     @Override
     @Transactional
-    public void updatePassword(Organizer organizer, String password) {
+    public void updatePassword(Organizer organizer, @Length(min = 5, max = 15) String password) {
         organizer.setPassword(passwordEncoder.encode(password));
         save(organizer);
     }
