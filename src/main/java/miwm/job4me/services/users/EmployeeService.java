@@ -13,6 +13,10 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.springframework.stereotype.Service;
+import java.util.Optional;
+import miwm.job4me.web.model.users.EmployerDto;
+
 
 public interface EmployeeService extends BaseService<Employee, Long> {
     void strictExistsById(Long id);
@@ -38,4 +42,9 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     SkillDto saveSkill(Skill skill);
 
     EmployeeDto findEmployeeById(Long id);
+
+    Optional<Employee> getEmployeeByToken(String token);
+
+    void updatePassword(Employee employee, String password);
+
 }

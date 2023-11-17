@@ -1,6 +1,6 @@
 package miwm.job4me.services;
 
-import miwm.job4me.web.mappers.users.*;
+import miwm.job4me.web.mappers.users.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

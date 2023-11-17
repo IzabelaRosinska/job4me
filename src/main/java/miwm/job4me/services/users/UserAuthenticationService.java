@@ -2,41 +2,41 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
+import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.AuthException;
+import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.messages.AppMessages;
 import miwm.job4me.messages.UserMessages;
-import miwm.job4me.model.VerificationToken;
+import miwm.job4me.model.token.PasswordResetToken;
+import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.model.users.Person;
-import miwm.job4me.repositories.users.EmployeeRepository;
-import miwm.job4me.repositories.users.EmployerRepository;
-import miwm.job4me.repositories.users.OrganizerRepository;
-import miwm.job4me.repositories.users.VerificationTokenRepository;
+import miwm.job4me.repositories.users.*;
 import miwm.job4me.security.ApplicationUserRole;
+import miwm.job4me.services.tokens.PasswordResetTokenService;
 import miwm.job4me.web.model.users.RegisterData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST;
 
 @Service
 public class UserAuthenticationService implements UserDetailsService {
@@ -44,20 +44,30 @@ public class UserAuthenticationService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
     private final EmployerRepository employerRepository;
     private final OrganizerRepository organizerRepository;
-    private final VerificationTokenRepository tokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
+    private final EMailService emailService;
+    private final EmployeeService employeeService;
+    private final EmployerService employerService;
+    private final OrganizerService organizerService;
+    private final PasswordResetTokenService passwordResetTokenService;
 
-    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository tokenRepository, JwtConfig jwtConfig, SecretKey secretKey) {
+    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService, EmployeeService employeeService, EmployerService employerService, OrganizerService organizerService, PasswordResetTokenService passwordResetTokenService) {
         this.employeeRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.employerRepository = employerRepository;
         this.organizerRepository = organizerRepository;
-        this.tokenRepository = tokenRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
+        this.emailService = emailService;
+        this.employeeService = employeeService;
+        this.employerService = employerService;
+        this.organizerService = organizerService;
+        this.passwordResetTokenService = passwordResetTokenService;
     }
 
     @Override
@@ -107,7 +117,7 @@ public class UserAuthenticationService implements UserDetailsService {
     }
 
     public VerificationToken getVerificationToken(String VerificationToken) {
-        return tokenRepository.findByToken(VerificationToken);
+        return verificationTokenRepository.findByToken(VerificationToken);
     }
 
 
@@ -164,7 +174,60 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public void createVerificationToken(Person person, String token) {
         VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();
-        tokenRepository.save(myToken);
+        verificationTokenRepository.save(myToken);
+    }
+
+    public void createPasswordResetTokenForUser(Person person, String token) {
+        PasswordResetToken resetToken = PasswordResetToken.builder().token(token).person(person).build();
+        passwordResetTokenService.save(resetToken);
+    }
+
+    public void sendResetToken(Person person, String contextPath) {
+        String token = UUID.randomUUID().toString();
+        createPasswordResetTokenForUser(person, token);
+
+        String recipientAddress = person.getEmail();
+        String subject = "Reset your password";
+        String confirmationUrl = contextPath + "/change-password?token=" + token;
+        String text = "Reset your password\n Please click link below to change your password.\n\n" + BACKEND_HOST + confirmationUrl;
+
+        emailService.sendSimpleMessage(recipientAddress, subject, text);
+    }
+
+    public boolean isValidPasswordResetToken(String token) {
+        PasswordResetToken passToken = passwordResetTokenService.findByToken(token);
+        return isTokenFound(passToken) && (!isTokenExpired(passToken));
+    }
+
+    private boolean isTokenFound(PasswordResetToken passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(PasswordResetToken passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getExpiryDate().before(cal.getTime());
+    }
+
+    public Person getUserByPasswordResetToken(String token) {
+        Optional<Employee> employee = employeeService.getEmployeeByToken(token);
+        Optional<Employer> employer = employerService.getEmployerByToken(token);
+        Optional<Organizer> organizer = organizerService.getOrganizerByToken(token);
+        if(employee.isPresent())
+            return employee.get();
+        else if(employer.isPresent())
+            return employer.get();
+        else if(organizer.isPresent())
+            return organizer.get();
+        throw new NoSuchElementFoundException("Employer with given id not found token");
+    }
+
+    public void changeUserPassword(Person person, String password) {
+        if(person.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())) {
+            employeeService.updatePassword((Employee)person, password);
+        }else if(person.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
+            employerService.updatePassword((Employer)person, password);
+        }else if(person.getUserRole().equals(ApplicationUserRole.ORGANIZER_ENABLED.getUserRole()))
+            organizerService.updatePassword((Organizer)person, password);
     }
 
     public Person registerLinkedinUser(JsonNode jsonNode) {
