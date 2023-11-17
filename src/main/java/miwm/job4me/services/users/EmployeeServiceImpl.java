@@ -23,6 +23,8 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -267,7 +269,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(result);
     }
 
-    private Employee getAuthEmployee() {
+    @Override
+    public Employee getAuthEmployee(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         return employee;

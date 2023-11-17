@@ -43,8 +43,9 @@ public interface EmployeeService extends BaseService<Employee, Long> {
 
     EmployeeDto findEmployeeById(Long id);
 
+    Employee getAuthEmployee();
+
     Optional<Employee> getEmployeeByToken(String token);
 
     void updatePassword(Employee employee, String password);
-
 }
