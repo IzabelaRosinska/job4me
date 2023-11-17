@@ -1,5 +1,6 @@
 package miwm.job4me.services.offer;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.model.offer.SavedOffer;
@@ -56,7 +57,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public SavedOffer save(SavedOffer savedOffer) {
         if(savedOffer != null)
             return savedOfferRepository.save(savedOffer);
-        throw new IllegalArgumentException("Given offer is null");
+        throw new InvalidArgumentException("Given offer is null");
     }
 
     @Override
