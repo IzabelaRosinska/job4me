@@ -25,9 +25,14 @@ import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -40,28 +45,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ExperienceService experienceService;
     private final ProjectService projectService;
     private final SkillService skillService;
-    private final UserAuthenticationService userAuthenticationService;
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
+    private final PasswordEncoder passwordEncoder;
     private final String ENTITY_NAME = "Employee";
 
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, UserAuthenticationService userAuthenticationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
-        this.userAuthenticationService = userAuthenticationService;
+
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public EmployeeDto getEmployeeDetails() {
-        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        Employee employee = getAuthEmployee();
         EmployeeDto employeeDto = employeeMapper.toDto(employee);
         return employeeDto;
     }
@@ -69,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto) {
-        Employee employee = userAuthenticationService.getAuthenticatedEmployee();
+        Employee employee = getAuthEmployee();
         employee.setFirstName(employeeDto.getFirstName());
         employee.setLastName(employeeDto.getLastName());
         employee.setContactEmail(employeeDto.getEmail());
@@ -101,7 +107,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto findCurrentEmployee() {
-        Long currentEmployeeId = userAuthenticationService.getAuthenticatedUser().getId();
+        Long currentEmployeeId = getAuthEmployee().getId();
 
         return employeeRepository
                 .findById(currentEmployeeId)
@@ -147,12 +153,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Optional<Employee> getEmployeeByToken(String token) {
+        Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
+        if(employee.isPresent())
+            return employee;
+        else
+            throw new NoSuchElementFoundException("No employee with given token");
+    }
+
+    @Override
+    public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
+        employee.setPassword(passwordEncoder.encode(password));
+        save(employee);
+    }
+  
+    @Override
     public EmployeeDto findEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException("No employee with given id");
     }
 
     @Override
