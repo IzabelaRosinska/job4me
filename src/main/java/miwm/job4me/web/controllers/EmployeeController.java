@@ -7,7 +7,6 @@ import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.web.model.offer.JobOfferReviewDto;
 import miwm.job4me.web.model.users.EmployeeDto;
-import miwm.job4me.web.model.users.EmployerDto;
 import miwm.job4me.web.model.users.OrganizerDto;
 import miwm.job4me.services.users.SavedEmployerService;
 import miwm.job4me.web.model.users.*;
@@ -22,15 +21,15 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final SavedEmployerService savedEmployerService;
     private final OrganizerService organizerService;
     private final SavedOfferService savedOfferService;
+    private final SavedEmployerService savedEmployerService;
 
-    public EmployeeController(EmployeeService employeeService, EmployerService employerService, OrganizerService organizerService, SavedOfferService savedOfferService) {
+    public EmployeeController(EmployeeService employeeService, OrganizerService organizerService, SavedOfferService savedOfferService, SavedEmployerService savedEmployerService) {
         this.employeeService = employeeService;
-        this.savedEmployerService = savedEmployerService;
         this.organizerService = organizerService;
         this.savedOfferService = savedOfferService;
+        this.savedEmployerService = savedEmployerService;
     }
 
     @GetMapping("account")
@@ -72,12 +71,6 @@ public class EmployeeController {
         return new ResponseEntity<>(organizerService.findOrganizerById(id), HttpStatus.OK);
     }
 
-    @GetMapping("employer/{id}/account")
-    @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")
-    public ResponseEntity<EmployerDto> getEmployerWithIdForEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(employerService.findEmployerById(id), HttpStatus.OK);
-    }
-
     @GetMapping("job-offers/{id}")
     @Operation(summary = "Get job offer by id", description = "Gets job offer from database by id")
     public ResponseEntity<JobOfferReviewDto> getJobOfferReviewById(@PathVariable Long id) {
@@ -94,6 +87,7 @@ public class EmployeeController {
     public ResponseEntity<?> deleteOfferForEmployee(@PathVariable Long id) {
         savedOfferService.deleteOfferFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 
     @GetMapping("employer/{id}/account")
     @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")  
