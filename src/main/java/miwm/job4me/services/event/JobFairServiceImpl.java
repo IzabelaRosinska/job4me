@@ -4,7 +4,9 @@ import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.event.JobFair;
+import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.event.JobFairRepository;
+import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.validators.entity.event.JobFairValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.event.JobFairMapper;
@@ -22,13 +24,15 @@ public class JobFairServiceImpl implements JobFairService {
     private final JobFairMapper jobFairMapper;
     private final JobFairValidator jobFairValidator;
     private final IdValidator idValidator;
+    private final OrganizerService organizerService;
     private final String ENTITY_NAME = "JobFair";
 
-    public JobFairServiceImpl(JobFairRepository jobFairRepository, JobFairMapper jobFairMapper, JobFairValidator jobFairValidator, IdValidator idValidator) {
+    public JobFairServiceImpl(JobFairRepository jobFairRepository, JobFairMapper jobFairMapper, JobFairValidator jobFairValidator, IdValidator idValidator, OrganizerService organizerService) {
         this.jobFairRepository = jobFairRepository;
         this.jobFairMapper = jobFairMapper;
         this.jobFairValidator = jobFairValidator;
         this.idValidator = idValidator;
+        this.organizerService = organizerService;
     }
 
     @Override
@@ -51,6 +55,8 @@ public class JobFairServiceImpl implements JobFairService {
     @Override
     public JobFairDto save(JobFair jobFair) {
         idValidator.validateNoIdForCreate(jobFair.getId(), ENTITY_NAME);
+        Organizer organizer = organizerService.getAuthOrganizer();
+        jobFair.setOrganizer(organizer);
         jobFairValidator.validate(jobFair);
         return jobFairMapper.toDto(jobFairRepository.save(jobFair));
     }
@@ -81,6 +87,8 @@ public class JobFairServiceImpl implements JobFairService {
     @Override
     public JobFairDto saveDto(JobFairDto jobFairDto) {
         idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
+        Organizer organizer = organizerService.getAuthOrganizer();
+        jobFairDto.setOrganizerId(organizer.getId());
         jobFairValidator.validateDto(jobFairDto);
         return jobFairMapper.toDto(jobFairRepository.save(jobFairMapper.toEntity(jobFairDto)));
     }
@@ -103,7 +111,15 @@ public class JobFairServiceImpl implements JobFairService {
         idValidator.validateLongId(id, ENTITY_NAME);
         strictExistsById(id);
         jobFair.setId(id);
+        Organizer organizer = organizerService.getAuthOrganizer();
+        jobFair.setOrganizerId(organizer.getId());
         jobFairValidator.validateDto(jobFair);
         return jobFairMapper.toDto(jobFairRepository.save(jobFairMapper.toEntity(jobFair)));
+    }
+
+    @Override
+    public String getContactEmail(Long id) {
+        JobFairDto jobFairDto = findById(id);
+        return organizerService.getContactEmail(jobFairDto.getOrganizerId());
     }
 }

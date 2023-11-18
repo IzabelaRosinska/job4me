@@ -4,7 +4,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.repositories.offer.JobOfferRepository;
-import miwm.job4me.repositories.offer.RequirementRepository;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
@@ -34,9 +33,8 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final ExtraSkillService extraSkillService;
 
     private final String ENTITY_NAME = "JobOffer";
-    private final RequirementRepository requirementRepository;
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, RequirementRepository requirementRepository) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
@@ -48,7 +46,6 @@ public class JobOfferServiceImpl implements JobOfferService {
         this.localizationService = localizationService;
         this.requirementService = requirementService;
         this.extraSkillService = extraSkillService;
-        this.requirementRepository = requirementRepository;
     }
 
     @Override
@@ -162,7 +159,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     public JobOffer findOfferById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         Optional<JobOffer> jobOffer = jobOfferRepository.findById(id);
-        if(jobOffer.isPresent())
+        if (jobOffer.isPresent())
             return jobOffer.get();
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
