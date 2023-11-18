@@ -15,4 +15,6 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
     void strictExistsById(Long id);
 
     JobFairDto update(Long id, JobFairDto jobFair);
+
+    String getContactEmail(Long id);
 }

@@ -2,9 +2,11 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
+import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployerMapper;
 import miwm.job4me.web.model.users.EmployerDto;
 import org.hibernate.validator.constraints.Length;
@@ -12,21 +14,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
-
     private final EmployerMapper employerMapper;
     private final EmployerRepository employerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IdValidator idValidator;
+    private final String ENTITY_NAME = "Employer";
 
-    public EmployerServiceImpl(EmployerMapper employerMapper, EmployerRepository employerRepository, PasswordEncoder passwordEncoder) {
+    public EmployerServiceImpl(EmployerMapper employerMapper, EmployerRepository employerRepository, PasswordEncoder passwordEncoder, IdValidator idValidator) {
         this.employerMapper = employerMapper;
         this.employerRepository = employerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.idValidator = idValidator;
     }
 
     @Override
@@ -108,7 +113,7 @@ public class EmployerServiceImpl implements EmployerService {
         else
             throw new NoSuchElementFoundException("Employer with given id does not exist");
     }
-  
+
     @Override
     public EmployerDto findEmployerById(Long id) {
         Optional<Employer> employer = employerRepository.findById(id);
@@ -123,5 +128,18 @@ public class EmployerServiceImpl implements EmployerService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
         return employer;
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
+        return employerRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if (!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
     }
 }
