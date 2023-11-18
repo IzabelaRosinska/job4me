@@ -8,6 +8,12 @@ import org.springframework.data.domain.Page;
 public interface JobFairEmployerParticipationService extends BaseDtoService<JobFairEmployerParticipation, JobFairEmployerParticipationDto, Long> {
     Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size);
 
+    Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size);
+
+    Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size);
+
+    Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId);
+
     JobFairEmployerParticipationDto saveDto(JobFairEmployerParticipationDto jobFairDto);
 
     boolean existsById(Long id);

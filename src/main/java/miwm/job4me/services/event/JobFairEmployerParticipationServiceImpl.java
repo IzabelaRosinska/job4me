@@ -8,8 +8,10 @@ import miwm.job4me.messages.EmailMessages;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.event.JobFairEmployerParticipation;
 import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.event.JobFairEmployerParticipationRepository;
 import miwm.job4me.services.users.EmployerService;
+import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.validators.entity.event.JobFairEmployerParticipationValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.event.JobFairEmployerParticipationMapper;
@@ -29,18 +31,20 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     private final JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator;
     private final JobFairService jobFairService;
     private final EmployerService employerService;
+    private final OrganizerService organizerService;
     private final IdValidator idValidator;
     private final String ENTITY_NAME = "JobFairEmployerParticipation";
     private final EMailService eMailService;
     private final JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository;
 
     @Builder
-    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipation, JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper, JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator, JobFairService jobFairService, EmployerService employerService, IdValidator idValidator, EMailService eMailService, JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository) {
+    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipation, JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper, JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator, JobFairService jobFairService, EmployerService employerService, OrganizerService organizerService, IdValidator idValidator, EMailService eMailService, JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository) {
         this.jobFairEmployerParticipation = jobFairEmployerParticipation;
         this.jobFairEmployerParticipationMapper = jobFairEmployerParticipationMapper;
         this.jobFairEmployerParticipationValidator = jobFairEmployerParticipationValidator;
         this.jobFairService = jobFairService;
         this.employerService = employerService;
+        this.organizerService = organizerService;
         this.idValidator = idValidator;
         this.eMailService = eMailService;
         this.jobFairEmployerParticipationRepository = jobFairEmployerParticipationRepository;
@@ -95,6 +99,33 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size) {
         return jobFairEmployerParticipationRepository
                 .findAllByFilters(PageRequest.of(page, size))
+                .map(jobFairEmployerParticipationMapper::toDto);
+    }
+
+    @Override
+    public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size) {
+        Employer employer = employerService.getAuthEmployer();
+
+        return jobFairEmployerParticipationRepository
+                .findAllByEmployerId(PageRequest.of(page, size), employer.getId())
+                .map(jobFairEmployerParticipationMapper::toDto);
+    }
+
+    @Override
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size) {
+        Organizer organizer = organizerService.getAuthOrganizer();
+
+        return jobFairEmployerParticipationRepository
+                .findByJobFair_Organizer_Id(PageRequest.of(page, size), organizer.getId())
+                .map(jobFairEmployerParticipationMapper::toDto);
+    }
+
+    @Override
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId) {
+        Organizer organizer = organizerService.getAuthOrganizer();
+
+        return jobFairEmployerParticipationRepository
+                .findByJobFair_IdAndJobFair_Organizer_Id(PageRequest.of(page, size), organizer.getId(), jobFairId)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
