@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,14 +54,20 @@ public class LinkedInController {
     }
 
     @GetMapping("/signin")
-    public void signInLinkedIn(HttpServletResponse response) throws IOException {
+    public void signInLinkedIn(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + BASIC_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
+
         response.sendRedirect(URL);
     }
 
     @GetMapping("/authorized")
-    public void linkedinAuthorized(HttpServletResponse response, @RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) throws IOException, InterruptedException, URISyntaxException {
+    public void linkedinAuthorized(HttpServletResponse response, HttpServletRequest request, @RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) throws IOException, InterruptedException, URISyntaxException {
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
@@ -71,6 +78,11 @@ public class LinkedInController {
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
             final HttpGet httpGet = new HttpGet(BASIC_LINKEDIN_PROFILE_URL);
             httpGet.addHeader("Authorization", "Bearer " + accessToken);
+            httpGet.addHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+            httpGet.addHeader("Access-Control-Allow-Credentials", "true");
+            httpGet.addHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
+            httpGet.addHeader("Access-Control-Max-Age", "3600");
+            httpGet.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
 
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
@@ -89,6 +101,13 @@ public class LinkedInController {
                     tokenCookie.setPath("/");
                     response.addCookie(tokenCookie);
                 }
+
+                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
+                response.setHeader("Access-Control-Max-Age", "3600");
+                response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
+
 
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                     employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
