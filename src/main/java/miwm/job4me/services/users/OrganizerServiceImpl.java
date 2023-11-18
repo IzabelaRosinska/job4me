@@ -1,6 +1,7 @@
 package miwm.job4me.services.users;
 
 import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,6 +24,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     private final OrganizerMapper organizerMapper;
     private final OrganizerRepository organizerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String ENTITY_NAME = "Organizer";
 
     public OrganizerServiceImpl(OrganizerMapper organizerMapper, OrganizerRepository organizerRepository, PasswordEncoder passwordEncoder) {
         this.organizerMapper = organizerMapper;
@@ -35,17 +38,42 @@ public class OrganizerServiceImpl implements OrganizerService {
         if(organizer.isPresent())
             return organizerMapper.organizerToOrganizerDto(organizer.get());
         else
-            throw new NoSuchElementFoundException();
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return organizerRepository.existsById(id);
+    }
+
+    @Override
+    public void strictExistsById(Long id) {
+        if(!existsById(id)) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
+    }
+
+    @Override
+    public String getContactEmail(Long id) {
+        Organizer organizer = findById(id);
+
+        if (organizer.getContactEmail() == null) {
+            return organizer.getEmail();
+        } else {
+            return organizer.getContactEmail();
+        }
     }
 
     @Override
     public Set<Organizer> findAll() {
-        return null;
+        return new HashSet<>(organizerRepository.findAll());
     }
 
     @Override
     public Organizer findById(Long aLong) {
-        return null;
+        return organizerRepository
+                .findById(aLong)
+                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, aLong)));
     }
 
     @Override
@@ -103,7 +131,8 @@ public class OrganizerServiceImpl implements OrganizerService {
         save(organizer);
     }
 
-    private Organizer getAuthOrganizer() {
+    @Override
+    public Organizer getAuthOrganizer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
         return organizer;
