@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long> {
     Page<JobFairDto> findAllByFilters(int page, int size);
 
+    Page<JobFairDto> findAllOfOrganizerByFilters(int page, int size);
+
     JobFairDto saveDto(JobFairDto jobFairDto);
 
     boolean existsById(Long id);

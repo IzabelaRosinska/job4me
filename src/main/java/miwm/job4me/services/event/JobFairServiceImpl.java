@@ -85,6 +85,15 @@ public class JobFairServiceImpl implements JobFairService {
     }
 
     @Override
+    public Page<JobFairDto> findAllOfOrganizerByFilters(int page, int size) {
+        Organizer organizer = organizerService.getAuthOrganizer();
+
+        return jobFairRepository
+                .findAllByOrganizerId(PageRequest.of(page, size), organizer.getId())
+                .map(jobFairMapper::toDto);
+    }
+
+    @Override
     public JobFairDto saveDto(JobFairDto jobFairDto) {
         idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
         Organizer organizer = organizerService.getAuthOrganizer();
