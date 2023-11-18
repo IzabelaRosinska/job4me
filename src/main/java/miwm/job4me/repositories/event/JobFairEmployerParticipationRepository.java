@@ -13,4 +13,10 @@ public interface JobFairEmployerParticipationRepository extends JpaRepository<Jo
     Page<JobFairEmployerParticipation> findAllByFilters(Pageable pageable);
 
     boolean existsByJobFair_IdAndEmployer_Id(Long id, Long id1);
+
+    Page<JobFairEmployerParticipation> findAllByEmployerId(Pageable pageable, Long employerId);
+
+    Page<JobFairEmployerParticipation> findByJobFair_IdAndJobFair_Organizer_Id(Pageable pageable, Long jobFairId, Long organizerId);
+
+    Page<JobFairEmployerParticipation> findByJobFair_Organizer_Id(Pageable pageable, Long organizerId);
 }
