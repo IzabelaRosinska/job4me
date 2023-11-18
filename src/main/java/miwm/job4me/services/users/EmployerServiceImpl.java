@@ -1,6 +1,7 @@
 package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employer;
@@ -124,9 +125,14 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public Employer getAuthEmployer(){
+    public Employer getAuthEmployer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
+
+        if (employer == null) {
+            throw new AuthException(ExceptionMessages.unauthorized(ENTITY_NAME));
+        }
+
         return employer;
     }
 
