@@ -17,10 +17,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "job_fair_employer_participation")
 public class JobFairEmployerParticipation extends BaseEntity {
     @Builder
-    public JobFairEmployerParticipation(Long id, JobFair jobFair, Employer employer) {
+    public JobFairEmployerParticipation(Long id, JobFair jobFair, Employer employer, boolean isAccepted) {
         super(id);
         this.jobFair = jobFair;
         this.employer = employer;
+        this.isAccepted = isAccepted;
     }
 
     @NotNull(message = "JobFairEmployerParticipation jobFairId cannot be null")
@@ -32,5 +33,9 @@ public class JobFairEmployerParticipation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id")
     private Employer employer;
+
+    @NotNull(message = "JobFairEmployerParticipation isAccepted cannot be null")
+    @Column(name = "is_accepted")
+    private boolean isAccepted;
 
 }

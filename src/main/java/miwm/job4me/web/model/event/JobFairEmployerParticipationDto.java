@@ -15,4 +15,7 @@ public class JobFairEmployerParticipationDto {
 
     @Schema(description = "Id of the employer", example = "1")
     private Long employerId;
+
+    @Schema(description = "Is employer request to participate in job fair accepted", example = "true")
+    private boolean isAccepted;
 }

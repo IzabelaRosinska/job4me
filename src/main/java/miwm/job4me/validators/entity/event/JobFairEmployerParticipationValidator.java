@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JobFairEmployerParticipationValidator {
-    private String ENTITY_NAME = "JobFairEmployerParticipation";
-    private String JOB_FAIR_ENTITY_NAME = "JobFair";
-    private String EMPLOYER_ENTITY_NAME = "Employer";
+    private final String ENTITY_NAME = "JobFairEmployerParticipation";
+    private final String JOB_FAIR_ENTITY_NAME = "JobFair";
+    private final String EMPLOYER_ENTITY_NAME = "Employer";
 
     public void validate(JobFairEmployerParticipation jobFairEmployerParticipation) {
         if (jobFairEmployerParticipation == null) {
@@ -23,6 +23,10 @@ public class JobFairEmployerParticipationValidator {
 
         if (jobFairEmployerParticipation.getEmployer() == null) {
             throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, EMPLOYER_ENTITY_NAME));
+        }
+
+        if (jobFairEmployerParticipation.isAccepted()) {
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "isAccepted"));
         }
 
     }
@@ -38,6 +42,10 @@ public class JobFairEmployerParticipationValidator {
 
         if (jobFairEmployerParticipation.getEmployerId() == null) {
             throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, EMPLOYER_ENTITY_NAME));
+        }
+
+        if (jobFairEmployerParticipation.isAccepted()) {
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "isAccepted"));
         }
     }
 }
