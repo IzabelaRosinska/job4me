@@ -5,6 +5,8 @@ import miwm.job4me.jwt.JwtTokenVerifier;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import miwm.job4me.messages.AppMessages;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,8 +18,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 
-
+@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecretKey secretKey;
@@ -31,8 +34,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        http.cors().and()
+                .csrf().disable();
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and().csrf().disable()
+                    .and()
                     .addFilterBefore(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JwtTokenVerifier(secretKey), BasicAuthenticationFilter.class)
 
@@ -63,6 +69,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                                 }
                             })
                           );
+        http.headers().frameOptions().disable();
     }
 
     @Bean
