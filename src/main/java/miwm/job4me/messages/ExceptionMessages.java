@@ -9,6 +9,10 @@ public class ExceptionMessages {
         return String.format("%s with id %d not found", className, id);
     }
 
+    public static String unauthorized(String className) {
+        return String.format("%s unauthorized", className);
+    }
+
     public static String elementNotFoundByName(String className, String name) {
         return String.format("%s with name %s not found", className, name);
     }

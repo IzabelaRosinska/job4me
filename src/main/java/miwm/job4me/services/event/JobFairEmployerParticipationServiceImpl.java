@@ -6,6 +6,7 @@ import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.EmailMessages;
 import miwm.job4me.messages.ExceptionMessages;
+import miwm.job4me.model.event.JobFair;
 import miwm.job4me.model.event.JobFairEmployerParticipation;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
@@ -15,7 +16,6 @@ import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.validators.entity.event.JobFairEmployerParticipationValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.event.JobFairEmployerParticipationMapper;
-import miwm.job4me.web.model.event.JobFairDto;
 import miwm.job4me.web.model.event.JobFairEmployerParticipationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -166,20 +166,20 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     @Override
     public JobFairEmployerParticipationDto createParticipationRequestByEmployer(Long jobFairId) {
         Employer employer = employerService.getAuthEmployer();
-        JobFairDto jobFair = jobFairService.findById(jobFairId);
+        JobFair jobFair = jobFairService.getJobFairById(jobFairId);
 
-        JobFairEmployerParticipationDto jobFairEmployerParticipation = new JobFairEmployerParticipationDto();
-        jobFairEmployerParticipation.setJobFairId(jobFairId);
-        jobFairEmployerParticipation.setEmployerId(employer.getId());
+        JobFairEmployerParticipation jobFairEmployerParticipation = new JobFairEmployerParticipation();
+        jobFairEmployerParticipation.setJobFair(jobFair);
+        jobFairEmployerParticipation.setEmployer(employer);
 
-        sendRequestEmailToOrganizer(employer, jobFair);
-        return saveDto(jobFairEmployerParticipation);
+        sendRequestEmailToOrganizer(employer, jobFairId, jobFair.getName());
+        return save(jobFairEmployerParticipation);
     }
 
-    private void sendRequestEmailToOrganizer(Employer employer, JobFairDto jobFair) {
-        String recipient = jobFairService.getContactEmail(jobFair.getId());
-        String subject = EmailMessages.employerJobFairParticipationRequestEmailSubject(employer.getCompanyName(), jobFair.getName());
-        String text = EmailMessages.employerJobFairParticipationRequestEmailText(employer.getCompanyName(), jobFair.getId(), jobFair.getName());
+    private void sendRequestEmailToOrganizer(Employer employer, Long jobFairId, String jobFairName) {
+        String recipient = jobFairService.getContactEmail(jobFairId);
+        String subject = EmailMessages.employerJobFairParticipationRequestEmailSubject(employer.getCompanyName(), jobFairName);
+        String text = EmailMessages.employerJobFairParticipationRequestEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
         eMailService.sendSimpleMessage(recipient, subject, text);
     }

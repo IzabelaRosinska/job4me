@@ -16,19 +16,25 @@ public class JobFairEmployerParticipationController {
         this.jobFairEmployerParticipationService = jobFairEmployerParticipationService;
     }
 
-    @PostMapping("job-fairs/{jobFairId}/employer-participation")
+    @PostMapping("employer/job-fairs/{jobFairId}/employer-participation")
     @Operation(summary = "Create job fair employer participation request", description = "Creates new job fair employer participation in database requested by employer")
     public ResponseEntity<JobFairEmployerParticipationDto> createJobFairEmployerParticipationRequest(@PathVariable Long jobFairId) {
         return new ResponseEntity<>(jobFairEmployerParticipationService.createParticipationRequestByEmployer(jobFairId), HttpStatus.CREATED);
     }
 
-    @GetMapping("employer-participation/{requestId}")
+    @GetMapping("employer/employer-participation/{requestId}")
     @Operation(summary = "Get job fair employer participation request", description = "Gets job fair employer participation from database by job fair id")
-    public ResponseEntity<JobFairEmployerParticipationDto> getJobFairEmployerParticipationRequest(@PathVariable Long requestId) {
+    public ResponseEntity<JobFairEmployerParticipationDto> getJobFairEmployerParticipationRequestForEmployer(@PathVariable Long requestId) {
         return new ResponseEntity<>(jobFairEmployerParticipationService.findById(requestId), HttpStatus.OK);
     }
 
-    @GetMapping("organizers/employer-participation")
+    @GetMapping("organizer/employer-participation/{requestId}")
+    @Operation(summary = "Get job fair employer participation request", description = "Gets job fair employer participation from database by job fair id")
+    public ResponseEntity<JobFairEmployerParticipationDto> getJobFairEmployerParticipationRequestForOrganizer(@PathVariable Long requestId) {
+        return new ResponseEntity<>(jobFairEmployerParticipationService.findById(requestId), HttpStatus.OK);
+    }
+
+    @GetMapping("organizer/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for organizer by status", description = "Gets job fair employer participation requests from database by status")
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForOrganizer(
             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +50,7 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("organizers/job-fairs/{jobFairId}/employer-participation")
+    @GetMapping("organizer/job-fairs/{jobFairId}/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for organizer by job fair id and status", description = "Gets job fair employer participation requests from database by job fair id and status")
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByJobFairIdAndStatusForOrganizer(
             @RequestParam(defaultValue = "0") int page,
@@ -61,7 +67,7 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("employers/employer-participation")
+    @GetMapping("employer/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for employer by status", description = "Gets job fair employer participation requests from database by status")
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForEmployer(
             @RequestParam(defaultValue = "0") int page,

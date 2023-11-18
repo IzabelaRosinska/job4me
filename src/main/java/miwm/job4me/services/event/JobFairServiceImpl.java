@@ -46,6 +46,7 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public JobFairDto findById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         return jobFairRepository
                 .findById(id)
                 .map(jobFairMapper::toDto)
@@ -130,5 +131,13 @@ public class JobFairServiceImpl implements JobFairService {
     public String getContactEmail(Long id) {
         JobFairDto jobFairDto = findById(id);
         return organizerService.getContactEmail(jobFairDto.getOrganizerId());
+    }
+
+    @Override
+    public JobFair getJobFairById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
+        return jobFairRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 }

@@ -16,13 +16,13 @@ public class JobFairController {
         this.jobFairService = jobFairService;
     }
 
-    @PostMapping("organizers/job-fairs")
+    @PostMapping("organizer/job-fairs")
     @Operation(summary = "Create job fair", description = "Creates new job fair in database")
     public ResponseEntity<JobFairDto> createJobFair(@RequestBody JobFairDto jobFairDto) {
         return new ResponseEntity<>(jobFairService.saveDto(jobFairDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("job-fairs")
+    @GetMapping("organizer/job-fairs")
     @Operation(summary = "Get all job fairs by filters", description = "Gets all job fairs from database by filters")
     public ResponseEntity<Page<JobFairDto>> getAllJobFairs(
             @RequestParam(defaultValue = "0") int page,
@@ -36,7 +36,7 @@ public class JobFairController {
         return new ResponseEntity<>(jobFairDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("organizers/job-fairs")
+    @GetMapping("organizer/job-fairs")
     @Operation(summary = "Get all job fairs of organizer by filters", description = "Gets all job fairs of signed in organizer from database by filters")
     public ResponseEntity<Page<JobFairDto>> getAllEmployerJobFairs(
             @RequestParam(defaultValue = "0") int page,
@@ -56,13 +56,13 @@ public class JobFairController {
         return new ResponseEntity<>(jobFairService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("organizers/job-fairs/{id}")
+    @PutMapping("organizer/job-fairs/{id}")
     @Operation(summary = "Update job fair", description = "Updates job fair in database")
     public ResponseEntity<JobFairDto> updateJobFair(@PathVariable Long id, @RequestBody JobFairDto jobFairDto) {
         return new ResponseEntity<>(jobFairService.update(id, jobFairDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("organizers/job-fairs/{id}")
+    @DeleteMapping("organizer/job-fairs/{id}")
     @Operation(summary = "Delete job fair", description = "Deletes job fair from database")
     public ResponseEntity<Void> deleteJobFair(@PathVariable Long id) {
         jobFairService.deleteById(id);
