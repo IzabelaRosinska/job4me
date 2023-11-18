@@ -13,6 +13,7 @@ public class JobFairEmployerParticipationMapper {
         jobFairEmployerParticipationDto.setId(jobFairEmployerParticipation.getId());
         jobFairEmployerParticipationDto.setJobFairId(jobFairEmployerParticipation.getJobFair().getId());
         jobFairEmployerParticipationDto.setEmployerId(jobFairEmployerParticipation.getEmployer().getId());
+        jobFairEmployerParticipationDto.setAccepted(jobFairEmployerParticipation.isAccepted());
         return jobFairEmployerParticipationDto;
     }
 
@@ -21,6 +22,7 @@ public class JobFairEmployerParticipationMapper {
         jobFairEmployerParticipation.setId(jobFairEmployerParticipationDto.getId());
         jobFairEmployerParticipation.setJobFair(JobFair.builder().id(jobFairEmployerParticipationDto.getJobFairId()).build());
         jobFairEmployerParticipation.setEmployer(Employer.builder().id(jobFairEmployerParticipationDto.getEmployerId()).build());
+        jobFairEmployerParticipation.setAccepted(jobFairEmployerParticipationDto.isAccepted());
         return jobFairEmployerParticipation;
     }
 }
