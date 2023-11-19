@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
-    @Query("SELECT j FROM JobOffer j " +
+    @Query("SELECT DISTINCT j FROM JobOffer j " +
             "JOIN j.localizations loc " +
             "JOIN j.employmentForms empForm " +
             "JOIN j.levels level " +

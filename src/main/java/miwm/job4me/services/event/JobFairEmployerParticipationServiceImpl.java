@@ -122,7 +122,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         Organizer organizer = organizerService.getAuthOrganizer();
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_IdAndJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), organizer.getId(), jobFairId, status)
+                .findByJobFair_IdAndJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), jobFairId, status)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
