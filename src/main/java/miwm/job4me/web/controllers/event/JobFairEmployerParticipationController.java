@@ -47,8 +47,8 @@ public class JobFairEmployerParticipationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean status,
-            @RequestParam(required = false) String jobFairName,
-            @RequestParam(required = false) String employerCompanyName) {
+            @RequestParam(defaultValue = "") String jobFairName,
+            @RequestParam(defaultValue = "") String employerCompanyName) {
 
         Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndFilters(page, size, status, jobFairName, employerCompanyName);
 
@@ -62,11 +62,11 @@ public class JobFairEmployerParticipationController {
     @GetMapping("organizer/job-fairs/{jobFairId}/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for organizer by job fair id and status", description = "Gets job fair employer participation requests from database by job fair id and status")
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByJobFairIdAndStatusForOrganizer(
+            @PathVariable Long jobFairId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @PathVariable Long jobFairId,
             @RequestParam(required = false) Boolean status,
-            @RequestParam(required = false) String employerCompanyName) {
+            @RequestParam(defaultValue = "") String employerCompanyName) {
 
         Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndJobFairAndFilters(page, size, jobFairId, status, employerCompanyName);
 
@@ -83,7 +83,7 @@ public class JobFairEmployerParticipationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean status,
-            @RequestParam(required = false) String jobFairName) {
+            @RequestParam(defaultValue = "") String jobFairName) {
 
         Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByEmployerAndFilters(page, size, status, jobFairName);
 
