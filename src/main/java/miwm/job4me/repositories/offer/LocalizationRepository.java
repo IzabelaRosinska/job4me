@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocalizationRepository extends JpaRepository<Localization, Long> {
-    @Query("SELECT l FROM Localization l WHERE :city IS NULL OR LOWER(l.city) LIKE LOWER(:city)")
+    @Query("SELECT l FROM Localization l WHERE :city IS NULL OR LOWER(l.city) LIKE LOWER(CONCAT('%', :city, '%'))")
     Page<Localization> findByCityContaining(Pageable pageable, String city);
 
     boolean existsByCity(String city);

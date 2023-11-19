@@ -25,7 +25,7 @@ public class LocalizationController {
     @GetMapping("localizations")
     @Operation(summary = "Get all localizations", description = "Gets all localizations from database")
     public ResponseEntity<Page<LocalizationDto>> getAllLocalizations(
-            @RequestParam(required = false) String city,
+            @RequestParam(defaultValue = "") String city,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

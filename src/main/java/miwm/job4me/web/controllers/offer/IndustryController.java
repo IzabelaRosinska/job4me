@@ -25,7 +25,7 @@ public class IndustryController {
     @GetMapping("industries")
     @Operation(summary = "Get all industries with pagination and filter", description = "Gets all industries from database with pagination and filter (by name)")
     public ResponseEntity<Page<IndustryDto>> getAllIndustries(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
