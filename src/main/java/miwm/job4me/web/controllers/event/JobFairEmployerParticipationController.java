@@ -28,6 +28,13 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationService.findById(requestId), HttpStatus.OK);
     }
 
+    @DeleteMapping("employer/employer-participation/{requestId}")
+    @Operation(summary = "Delete job fair employer participation", description = "Deletes job fair employer participation in database")
+    public ResponseEntity<Void> deleteJobFairEmployerParticipationForEmployer(@PathVariable Long requestId) {
+        jobFairEmployerParticipationService.deleteParticipationRequestByEmployer(requestId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("organizer/employer-participation/{requestId}")
     @Operation(summary = "Get job fair employer participation request", description = "Gets job fair employer participation from database by job fair id")
     public ResponseEntity<JobFairEmployerParticipationDto> getJobFairEmployerParticipationRequestForOrganizer(@PathVariable Long requestId) {

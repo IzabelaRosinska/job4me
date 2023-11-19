@@ -32,6 +32,8 @@ public interface JobFairEmployerParticipationService extends BaseDtoService<JobF
 
     void deleteParticipationRequestByOrganizer(Long jobFairParticipationId);
 
+    void deleteParticipationRequestByEmployer(Long jobFairParticipationId);
+
     JobFairEmployerParticipation getJobFairEmployerParticipationById(Long jobFairParticipationId);
 
 }

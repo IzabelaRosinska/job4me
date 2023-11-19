@@ -206,6 +206,14 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
+    public void deleteParticipationRequestByEmployer(Long jobFairParticipationId) {
+        JobFairEmployerParticipation jobFairEmployerParticipation = getJobFairEmployerParticipationById(jobFairParticipationId);
+
+        deleteById(jobFairParticipationId);
+        sendDeleteEmailToOrganizer(jobFairEmployerParticipation.getEmployer(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getJobFair().getName());
+    }
+
+    @Override
     public JobFairEmployerParticipation getJobFairEmployerParticipationById(Long jobFairParticipationId) {
         idValidator.validateLongId(jobFairParticipationId, ENTITY_NAME);
         return jobFairEmployerParticipationRepository
@@ -241,6 +249,14 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String recipient = getEmployerContactEmail(employer);
         String subject = EmailMessages.employerJobFairParticipationDeleteEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.employerJobFairParticipationDeleteEmailText(employer.getCompanyName(), jobFairId, jobFairName);
+
+        eMailService.sendSimpleMessage(recipient, subject, text);
+    }
+
+    private void sendDeleteEmailToOrganizer(Employer employer, Long jobFairId, String jobFairName) {
+        String recipient = jobFairService.getContactEmail(jobFairId);
+        String subject = EmailMessages.organizerJobFairParticipationDeleteEmailSubject(employer.getCompanyName(), jobFairName);
+        String text = EmailMessages.organizerJobFairParticipationDeleteEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
         eMailService.sendSimpleMessage(recipient, subject, text);
     }
