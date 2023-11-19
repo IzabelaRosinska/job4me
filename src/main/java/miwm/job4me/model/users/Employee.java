@@ -25,7 +25,7 @@ import java.util.Set;
 public class Employee extends Person {
 
     @Builder
-    public Employee(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole, String firstName, String lastName, String contactEmail, Set<Education> education, Set<Experience> experience, Set<Skill> skills, Set<Project> projects, String aboutMe, String interests) {
+    public Employee(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole, String firstName, String lastName, String contactEmail, Set<Education> education, Set<Experience> experience, Set<Skill> skills, Set<Project> projects, String aboutMe, String interests, boolean isEmbeddingCurrent) {
         super(id, telephone, email, password, locked, userRole);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,6 +36,7 @@ public class Employee extends Person {
         this.projects = projects;
         this.aboutMe = aboutMe;
         this.interests = interests;
+        this.isEmbeddingCurrent = isEmbeddingCurrent;
     }
 
     @Column(name = "first_name", length = 100)
@@ -79,6 +80,18 @@ public class Employee extends Person {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private Set<SavedEmployer> savedEmployers = new HashSet<>();
+
+    @Column(name = "is_embedding_current")
+    private Boolean isEmbeddingCurrent;
+
+    @Column(name = "experience_embeddings", length = 3072)
+    private byte[] experienceEmbeddings;
+
+    @Column(name = "skills_embeddings", length = 3072)
+    private byte[] skillsEmbeddings;
+
+    @Column(name = "description_embeddings", length = 3072)
+    private byte[] descriptionEmbeddings;
 
     public String toString() {
         return getUsername();
