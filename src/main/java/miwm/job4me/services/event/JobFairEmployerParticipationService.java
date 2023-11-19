@@ -6,7 +6,7 @@ import miwm.job4me.web.model.event.JobFairEmployerParticipationDto;
 import org.springframework.data.domain.Page;
 
 public interface JobFairEmployerParticipationService extends BaseDtoService<JobFairEmployerParticipation, JobFairEmployerParticipationDto, Long> {
-    Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size, Boolean status, String jobFairName, String employerCompanyName);
+    Page<JobFairEmployerParticipation> findAllByFilters(int page, int size, Boolean status, Long jobFairId, Long employerId, String jobFairName, String employerCompanyName);
 
     Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size, Boolean status, String jobFairName);
 
