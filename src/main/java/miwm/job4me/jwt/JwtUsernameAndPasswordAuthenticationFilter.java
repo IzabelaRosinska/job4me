@@ -76,5 +76,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         tokenCookie.setHttpOnly(true);
         response.addCookie(tokenCookie);
         response.getWriter().write(authResult.getAuthorities().toArray()[0].toString().replace("ROLE_", ""));
+        response.getWriter().write(";" + token);
     }
 }
