@@ -46,9 +46,11 @@ public class JobFairEmployerParticipationController {
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForOrganizer(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) Boolean status) {
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(required = false) String jobFairName,
+            @RequestParam(required = false) String employerCompanyName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndFilters(page, size, status);
+        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndFilters(page, size, status, jobFairName, employerCompanyName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -63,9 +65,10 @@ public class JobFairEmployerParticipationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @PathVariable Long jobFairId,
-            @RequestParam(required = false) Boolean status) {
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(required = false) String employerCompanyName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndJobFairAndFilters(page, size, jobFairId, status);
+        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndJobFairAndFilters(page, size, jobFairId, status, employerCompanyName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -79,9 +82,10 @@ public class JobFairEmployerParticipationController {
     public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForEmployer(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) Boolean status) {
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(required = false) String jobFairName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByEmployerAndFilters(page, size, status);
+        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByEmployerAndFilters(page, size, status, jobFairName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -1,6 +1,5 @@
 package miwm.job4me.services.event;
 
-import lombok.Builder;
 import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
@@ -26,20 +25,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerParticipationService {
-    private final JobFairEmployerParticipationRepository jobFairEmployerParticipation;
+    private final JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository;
     private final JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper;
     private final JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator;
     private final JobFairService jobFairService;
     private final EmployerService employerService;
     private final OrganizerService organizerService;
     private final IdValidator idValidator;
-    private final String ENTITY_NAME = "JobFairEmployerParticipation";
     private final EMailService eMailService;
-    private final JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository;
+    private final String ENTITY_NAME = "JobFairEmployerParticipation";
 
-    @Builder
-    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipation, JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper, JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator, JobFairService jobFairService, EmployerService employerService, OrganizerService organizerService, IdValidator idValidator, EMailService eMailService, JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository) {
-        this.jobFairEmployerParticipation = jobFairEmployerParticipation;
+    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository, JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper, JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator, JobFairService jobFairService, EmployerService employerService, OrganizerService organizerService, IdValidator idValidator, EMailService eMailService) {
+        this.jobFairEmployerParticipationRepository = jobFairEmployerParticipationRepository;
         this.jobFairEmployerParticipationMapper = jobFairEmployerParticipationMapper;
         this.jobFairEmployerParticipationValidator = jobFairEmployerParticipationValidator;
         this.jobFairService = jobFairService;
@@ -47,12 +44,11 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         this.organizerService = organizerService;
         this.idValidator = idValidator;
         this.eMailService = eMailService;
-        this.jobFairEmployerParticipationRepository = jobFairEmployerParticipationRepository;
     }
 
     @Override
     public Set<JobFairEmployerParticipationDto> findAll() {
-        return jobFairEmployerParticipation
+        return jobFairEmployerParticipationRepository
                 .findAll()
                 .stream()
                 .map(jobFairEmployerParticipationMapper::toDto)
@@ -93,36 +89,36 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size, Boolean status) {
+    public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size, Boolean status, String jobFairName, String employerCompanyName) {
         return jobFairEmployerParticipationRepository
-                .findAllByIsAccepted(PageRequest.of(page, size), status)
+                .findAllByFilters(PageRequest.of(page, size), status, jobFairName, employerCompanyName)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size, Boolean status) {
+    public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size, Boolean status, String jobFairName) {
         Employer employer = employerService.getAuthEmployer();
 
         return jobFairEmployerParticipationRepository
-                .findAllByEmployerIdAndIsAccepted(PageRequest.of(page, size), employer.getId(), status)
+                .findAllByEmployerIdAndByFilters(PageRequest.of(page, size), employer.getId(), status, jobFairName)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size, Boolean status) {
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size, Boolean status, String jobFairName, String employerCompanyName) {
         Organizer organizer = organizerService.getAuthOrganizer();
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), organizer.getId(), status)
+                .findByJobFair_Organizer_IdAndByFilters(PageRequest.of(page, size), organizer.getId(), status, jobFairName, employerCompanyName)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId, Boolean status) {
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId, Boolean status, String employerCompanyName) {
         Organizer organizer = organizerService.getAuthOrganizer();
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_IdAndJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), jobFairId, status)
+                .findByJobFair_IdAndJobFair_Organizer_IdAndByFilters(PageRequest.of(page, size), jobFairId, status, employerCompanyName)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 

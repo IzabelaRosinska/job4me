@@ -13,8 +13,14 @@ public class JobFairEmployerParticipationDto {
     @Schema(description = "Id of the job fair", example = "1")
     private Long jobFairId;
 
+    @Schema(description = "Name of the job fair", example = "Akademickie targi pracy")
+    private String jobFairName;
+
     @Schema(description = "Id of the employer", example = "1")
     private Long employerId;
+
+    @Schema(description = "Name of the employer", example = "Google")
+    private String employerCompanyName;
 
     @Schema(description = "Is employer request to participate in job fair accepted", example = "true")
     private Boolean isAccepted;

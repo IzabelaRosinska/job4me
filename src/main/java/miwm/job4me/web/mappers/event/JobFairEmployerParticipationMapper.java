@@ -12,7 +12,9 @@ public class JobFairEmployerParticipationMapper {
         JobFairEmployerParticipationDto jobFairEmployerParticipationDto = new JobFairEmployerParticipationDto();
         jobFairEmployerParticipationDto.setId(jobFairEmployerParticipation.getId());
         jobFairEmployerParticipationDto.setJobFairId(jobFairEmployerParticipation.getJobFair().getId());
+        jobFairEmployerParticipationDto.setJobFairName(jobFairEmployerParticipation.getJobFair().getName());
         jobFairEmployerParticipationDto.setEmployerId(jobFairEmployerParticipation.getEmployer().getId());
+        jobFairEmployerParticipationDto.setEmployerCompanyName(jobFairEmployerParticipation.getEmployer().getCompanyName());
         jobFairEmployerParticipationDto.setIsAccepted(jobFairEmployerParticipation.getIsAccepted());
         return jobFairEmployerParticipationDto;
     }
