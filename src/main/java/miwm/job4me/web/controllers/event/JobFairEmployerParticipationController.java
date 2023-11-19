@@ -82,4 +82,24 @@ public class JobFairEmployerParticipationController {
 
         return new ResponseEntity<>(jobFairEmployerParticipationDtoPage, HttpStatus.OK);
     }
+
+    @PutMapping("organizer/employer-participation/{requestId}/accept")
+    @Operation(summary = "Accept job fair employer participation request", description = "Accepts job fair employer participation request in database")
+    public ResponseEntity<JobFairEmployerParticipationDto> acceptJobFairEmployerParticipationRequest(@PathVariable Long requestId) {
+        return new ResponseEntity<>(jobFairEmployerParticipationService.acceptParticipationRequestByOrganizer(requestId), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("organizer/employer-participation/{requestId}/reject")
+    @Operation(summary = "Reject job fair employer participation request", description = "Rejects job fair employer participation request in database")
+    public ResponseEntity<Void> rejectJobFairEmployerParticipationRequest(@PathVariable Long requestId) {
+        jobFairEmployerParticipationService.rejectParticipationRequestByOrganizer(requestId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("organizer/employer-participation/{requestId}")
+    @Operation(summary = "Delete job fair employer participation", description = "Deletes job fair employer participation in database")
+    public ResponseEntity<Void> deleteJobFairEmployerParticipation(@PathVariable Long requestId) {
+        jobFairEmployerParticipationService.deleteParticipationRequestByOrganizer(requestId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

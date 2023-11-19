@@ -22,7 +22,7 @@ public class JobFairController {
         return new ResponseEntity<>(jobFairService.saveDto(jobFairDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("organizer/job-fairs")
+    @GetMapping("job-fairs")
     @Operation(summary = "Get all job fairs by filters", description = "Gets all job fairs from database by filters")
     public ResponseEntity<Page<JobFairDto>> getAllJobFairs(
             @RequestParam(defaultValue = "0") int page,
@@ -38,7 +38,7 @@ public class JobFairController {
 
     @GetMapping("organizer/job-fairs")
     @Operation(summary = "Get all job fairs of organizer by filters", description = "Gets all job fairs of signed in organizer from database by filters")
-    public ResponseEntity<Page<JobFairDto>> getAllEmployerJobFairs(
+    public ResponseEntity<Page<JobFairDto>> getAllOrganizerJobFairs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<JobFairDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFilters(page, size);
