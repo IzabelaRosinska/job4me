@@ -36,6 +36,6 @@ public class JobFairEmployerParticipation extends BaseEntity {
 
     @NotNull(message = "JobFairEmployerParticipation isAccepted cannot be null")
     @Column(name = "is_accepted")
-    private boolean isAccepted;
+    private Boolean isAccepted;
 
 }

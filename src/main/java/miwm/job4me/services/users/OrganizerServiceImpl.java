@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Organizer;
@@ -35,7 +36,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     public OrganizerDto findOrganizerById(Long id) {
         Optional<Organizer> organizer = organizerRepository.findById(id);
-        if(organizer.isPresent())
+        if (organizer.isPresent())
             return organizerMapper.organizerToOrganizerDto(organizer.get());
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
@@ -48,7 +49,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public void strictExistsById(Long id) {
-        if(!existsById(id)) {
+        if (!existsById(id)) {
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
         }
     }
@@ -118,7 +119,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     public Optional<Organizer> getOrganizerByToken(String token) {
         Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);
-        if(organizer.isPresent())
+        if (organizer.isPresent())
             return organizer;
         else
             throw new NoSuchElementFoundException("Organizer with given token id not found");
@@ -135,6 +136,12 @@ public class OrganizerServiceImpl implements OrganizerService {
     public Organizer getAuthOrganizer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
+
+        if (organizer == null) {
+            System.out.println("Organizer is null");
+            throw new AuthException(ExceptionMessages.unauthorized(ENTITY_NAME));
+        }
+
         return organizer;
     }
 
