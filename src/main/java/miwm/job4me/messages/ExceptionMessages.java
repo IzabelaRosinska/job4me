@@ -92,4 +92,8 @@ public class ExceptionMessages {
     public static String dateFromPast(String className, String dateFieldName) {
         return String.format("%s %s must be from future.", className, dateFieldName);
     }
+
+    public static String stringFilterNotNull(String className, String fieldName) {
+        return String.format("%s %s filter can not be null. Please use empty string if no filtering needed.", className, fieldName);
+    }
 }
