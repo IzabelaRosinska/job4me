@@ -37,7 +37,15 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     private final EMailService eMailService;
     private final String ENTITY_NAME = "JobFairEmployerParticipation";
 
-    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository, JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper, JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator, JobFairService jobFairService, EmployerService employerService, OrganizerService organizerService, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator, EMailService eMailService) {
+    public JobFairEmployerParticipationServiceImpl(JobFairEmployerParticipationRepository jobFairEmployerParticipationRepository,
+                                                   JobFairEmployerParticipationMapper jobFairEmployerParticipationMapper,
+                                                   JobFairEmployerParticipationValidator jobFairEmployerParticipationValidator,
+                                                   JobFairService jobFairService,
+                                                   EmployerService employerService,
+                                                   OrganizerService organizerService,
+                                                   IdValidator idValidator,
+                                                   FilterArgumentValidator filterArgumentValidator,
+                                                   EMailService eMailService) {
         this.jobFairEmployerParticipationRepository = jobFairEmployerParticipationRepository;
         this.jobFairEmployerParticipationMapper = jobFairEmployerParticipationMapper;
         this.jobFairEmployerParticipationValidator = jobFairEmployerParticipationValidator;
@@ -92,30 +100,33 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size, Boolean status, String jobFairName, String employerCompanyName) {
+    public Page<JobFairEmployerParticipation> findAllByFilters(int page, int size, Boolean status, Long jobFairId, Long employerId, String jobFairName, String employerCompanyName) {
         filterArgumentValidator.validateStringFilter(jobFairName, ENTITY_NAME, "jobFairName");
         filterArgumentValidator.validateStringFilter(employerCompanyName, ENTITY_NAME, "employerCompanyName");
 
+        if (jobFairId != null) {
+            jobFairService.strictExistsById(jobFairId);
+        }
+
+        if (employerId != null) {
+            employerService.strictExistsById(employerId);
+        }
+
         return jobFairEmployerParticipationRepository
-                .findAllByFilters(PageRequest.of(page, size), status, jobFairName, employerCompanyName)
-                .map(jobFairEmployerParticipationMapper::toDto);
+                .findAllByFilters(PageRequest.of(page, size), status, jobFairId, employerId, jobFairName, employerCompanyName);
     }
 
     @Override
     public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size, Boolean status, String jobFairName) {
         Employer employer = employerService.getAuthEmployer();
-        filterArgumentValidator.validateStringFilter(jobFairName, ENTITY_NAME, "jobFairName");
 
-        return jobFairEmployerParticipationRepository
-                .findAllByEmployerIdAndByFilters(PageRequest.of(page, size), employer.getId(), status, jobFairName)
+        return findAllByFilters(page, size, status, null, employer.getId(), jobFairName, "")
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
     public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size, Boolean status, String jobFairName, String employerCompanyName) {
         Organizer organizer = organizerService.getAuthOrganizer();
-        filterArgumentValidator.validateStringFilter(jobFairName, ENTITY_NAME, "jobFairName");
-        filterArgumentValidator.validateStringFilter(employerCompanyName, ENTITY_NAME, "employerCompanyName");
 
         return jobFairEmployerParticipationRepository
                 .findByJobFair_Organizer_IdAndByFilters(PageRequest.of(page, size), organizer.getId(), status, jobFairName, employerCompanyName)

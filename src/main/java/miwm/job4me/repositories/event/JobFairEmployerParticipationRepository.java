@@ -12,9 +12,16 @@ import org.springframework.stereotype.Repository;
 public interface JobFairEmployerParticipationRepository extends JpaRepository<JobFairEmployerParticipation, Long> {
     @Query("SELECT DISTINCT j FROM JobFairEmployerParticipation j " +
             "WHERE (:isAccepted IS NULL OR j.isAccepted = :isAccepted)" +
+            "AND (:jobFairId IS NULL OR j.jobFair.id = :jobFairId) " +
+            "AND (:employerId IS NULL OR j.employer.id = :employerId) " +
             "AND (:jobFairName IS NULL OR LOWER(j.jobFair.name) LIKE LOWER(CONCAT('%', :jobFairName, '%')))" +
             "AND (:employerCompanyName IS NULL OR LOWER(j.employer.companyName) LIKE LOWER(CONCAT('%', :employerCompanyName, '%')))")
-    Page<JobFairEmployerParticipation> findAllByFilters(Pageable pageable, @Param("isAccepted") Boolean isAccepted, @Param("jobFairName") String jobFairName, @Param("employerCompanyName") String employerCompanyName);
+    Page<JobFairEmployerParticipation> findAllByFilters(Pageable pageable,
+                                                        @Param("isAccepted") Boolean isAccepted,
+                                                        @Param("jobFairId") Long jobFairId,
+                                                        @Param("employerId") Long employerId,
+                                                        @Param("jobFairName") String jobFairName,
+                                                        @Param("employerCompanyName") String employerCompanyName);
 
     boolean existsByJobFair_IdAndEmployer_Id(Long id, Long id1);
 
