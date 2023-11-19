@@ -70,7 +70,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        jobFairEmployerParticipation.setAccepted(false);
+        jobFairEmployerParticipation.setIsAccepted(false);
         jobFairEmployerParticipationValidator.validate(jobFairEmployerParticipation);
         preSaveValidation(jobFairEmployerParticipation.getId(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getEmployer().getId());
         return jobFairEmployerParticipationMapper.toDto(jobFairEmployerParticipationRepository.save(jobFairEmployerParticipation));
@@ -93,36 +93,36 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size) {
+    public Page<JobFairEmployerParticipationDto> findAllByFilters(int page, int size, Boolean status) {
         return jobFairEmployerParticipationRepository
-                .findAllByFilters(PageRequest.of(page, size))
+                .findAllByIsAccepted(PageRequest.of(page, size), status)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size) {
+    public Page<JobFairEmployerParticipationDto> findAllByEmployerAndFilters(int page, int size, Boolean status) {
         Employer employer = employerService.getAuthEmployer();
 
         return jobFairEmployerParticipationRepository
-                .findAllByEmployerId(PageRequest.of(page, size), employer.getId())
+                .findAllByEmployerIdAndIsAccepted(PageRequest.of(page, size), employer.getId(), status)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size) {
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndFilters(int page, int size, Boolean status) {
         Organizer organizer = organizerService.getAuthOrganizer();
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_Organizer_Id(PageRequest.of(page, size), organizer.getId())
+                .findByJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), organizer.getId(), status)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
     @Override
-    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId) {
+    public Page<JobFairEmployerParticipationDto> findAllByOrganizerAndJobFairAndFilters(int page, int size, Long jobFairId, Boolean status) {
         Organizer organizer = organizerService.getAuthOrganizer();
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_IdAndJobFair_Organizer_Id(PageRequest.of(page, size), organizer.getId(), jobFairId)
+                .findByJobFair_IdAndJobFair_Organizer_IdAndIsAccepted(PageRequest.of(page, size), jobFairId, status)
                 .map(jobFairEmployerParticipationMapper::toDto);
     }
 
@@ -132,7 +132,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        jobFairEmployerParticipationDto.setAccepted(false);
+        jobFairEmployerParticipationDto.setIsAccepted(false);
         jobFairEmployerParticipationValidator.validateDto(jobFairEmployerParticipationDto);
         preSaveValidation(jobFairEmployerParticipationDto.getId(), jobFairEmployerParticipationDto.getJobFairId(), jobFairEmployerParticipationDto.getEmployerId());
         return mapAndSaveDto(jobFairEmployerParticipationDto);
@@ -179,7 +179,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     @Override
     public JobFairEmployerParticipationDto acceptParticipationRequestByOrganizer(Long jobFairParticipationId) {
         JobFairEmployerParticipationDto jobFairEmployerParticipation = findById(jobFairParticipationId);
-        jobFairEmployerParticipation.setAccepted(true);
+        jobFairEmployerParticipation.setIsAccepted(true);
         JobFairEmployerParticipationDto savedJobFairEmployerParticipation = update(jobFairParticipationId, jobFairEmployerParticipation);
 
         Employer employer = employerService.findById(savedJobFairEmployerParticipation.getEmployerId());
