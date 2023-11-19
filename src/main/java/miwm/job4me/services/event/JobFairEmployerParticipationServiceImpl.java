@@ -61,11 +61,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
     @Override
     public JobFairEmployerParticipationDto findById(Long id) {
-        idValidator.validateLongId(id, ENTITY_NAME);
-        return jobFairEmployerParticipation
-                .findById(id)
-                .map(jobFairEmployerParticipationMapper::toDto)
-                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+        return jobFairEmployerParticipationMapper.toDto(getJobFairEmployerParticipationById(id));
     }
 
     @Override
@@ -74,8 +70,9 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        preSaveValidation(jobFairEmployerParticipation.getId(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getEmployer().getId());
+        jobFairEmployerParticipation.setAccepted(false);
         jobFairEmployerParticipationValidator.validate(jobFairEmployerParticipation);
+        preSaveValidation(jobFairEmployerParticipation.getId(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getEmployer().getId());
         return jobFairEmployerParticipationMapper.toDto(jobFairEmployerParticipationRepository.save(jobFairEmployerParticipation));
     }
 
@@ -130,13 +127,15 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
-    public JobFairEmployerParticipationDto saveDto(JobFairEmployerParticipationDto jobFairDto) {
-        if (jobFairDto == null) {
+    public JobFairEmployerParticipationDto saveDto(JobFairEmployerParticipationDto jobFairEmployerParticipationDto) {
+        if (jobFairEmployerParticipationDto == null) {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        preSaveValidation(jobFairDto.getId(), jobFairDto.getJobFairId(), jobFairDto.getEmployerId());
-        return validateAndSaveDto(jobFairDto);
+        jobFairEmployerParticipationDto.setAccepted(false);
+        jobFairEmployerParticipationValidator.validateDto(jobFairEmployerParticipationDto);
+        preSaveValidation(jobFairEmployerParticipationDto.getId(), jobFairEmployerParticipationDto.getJobFairId(), jobFairEmployerParticipationDto.getEmployerId());
+        return mapAndSaveDto(jobFairEmployerParticipationDto);
     }
 
     @Override
@@ -160,7 +159,8 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     public JobFairEmployerParticipationDto update(Long id, JobFairEmployerParticipationDto jobFairEmployerParticipation) {
         strictExistsById(id);
         jobFairEmployerParticipation.setId(id);
-        return validateAndSaveDto(jobFairEmployerParticipation);
+        jobFairEmployerParticipationValidator.validateDto(jobFairEmployerParticipation);
+        return mapAndSaveDto(jobFairEmployerParticipation);
     }
 
     @Override
@@ -176,6 +176,43 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         return save(jobFairEmployerParticipation);
     }
 
+    @Override
+    public JobFairEmployerParticipationDto acceptParticipationRequestByOrganizer(Long jobFairParticipationId) {
+        JobFairEmployerParticipationDto jobFairEmployerParticipation = findById(jobFairParticipationId);
+        jobFairEmployerParticipation.setAccepted(true);
+        JobFairEmployerParticipationDto savedJobFairEmployerParticipation = update(jobFairParticipationId, jobFairEmployerParticipation);
+
+        Employer employer = employerService.findById(savedJobFairEmployerParticipation.getEmployerId());
+        JobFair jobFair = jobFairService.getJobFairById(savedJobFairEmployerParticipation.getJobFairId());
+        sendAcceptEmailToEmployer(employer, savedJobFairEmployerParticipation.getJobFairId(), jobFair.getName());
+
+        return savedJobFairEmployerParticipation;
+    }
+
+    @Override
+    public void rejectParticipationRequestByOrganizer(Long jobFairParticipationId) {
+        JobFairEmployerParticipation jobFairEmployerParticipation = getJobFairEmployerParticipationById(jobFairParticipationId);
+
+        deleteById(jobFairParticipationId);
+        sendRejectEmailToEmployer(jobFairEmployerParticipation.getEmployer(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getJobFair().getName());
+    }
+
+    @Override
+    public void deleteParticipationRequestByOrganizer(Long jobFairParticipationId) {
+        JobFairEmployerParticipation jobFairEmployerParticipation = getJobFairEmployerParticipationById(jobFairParticipationId);
+
+        deleteById(jobFairParticipationId);
+        sendDeleteEmailToEmployer(jobFairEmployerParticipation.getEmployer(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getJobFair().getName());
+    }
+
+    @Override
+    public JobFairEmployerParticipation getJobFairEmployerParticipationById(Long jobFairParticipationId) {
+        idValidator.validateLongId(jobFairParticipationId, ENTITY_NAME);
+        return jobFairEmployerParticipationRepository
+                .findById(jobFairParticipationId)
+                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, jobFairParticipationId)));
+    }
+
     private void sendRequestEmailToOrganizer(Employer employer, Long jobFairId, String jobFairName) {
         String recipient = jobFairService.getContactEmail(jobFairId);
         String subject = EmailMessages.employerJobFairParticipationRequestEmailSubject(employer.getCompanyName(), jobFairName);
@@ -184,8 +221,35 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         eMailService.sendSimpleMessage(recipient, subject, text);
     }
 
-    private JobFairEmployerParticipationDto validateAndSaveDto(JobFairEmployerParticipationDto jobFairEmployerParticipationDto) {
-        jobFairEmployerParticipationValidator.validateDto(jobFairEmployerParticipationDto);
+    private void sendAcceptEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
+        String recipient = getEmployerContactEmail(employer);
+        String subject = EmailMessages.employerJobFairParticipationAcceptEmailSubject(employer.getCompanyName(), jobFairName);
+        String text = EmailMessages.employerJobFairParticipationAcceptEmailText(employer.getCompanyName(), jobFairId, jobFairName);
+
+        eMailService.sendSimpleMessage(recipient, subject, text);
+    }
+
+    private void sendRejectEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
+        String recipient = getEmployerContactEmail(employer);
+        String subject = EmailMessages.employerJobFairParticipationRejectEmailSubject(employer.getCompanyName(), jobFairName);
+        String text = EmailMessages.employerJobFairParticipationRejectEmailText(employer.getCompanyName(), jobFairId, jobFairName);
+
+        eMailService.sendSimpleMessage(recipient, subject, text);
+    }
+
+    private void sendDeleteEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
+        String recipient = getEmployerContactEmail(employer);
+        String subject = EmailMessages.employerJobFairParticipationDeleteEmailSubject(employer.getCompanyName(), jobFairName);
+        String text = EmailMessages.employerJobFairParticipationDeleteEmailText(employer.getCompanyName(), jobFairId, jobFairName);
+
+        eMailService.sendSimpleMessage(recipient, subject, text);
+    }
+
+    private String getEmployerContactEmail(Employer employer) {
+        return employer.getContactEmail() != null ? employer.getContactEmail() : employer.getEmail();
+    }
+
+    private JobFairEmployerParticipationDto mapAndSaveDto(JobFairEmployerParticipationDto jobFairEmployerParticipationDto) {
         return jobFairEmployerParticipationMapper.toDto(jobFairEmployerParticipationRepository.save(jobFairEmployerParticipationMapper.toEntity(jobFairEmployerParticipationDto)));
     }
 

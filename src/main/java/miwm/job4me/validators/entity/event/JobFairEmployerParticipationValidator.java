@@ -24,11 +24,6 @@ public class JobFairEmployerParticipationValidator {
         if (jobFairEmployerParticipation.getEmployer() == null) {
             throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, EMPLOYER_ENTITY_NAME));
         }
-
-        if (jobFairEmployerParticipation.isAccepted()) {
-            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "isAccepted"));
-        }
-
     }
 
     public void validateDto(JobFairEmployerParticipationDto jobFairEmployerParticipation) {
@@ -42,10 +37,6 @@ public class JobFairEmployerParticipationValidator {
 
         if (jobFairEmployerParticipation.getEmployerId() == null) {
             throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, EMPLOYER_ENTITY_NAME));
-        }
-
-        if (jobFairEmployerParticipation.isAccepted()) {
-            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "isAccepted"));
         }
     }
 }
