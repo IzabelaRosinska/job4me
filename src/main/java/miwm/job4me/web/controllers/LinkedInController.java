@@ -65,12 +65,6 @@ public class LinkedInController {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
-
         response.sendRedirect(URL);
     }
 
@@ -86,12 +80,6 @@ public class LinkedInController {
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
             final HttpGet httpGet = new HttpGet(BASIC_LINKEDIN_PROFILE_URL);
             httpGet.addHeader("Authorization", "Bearer " + accessToken);
-
-            httpGet.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-            httpGet.setHeader("Access-Control-Allow-Credentials", "true");
-            httpGet.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
-            httpGet.setHeader("Access-Control-Max-Age", "3600");
-            httpGet.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
 
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
@@ -112,12 +100,6 @@ public class LinkedInController {
                     response.addCookie(tokenCookie);
                     response.getWriter().write(user.getUserRole().toString() + ';' + token);
                 }
-
-                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-                response.setHeader("Access-Control-Allow-Credentials", "true");
-                response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
-                response.setHeader("Access-Control-Max-Age", "3600");
-                response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With, remember-me");
 
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                     employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
