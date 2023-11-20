@@ -47,6 +47,18 @@ public class JobOffer extends BaseEntity {
         this.isEmbeddingCurrent = isEmbeddingCurrent;
     }
 
+    public JobOffer(Long id, String offerName, Employer employer, Integer salaryFrom, Integer salaryTo, String workingTime, Set<Localization> localizations, Set<Level> levels, Set<EmploymentForm> employmentForms) {
+        super(id);
+        this.offerName = offerName;
+        this.employer = employer;
+        this.salaryFrom = salaryFrom;
+        this.salaryTo = salaryTo;
+        this.workingTime = workingTime;
+        this.localizations = localizations;
+        this.levels = levels;
+        this.employmentForms = employmentForms;
+    }
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offer")
     private Set<SavedOffer> savedOffers = new HashSet<>();
 

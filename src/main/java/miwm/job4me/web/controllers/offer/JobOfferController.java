@@ -2,6 +2,8 @@ package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.offer.JobOfferService;
+import miwm.job4me.web.model.filters.JobOfferFilterDto;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,19 @@ public class JobOfferController {
 
         return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
     }
+
+    @PutMapping("job-offers/filters")
+    @Operation(summary = "Get all job offers by filters with sorting", description = "Gets all job offers from database by filters with sorting")
+    public ResponseEntity<Page<ListDisplayDto>> getAllJobOffersByFilters(@RequestBody JobOfferFilterDto jobOfferFilterDto) {
+        Page<ListDisplayDto> jobOfferDtoPage = jobOfferService.findListDisplayByFilters(0, 20, jobOfferFilterDto);
+
+        if (jobOfferDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
+    }
+
 
     @GetMapping("job-offers/{id}")
     @Operation(summary = "Get job offer by id", description = "Gets job offer from database by id")
