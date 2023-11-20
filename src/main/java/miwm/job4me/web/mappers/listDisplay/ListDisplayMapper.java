@@ -1,9 +1,11 @@
 package miwm.job4me.web.mappers.listDisplay;
 
-import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.model.offer.*;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class ListDisplayMapper {
@@ -27,32 +29,60 @@ public class ListDisplayMapper {
     }
 
     private String createJobOfferDisplay(JobOffer jobOffer) {
-        String displayDescription = jobOffer.getEmployer().getCompanyName() + "\n";
+        StringBuilder displayDescription = new StringBuilder(jobOffer.getEmployer().getCompanyName() + "\n");
 
         if (jobOffer.getSalaryTo() == null) {
-            displayDescription += jobOffer.getSalaryFrom() + " zł\n";
+            displayDescription.append(jobOffer.getSalaryFrom()).append(" zł\n");
         } else {
-            displayDescription += jobOffer.getSalaryFrom() + " - " + jobOffer.getSalaryTo() + " zł\n";
+            displayDescription.append(jobOffer.getSalaryFrom()).append(" - ").append(jobOffer.getSalaryTo()).append(" zł\n");
         }
 
-        for (int i = 0; i < jobOffer.getLocalizations().size(); i++) {
-            displayDescription += jobOffer.getLocalizations().toArray()[i] + ", ";
+        displayDescription.append(concatLocalizations(jobOffer.getLocalizations())).append("\n");
+        displayDescription.append(concatEmploymentForms(jobOffer.getEmploymentForms())).append("\n");
+        displayDescription.append(concatContractTypes(jobOffer.getContractTypes())).append("\n");
+        displayDescription.append(concatLevels(jobOffer.getLevels())).append("\n");
+        displayDescription.append(jobOffer.getWorkingTime()).append("\n");
+
+        return displayDescription.toString();
+    }
+
+    private String concatLocalizations(Set<Localization> localizations) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Localization localization : localizations) {
+            stringBuilder.append(localization.getCity()).append(", ");
         }
 
-        displayDescription = displayDescription.substring(0, displayDescription.length() - 2) + "\n";
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
+    }
 
-        for (int i = 0; i < jobOffer.getEmploymentForms().size(); i++) {
-            displayDescription += jobOffer.getEmploymentForms().toArray()[i] + ", ";
+    private String concatEmploymentForms(Set<EmploymentForm> employmentForms) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (EmploymentForm employmentForm : employmentForms) {
+            stringBuilder.append(employmentForm.getName()).append(", ");
         }
 
-        displayDescription = displayDescription.substring(0, displayDescription.length() - 2) + "\n";
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
+    }
 
-        for (int i = 0; i < jobOffer.getLevels().size(); i++) {
-            displayDescription += jobOffer.getLevels().toArray()[i] + ", ";
+    private String concatContractTypes(Set<ContractType> contractTypes) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (ContractType contractType : contractTypes) {
+            stringBuilder.append(contractType.getName()).append(", ");
         }
 
-        displayDescription = displayDescription.substring(0, displayDescription.length() - 2) + "\n";
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
+    }
 
-        return displayDescription;
+    private String concatLevels(Set<Level> levels) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Level level : levels) {
+            stringBuilder.append(level.getName()).append(", ");
+        }
+
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
     }
 }
