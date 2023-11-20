@@ -24,7 +24,10 @@ import java.util.Set;
 public class JobOffer extends BaseEntity {
 
     @Builder
-    public JobOffer(Long id, String offerName, Employer employer, Set<Industry> industries, Set<Localization> localizations, Set<EmploymentForm> employmentForms, Integer salaryFrom, Integer salaryTo, Set<ContractType> contractTypes, String workingTime, Set<Level> levels, Set<Requirement> requirements, Set<ExtraSkill> extraSkills, String duties, String description) {
+    public JobOffer(Long id, String offerName, Employer employer, Set<Industry> industries, Set<Localization> localizations,
+                    Set<EmploymentForm> employmentForms, Integer salaryFrom, Integer salaryTo, Set<ContractType> contractTypes,
+                    String workingTime, Set<Level> levels, Set<Requirement> requirements, Set<ExtraSkill> extraSkills,
+                    String duties, String description, Boolean isActive, Boolean isEmbeddingCurrent) {
         super(id);
         this.offerName = offerName;
         this.employer = employer;
@@ -40,6 +43,8 @@ public class JobOffer extends BaseEntity {
         this.extraSkills = extraSkills;
         this.duties = duties;
         this.description = description;
+        this.isActive = isActive;
+        this.isEmbeddingCurrent = isEmbeddingCurrent;
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offer")
@@ -122,6 +127,9 @@ public class JobOffer extends BaseEntity {
     @Column(name = "description", length = 500)
     private String description;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "duties_embeddings", length = 3072)
     private byte[] dutiesEmbeddings;
 
@@ -130,5 +138,8 @@ public class JobOffer extends BaseEntity {
 
     @Column(name = "skills_embeddings", length = 3072)
     private byte[] skillsEmbeddings;
+
+    @Column(name = "is_embedding_current")
+    private Boolean isEmbeddingCurrent;
 
 }

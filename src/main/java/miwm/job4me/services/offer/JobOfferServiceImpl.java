@@ -71,6 +71,12 @@ public class JobOfferServiceImpl implements JobOfferService {
         idValidator.validateNoIdForCreate(jobOffer.getId(), ENTITY_NAME);
         jobOfferValidator.validate(jobOffer);
 
+        if (jobOffer.getIsActive() == null) {
+            jobOffer.setIsActive(true);
+        }
+
+        jobOffer.setIsEmbeddingCurrent(false);
+
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }
 
@@ -129,6 +135,12 @@ public class JobOfferServiceImpl implements JobOfferService {
                 .map(localizationService::findByCity)
                 .collect(Collectors.toSet()));
 
+        jobOffer.setIsEmbeddingCurrent(false);
+
+        if (jobOfferDto.getIsActive() == null) {
+            jobOffer.setIsActive(true);
+        }
+
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }
 
@@ -164,4 +176,29 @@ public class JobOfferServiceImpl implements JobOfferService {
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
+
+    @Override
+    public JobOfferDto activateOffer(Long id) {
+        JobOffer jobOffer = findOfferById(id);
+
+        if (jobOffer.getIsActive()) {
+            return jobOfferMapper.toDto(jobOffer);
+        }
+
+        jobOffer.setIsActive(true);
+        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+    }
+
+    @Override
+    public JobOfferDto deactivateOffer(Long id) {
+        JobOffer jobOffer = findOfferById(id);
+
+        if (!jobOffer.getIsActive()) {
+            return jobOfferMapper.toDto(jobOffer);
+        }
+
+        jobOffer.setIsActive(false);
+        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+    }
+
 }
