@@ -239,7 +239,7 @@ public class UserAuthenticationService implements UserDetailsService {
         return newEmployee;
     }
 
-    public Cookie loginLinkedinUser(String email) {
+    public String loginLinkedinUser(String email) {
         Employee employee = (Employee)loadUserByUsername(email);
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, "", employee.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -251,7 +251,7 @@ public class UserAuthenticationService implements UserDetailsService {
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
                 .signWith(secretKey)
                 .compact();
-        Cookie tokenCookie = new Cookie(AppMessages.JWT_TOKEN_NAME, token);
-        return tokenCookie;
+
+        return token;
     }
 }
