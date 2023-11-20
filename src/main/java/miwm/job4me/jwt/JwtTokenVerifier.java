@@ -32,16 +32,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Cookie[] cookies = request.getCookies();
-        String cookieToken = "";
-
-        if (cookies != null) {
-            for(Cookie cookie : cookies)
-                if(("token").equals(cookie.getName()))
-                    cookieToken = cookie.getValue();
-        }
-
-        if(!cookieToken.equals("")) {
+        String cookieToken = request.getHeader("authorization");
+        if(!cookieToken.equals("") && cookieToken != null) {
             try {
                 Jws<Claims> claimsJws = Jwts.parser()
                         .setSigningKey(secretKey)
