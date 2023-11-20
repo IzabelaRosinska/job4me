@@ -2,8 +2,6 @@ package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.offer.JobOfferService;
-import miwm.job4me.web.model.filters.JobOfferFilterDto;
-import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -27,17 +25,9 @@ public class JobOfferController {
     @GetMapping("job-offers")
     @Operation(summary = "Get all job offers", description = "Gets all job offers from database")
     public ResponseEntity<Page<JobOfferDto>> getAllJobOffers(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String employmentFormName,
-            @RequestParam(required = false) String levelName,
-            @RequestParam(required = false) String contractTypeName,
-            @RequestParam(required = false) Integer salaryFrom,
-            @RequestParam(required = false) Integer salaryTo,
-            @RequestParam(required = false) String industryName,
-            @RequestParam(required = false) String offerName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFilters(page, size, city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName);
+        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFilters(page, size);
 
         if (jobOfferDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -45,19 +35,6 @@ public class JobOfferController {
 
         return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
     }
-
-    @PutMapping("job-offers/filters")
-    @Operation(summary = "Get all job offers by filters with sorting", description = "Gets all job offers from database by filters with sorting")
-    public ResponseEntity<Page<ListDisplayDto>> getAllJobOffersByFilters(@RequestBody JobOfferFilterDto jobOfferFilterDto) {
-        Page<ListDisplayDto> jobOfferDtoPage = jobOfferService.findListDisplayByFilters(0, 20, jobOfferFilterDto);
-
-        if (jobOfferDtoPage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(jobOfferDtoPage, HttpStatus.OK);
-    }
-
 
     @GetMapping("job-offers/{id}")
     @Operation(summary = "Get job offer by id", description = "Gets job offer from database by id")

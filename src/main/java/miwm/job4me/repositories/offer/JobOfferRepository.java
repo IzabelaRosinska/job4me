@@ -12,30 +12,6 @@ import java.util.List;
 
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
-    @Query("SELECT j FROM JobOffer j " +
-            "LEFT JOIN j.localizations loc " +
-            "LEFT JOIN j.employmentForms empForm " +
-            "LEFT JOIN j.levels level " +
-            "LEFT JOIN j.contractTypes contractType " +
-            "LEFT JOIN j.industries industry " +
-            "WHERE (:city IS NULL OR loc.city = :city) " +
-            "AND (:employmentFormName IS NULL OR empForm.name = :employmentFormName) " +
-            "AND (:levelName IS NULL OR level.name = :levelName) " +
-            "AND (:contractTypeName IS NULL OR contractType.name = :contractTypeName) " +
-            "AND (:salaryFrom IS NULL OR j.salaryFrom >= :salaryFrom) " +
-            "AND (:salaryTo IS NULL OR j.salaryTo <= :salaryTo) " +
-            "AND (:industryName IS NULL OR industry.name = :industryName) " +
-            "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(:offerName))")
-    Page<JobOffer> findByFilters(Pageable pageable,
-                                 @Param("city") String city,
-                                 @Param("employmentFormName") String employmentFormName,
-                                 @Param("levelName") String levelName,
-                                 @Param("contractTypeName") String contractTypeName,
-                                 @Param("salaryFrom") Integer salaryFrom,
-                                 @Param("salaryTo") Integer salaryTo,
-                                 @Param("industryName") String industryName,
-                                 @Param("offerName") String offerName);
-
     @Query("SELECT DISTINCT j FROM JobOffer j " +
             "LEFT JOIN j.localizations loc " +
             "LEFT JOIN j.employmentForms empForm " +
@@ -43,6 +19,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "LEFT JOIN j.contractTypes contractType " +
             "LEFT JOIN j.industries industry " +
             "WHERE :employerId IS NULL OR j.employer.id IN (:employerId) " +
+            "AND (:isActive IS NULL OR j.isActive = :isActive) " +
             "AND (:cities IS NULL OR loc.city IN (:cities)) " +
             "AND (:employmentFormNames IS NULL OR empForm.name IN (:employmentFormNames)) " +
             "AND (:levelNames IS NULL OR level.name IN (:levelNames)) " +
@@ -53,6 +30,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(:offerName))")
     Page<JobOffer> findAllOffersByFilters(Pageable pageable,
                                           @Param("employerIds") List<Long> employerIds,
+                                          @Param("isActive") Boolean isActive,
                                           @Param("cities") List<String> cities,
                                           @Param("employmentFormNames") List<String> employmentFormNames,
                                           @Param("levelNames") List<String> levelNames,

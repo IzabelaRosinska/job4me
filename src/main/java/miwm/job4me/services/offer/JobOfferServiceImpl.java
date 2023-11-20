@@ -93,9 +93,9 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public Page<JobOfferDto> findByFilters(int page, int size, String city, String employmentFormName, String levelName, String contractTypeName, Integer salaryFrom, Integer salaryTo, String industryName, String offerName) {
+    public Page<JobOfferDto> findByFilters(int page, int size) {
         return jobOfferRepository
-                .findByFilters(PageRequest.of(page, size), city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName)
+                .findAll(PageRequest.of(page, size))
                 .map(jobOfferMapper::toDto);
     }
 
