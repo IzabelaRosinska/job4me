@@ -23,8 +23,6 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.Min;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -58,7 +55,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
-
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
@@ -86,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setExperience(employeeMapper.stringListToExperienceSet(employeeDto.getExperience()));
         employee.setProjects(employeeMapper.stringListToProjectsSet(employeeDto.getProjects()));
         employee.setSkills(employeeMapper.stringListToSkillsSet(employeeDto.getSkills()));
+        employee.setIsEmbeddingCurrent(false);
         return employeeDto;
     }
 
@@ -166,7 +163,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(passwordEncoder.encode(password));
         save(employee);
     }
-  
+
     @Override
     public EmployeeDto findEmployeeById(Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
@@ -264,6 +261,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
+        employee.setIsEmbeddingCurrent(false);
         Employee result = employeeRepository.save(employee);
 
         return employeeMapper.toDto(result);
