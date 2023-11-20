@@ -4,7 +4,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.repositories.offer.JobOfferRepository;
-import miwm.job4me.repositories.offer.RequirementRepository;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
@@ -34,9 +33,8 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final ExtraSkillService extraSkillService;
 
     private final String ENTITY_NAME = "JobOffer";
-    private final RequirementRepository requirementRepository;
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, RequirementRepository requirementRepository) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
@@ -48,7 +46,6 @@ public class JobOfferServiceImpl implements JobOfferService {
         this.localizationService = localizationService;
         this.requirementService = requirementService;
         this.extraSkillService = extraSkillService;
-        this.requirementRepository = requirementRepository;
     }
 
     @Override
@@ -73,6 +70,12 @@ public class JobOfferServiceImpl implements JobOfferService {
     public JobOfferDto save(JobOffer jobOffer) {
         idValidator.validateNoIdForCreate(jobOffer.getId(), ENTITY_NAME);
         jobOfferValidator.validate(jobOffer);
+
+        if (jobOffer.getIsActive() == null) {
+            jobOffer.setIsActive(true);
+        }
+
+        jobOffer.setIsEmbeddingCurrent(false);
 
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }
@@ -132,6 +135,12 @@ public class JobOfferServiceImpl implements JobOfferService {
                 .map(localizationService::findByCity)
                 .collect(Collectors.toSet()));
 
+        jobOffer.setIsEmbeddingCurrent(false);
+
+        if (jobOfferDto.getIsActive() == null) {
+            jobOffer.setIsActive(true);
+        }
+
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }
 
@@ -162,9 +171,34 @@ public class JobOfferServiceImpl implements JobOfferService {
     public JobOffer findOfferById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         Optional<JobOffer> jobOffer = jobOfferRepository.findById(id);
-        if(jobOffer.isPresent())
+        if (jobOffer.isPresent())
             return jobOffer.get();
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
+
+    @Override
+    public JobOfferDto activateOffer(Long id) {
+        JobOffer jobOffer = findOfferById(id);
+
+        if (jobOffer.getIsActive()) {
+            return jobOfferMapper.toDto(jobOffer);
+        }
+
+        jobOffer.setIsActive(true);
+        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+    }
+
+    @Override
+    public JobOfferDto deactivateOffer(Long id) {
+        JobOffer jobOffer = findOfferById(id);
+
+        if (!jobOffer.getIsActive()) {
+            return jobOfferMapper.toDto(jobOffer);
+        }
+
+        jobOffer.setIsActive(false);
+        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+    }
+
 }

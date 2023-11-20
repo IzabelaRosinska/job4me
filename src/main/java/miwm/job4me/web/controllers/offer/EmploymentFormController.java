@@ -25,7 +25,7 @@ public class EmploymentFormController {
     @GetMapping("employment-forms")
     @Operation(summary = "Get all employment forms with pagination and filter", description = "Gets all employment forms from database with pagination and filter (by name)")
     public ResponseEntity<Page<EmploymentFormDto>> getAllEmploymentForms(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
