@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IndustryRepository extends JpaRepository<Industry, Long> {
-    @Query("SELECT i FROM Industry i WHERE :name IS NULL OR LOWER(i.name) LIKE LOWER(:name)")
+    @Query("SELECT i FROM Industry i WHERE :name IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Industry> findByNameContaining(Pageable pageable, String name);
 
     boolean existsByName(String name);

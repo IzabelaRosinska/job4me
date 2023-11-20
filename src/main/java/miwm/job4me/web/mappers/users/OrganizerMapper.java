@@ -26,7 +26,7 @@ public class OrganizerMapper {
         organizerDto.setName(organizer.getName());
         organizerDto.setDescription(organizer.getDescription());
         organizerDto.setTelephone(organizer.getTelephone());
-        organizerDto.setContactEmail(organizer.getEmail());
+        organizerDto.setContactEmail(organizer.getContactEmail());
         organizerDto.setFairs(getJobFairList(organizer.getFairs()));
         return organizerDto;
     }

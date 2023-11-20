@@ -26,7 +26,7 @@ public class EmployerReviewDto {
     @Schema(description = "Contact email to employer", example = "p&g@gmail.com")
     private String email;
 
-    @Schema(description = "Photo of employer", example = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmedium.com%2F%40zakariaalibaba315%2Fhow-does-photopea-work-379e6f6bd9b1&psig=AOvVaw0Vb-80-pdWxvWiZNPNYiql&ust=1700162188850000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCKDbu-vbxoIDFQAAAAAdAAAAABAE")
+    @Schema(description = "Photo of employer", example = "https://picsum.photos/100/100")
     private String photo;
 
     @Schema(description = "Address of the employer", example = "Zabraniecka 20, Warszawa")

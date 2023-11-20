@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employer;
-import miwm.job4me.validators.fields.ValidDateRange;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,15 +13,15 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-@ValidDateRange
 @Entity
-@Table(name = "job_fair_employer_participations")
+@Table(name = "job_fair_employer_participation")
 public class JobFairEmployerParticipation extends BaseEntity {
     @Builder
-    public JobFairEmployerParticipation(Long id, JobFair jobFair, Employer employer) {
+    public JobFairEmployerParticipation(Long id, JobFair jobFair, Employer employer, boolean isAccepted) {
         super(id);
         this.jobFair = jobFair;
         this.employer = employer;
+        this.isAccepted = isAccepted;
     }
 
     @NotNull(message = "JobFairEmployerParticipation jobFairId cannot be null")
@@ -34,5 +33,9 @@ public class JobFairEmployerParticipation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id")
     private Employer employer;
+
+    @NotNull(message = "JobFairEmployerParticipation isAccepted cannot be null")
+    @Column(name = "is_accepted")
+    private Boolean isAccepted;
 
 }
