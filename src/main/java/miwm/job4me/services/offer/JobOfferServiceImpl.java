@@ -6,17 +6,13 @@ import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.repositories.offer.JobOfferRepository;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
-import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
-import miwm.job4me.web.model.filters.JobOfferFilterDto;
-import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +21,6 @@ import java.util.stream.Collectors;
 public class JobOfferServiceImpl implements JobOfferService {
     private final JobOfferRepository jobOfferRepository;
     private final JobOfferMapper jobOfferMapper;
-    private final ListDisplayMapper listDisplayMapper;
     private final JobOfferValidator jobOfferValidator;
     private final IdValidator idValidator;
 
@@ -39,17 +34,9 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     private final String ENTITY_NAME = "JobOffer";
 
-    private final Map<String, String> orderMap = Map.of(
-            "1", "j.salaryFrom ASC",
-            "2", "j.salaryFrom DESC",
-            "3", "j.offerName ASC",
-            "4", "j.offerName DESC"
-    );
-
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, ListDisplayMapper listDisplayMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
-        this.listDisplayMapper = listDisplayMapper;
         this.jobOfferValidator = jobOfferValidator;
         this.idValidator = idValidator;
         this.contractTypeService = contractTypeService;
@@ -110,22 +97,6 @@ public class JobOfferServiceImpl implements JobOfferService {
         return jobOfferRepository
                 .findByFilters(PageRequest.of(page, size), city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName)
                 .map(jobOfferMapper::toDto);
-    }
-
-    @Override
-    public Page<ListDisplayDto> findListDisplayByFilters(int page, int size, JobOfferFilterDto jobOfferFilterDto) {
-        return jobOfferRepository
-                .findByFilters2(PageRequest.of(page, size),
-                        jobOfferFilterDto.getCities(),
-                        jobOfferFilterDto.getEmploymentFormNames(),
-                        jobOfferFilterDto.getLevelNames(),
-                        jobOfferFilterDto.getContractTypeNames(),
-                        jobOfferFilterDto.getSalaryFrom(),
-                        jobOfferFilterDto.getSalaryTo(),
-                        jobOfferFilterDto.getIndustryNames(),
-                        jobOfferFilterDto.getOfferName(),
-                        orderMap.get(jobOfferFilterDto.getOrder()))
-                .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
     @Override
