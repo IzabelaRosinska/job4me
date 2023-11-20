@@ -11,8 +11,7 @@ public class AppMessages {
     public static final String BASIC_LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
     public static final String BASIC_LINKEDIN_PROFILE_URL = "https://api.linkedin.com/v2/userinfo";
     public static final String BASIC_LINKEDIN_REDIRECT_URI = "redirect_uri=http://localhost:8080/linkedin/authorized";
-    public static final String NEW_LINKEDIN_REDIRECT_URI = "redirect_uri=http://localhost:8080/auth/linkedin/callback";
-    public static final String AZURE_LINKEDIN_REDIRECT_URI = "redirect_uri=https://job4me.azurewebsites.net/linkedin/authorized";
+    public static final String AZURE_LINKEDIN_REDIRECT_URI = "redirect_uri=https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net/linkedin/authorized";
 
     public static final String LINKEDIN_RESPONSE_TYPE = "response_type=code";
     public static final String LINKEDIN_GRANT_TYPE = "grant_type=authorization_code";
