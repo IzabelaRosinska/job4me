@@ -17,4 +17,8 @@ public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, L
     JobOfferDto update(Long id, JobOfferDto jobOffer);
 
     JobOffer findOfferById(Long id);
+
+    JobOfferDto activateOffer(Long id);
+
+    JobOfferDto deactivateOffer(Long id);
 }
