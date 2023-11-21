@@ -25,7 +25,7 @@ public class LevelController {
     @GetMapping("levels")
     @Operation(summary = "Get all levels with pagination and filter", description = "Gets all levels from database with pagination and filter (by name)")
     public ResponseEntity<Page<LevelDto>> getAllLevels(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

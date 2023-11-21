@@ -5,6 +5,7 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.ContractType;
 import miwm.job4me.repositories.offer.ContractTypeRepository;
+import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.ContractTypeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.ContractTypeMapper;
@@ -22,13 +23,15 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     private final ContractTypeMapper contractTypeMapper;
     private final ContractTypeValidator contractTypeValidator;
     private final IdValidator idValidator;
+    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "ContractType";
 
-    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator) {
+    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
         this.contractTypeRepository = contractTypeRepository;
         this.contractTypeMapper = contractTypeMapper;
         this.contractTypeValidator = contractTypeValidator;
         this.idValidator = idValidator;
+        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -92,6 +95,8 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public Page<ContractTypeDto> findByNameContaining(int page, int size, String name) {
+        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
+
         return contractTypeRepository
                 .findByNameContaining(PageRequest.of(page, size), name)
                 .map(contractTypeMapper::toDto);
