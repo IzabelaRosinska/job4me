@@ -68,6 +68,7 @@ public class TestController {
     }
 
     @GetMapping("/linkedin/signin")
+    @CrossOrigin(origins = {"https://www.linkedin.com", "https://www.linkedin.com"})
     public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuth2Parameters parameters = new OAuth2Parameters();
@@ -81,7 +82,7 @@ public class TestController {
     }
 
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net")
+    @CrossOrigin(origins = {"https://www.linkedin.com", "https://www.linkedin.com"})
     public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
