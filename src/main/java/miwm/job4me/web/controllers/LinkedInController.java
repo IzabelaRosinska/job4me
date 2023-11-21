@@ -64,6 +64,7 @@ public class LinkedInController {
     public void signInLinkedIn(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         response.sendRedirect(URL);
     }
@@ -80,7 +81,8 @@ public class LinkedInController {
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
             final HttpGet httpGet = new HttpGet(BASIC_LINKEDIN_PROFILE_URL);
             httpGet.addHeader("Authorization", "Bearer " + accessToken);
-          
+            httpGet.setHeader("Access-Control-Allow-Origin", "*");
+
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -99,6 +101,9 @@ public class LinkedInController {
                     tokenCookie.setPath("/");
                     response.addCookie(tokenCookie);
                     response.getWriter().write(user.getUserRole().toString() + ';' + token);
+                    response.setHeader("Authorization", "Token " + token);
+                    response.setHeader("Access-Control-Allow-Origin", "*");
+
                 }
 
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
