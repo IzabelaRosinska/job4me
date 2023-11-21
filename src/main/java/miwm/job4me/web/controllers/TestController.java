@@ -30,7 +30,6 @@ import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,7 +67,6 @@ public class TestController {
     }
 
     @GetMapping("/linkedin/signin")
-    @CrossOrigin(origins = {"https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://www.linkedin.com"})
     public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuth2Parameters parameters = new OAuth2Parameters();
@@ -82,8 +80,9 @@ public class TestController {
     }
 
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = {"https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://www.linkedin.com"})
     public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) {
+        //System.out.print(authorizationCode);
+
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
                 .replaceQuery(null)
