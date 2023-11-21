@@ -82,6 +82,7 @@ public class LinkedInController {
             httpGet.addHeader("Authorization", "Bearer " + accessToken);
             httpGet.setHeader("Access-Control-Allow-Origin", "*");
 
+
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -102,7 +103,6 @@ public class LinkedInController {
                     response.getWriter().write(user.getUserRole().toString() + ';' + token);
                     response.setHeader("Authorization", "Token " + token);
                     response.setHeader("Access-Control-Allow-Origin", "*");
-
                 }
 
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
