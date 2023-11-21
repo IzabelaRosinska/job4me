@@ -54,4 +54,7 @@ public class JobOfferDto {
     @Schema(description = "Job offer description", example = "Java Developer - Remote web developer")
     private String description;
 
+    @Schema(description = "True if job offer is active (offers can be inactive and not deleted)", example = "true")
+    private Boolean isActive;
+
 }

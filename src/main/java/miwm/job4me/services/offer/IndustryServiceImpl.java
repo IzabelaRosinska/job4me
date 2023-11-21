@@ -5,6 +5,7 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.Industry;
 import miwm.job4me.repositories.offer.IndustryRepository;
+import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.IndustryValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.IndustryMapper;
@@ -22,13 +23,15 @@ public class IndustryServiceImpl implements IndustryService {
     private final IndustryMapper industryMapper;
     private final IndustryValidator industryValidator;
     private final IdValidator idValidator;
+    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "Industry";
 
-    public IndustryServiceImpl(IndustryRepository industryRepository, IndustryMapper industryMapper, IndustryValidator industryValidator, IdValidator idValidator) {
+    public IndustryServiceImpl(IndustryRepository industryRepository, IndustryMapper industryMapper, IndustryValidator industryValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
         this.industryRepository = industryRepository;
         this.industryMapper = industryMapper;
         this.industryValidator = industryValidator;
         this.idValidator = idValidator;
+        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -63,6 +66,8 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public Page<IndustryDto> findByNameContaining(int page, int size, String name) {
+        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
+
         return industryRepository
                 .findByNameContaining(PageRequest.of(page, size), name)
                 .map(industryMapper::toDto);

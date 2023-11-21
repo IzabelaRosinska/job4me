@@ -5,6 +5,7 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.Level;
 import miwm.job4me.repositories.offer.LevelRepository;
+import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.LevelValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.LevelMapper;
@@ -22,13 +23,15 @@ public class LevelServiceImpl implements LevelService {
     private final LevelMapper levelMapper;
     private final LevelValidator levelValidator;
     private final IdValidator idValidator;
+    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "Level";
 
-    public LevelServiceImpl(LevelRepository LevelRepository, LevelMapper LevelMapper, LevelValidator LevelValidator, IdValidator idValidator) {
-        this.levelRepository = LevelRepository;
-        this.levelMapper = LevelMapper;
-        this.levelValidator = LevelValidator;
+    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
+        this.levelRepository = levelRepository;
+        this.levelMapper = levelMapper;
+        this.levelValidator = levelValidator;
         this.idValidator = idValidator;
+        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -63,6 +66,8 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public Page<LevelDto> findByNameContaining(int page, int size, String name) {
+        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
+
         return levelRepository
                 .findByNameContaining(PageRequest.of(page, size), name)
                 .map(levelMapper::toDto);
