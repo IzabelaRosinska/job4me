@@ -101,12 +101,8 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
     @Override
     public Set<Long> findAllEmployersIdsForJobFair(Long jobFairId) {
-        return jobFairEmployerParticipationRepository
-                .findAllByJobFair_Id(jobFairId)
-                .stream()
-                .map(JobFairEmployerParticipation::getEmployer)
-                .map(Employer::getId)
-                .collect(Collectors.toSet());
+        jobFairService.strictExistsById(jobFairId);
+        return jobFairEmployerParticipationRepository.findAllEmployersIdsByJobFair_Id(jobFairId);
     }
 
     @Override

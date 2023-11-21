@@ -1,7 +1,9 @@
 package miwm.job4me.services.offer;
 
+import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.model.offer.SavedOffer;
 import miwm.job4me.model.users.Employee;
@@ -47,7 +49,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public SavedOffer findById(Long id) {
         idValidator.validateLongId(id, ENTITY_SAVED_OFFER);
         Optional<SavedOffer> savedOffer = savedOfferRepository.findById(id);
-        if(savedOffer.isPresent())
+        if (savedOffer.isPresent())
             return savedOffer.get();
         throw new NoSuchElementFoundException("Saved offer with that id does not exist");
     }
@@ -55,7 +57,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     @Override
     @Transactional
     public SavedOffer save(SavedOffer savedOffer) {
-        if(savedOffer != null)
+        if (savedOffer != null)
             return savedOfferRepository.save(savedOffer);
         throw new InvalidArgumentException("Given offer is null");
     }
@@ -63,7 +65,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     @Override
     @Transactional
     public void delete(SavedOffer savedOffer) {
-        if(savedOfferRepository.findById(savedOffer.getId()).isPresent())
+        if (savedOfferRepository.findById(savedOffer.getId()).isPresent())
             savedOfferRepository.delete(savedOffer);
         else
             throw new NoSuchElementFoundException("There is no such offer in database");
@@ -73,7 +75,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     @Transactional
     public void deleteById(Long id) {
         idValidator.validateLongId(id, ENTITY_SAVED_OFFER);
-        if(savedOfferRepository.findById(id).isPresent())
+        if (savedOfferRepository.findById(id).isPresent())
             savedOfferRepository.deleteById(id);
         else
             throw new NoSuchElementFoundException("Offer with given id does not exist");
@@ -89,7 +91,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public Optional<SavedOffer> findByIds(Long offerId, Long employeeId) {
         idValidator.validateLongId(offerId, ENTITY_OFFER);
         idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
-        if(employeeService.findById(employeeId) != null && jobOfferService.findById(offerId) != null)
+        if (employeeService.findById(employeeId) != null && jobOfferService.findById(offerId) != null)
             return savedOfferRepository.findByIds(offerId, employeeId);
         else
             throw new NoSuchElementFoundException("User with given id does not exist");
@@ -100,7 +102,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
         idValidator.validateLongId(id, ENTITY_OFFER);
         Long employeeId = employeeService.getAuthEmployee().getId();
         Optional<SavedOffer> savedOffer = findByIds(id, employeeId);
-        if(savedOffer.isPresent())
+        if (savedOffer.isPresent())
             return true;
         return false;
     }
@@ -118,7 +120,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public void deleteOfferFromSaved(Long id) {
         idValidator.validateLongId(id, ENTITY_OFFER);
         Employee employee = employeeService.getAuthEmployee();
-        if(employee != null) {
+        if (employee != null) {
             Optional<SavedOffer> saved = findByIds(id, employee.getId());
             if (saved.isPresent()) {
                 delete(saved.get());
@@ -133,7 +135,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
         idValidator.validateLongId(id, ENTITY_OFFER);
         Employee employee = employeeService.getAuthEmployee();
         JobOffer offer = jobOfferService.findOfferById(id);
-        if(employee != null && offer != null) {
+        if (employee != null && offer != null) {
             SavedOffer savedOffer = SavedOffer.builder().employee(employee).offer(offer).build();
             save(savedOffer);
         } else
@@ -144,9 +146,20 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public JobOfferReviewDto findOfferWithIdByUser(Long id) {
         idValidator.validateLongId(id, ENTITY_OFFER);
         JobOffer jobOffer = jobOfferService.findOfferById(id);
-        if(jobOffer != null)
+        if (jobOffer != null)
             return jobOfferReviewMapper.jobOfferToJobOfferDto(jobOffer, checkIfSaved(id));
         else
             throw new NoSuchElementFoundException("Offer with given id does not exist");
+    }
+
+    @Override
+    public Set<Long> findAllOfferIdsForCurrentEmployee() {
+        Employee employee = employeeService.getAuthEmployee();
+
+        if (employee != null) {
+            return savedOfferRepository.findAllOfferIdsByEmployee_Id(employee.getId());
+        } else {
+            throw new AuthException(ExceptionMessages.unauthorized(ENTITY_EMPLOYEE));
+        }
     }
 }

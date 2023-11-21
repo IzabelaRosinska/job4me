@@ -23,7 +23,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "LEFT JOIN j.levels level " +
             "LEFT JOIN j.contractTypes contractType " +
             "LEFT JOIN j.industries industry " +
-            "WHERE :employerId IS NULL OR j.employer.id IN (:employerId) " +
+            "WHERE :employerId IS NULL OR j.employer.id IN (:employerIds) " +
             "AND (:isActive IS NULL OR j.isActive = :isActive) " +
             "AND (:cities IS NULL OR loc.city IN (:cities)) " +
             "AND (:employmentFormNames IS NULL OR empForm.name IN (:employmentFormNames)) " +
@@ -46,9 +46,9 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
                                           @Param("offerName") String offerName);
 
     @Query("SELECT DISTINCT j FROM JobOffer j " +
-            "WHERE :employerId IS NULL OR j.employer.id IN (:employerId)" +
+            "WHERE :employerId IS NULL OR j.employer.id IN (:employerIds)" +
             "AND (:isActive IS NULL OR j.isActive = :isActive)")
     Page<JobOffer> findAllOffersOfEmployers(Pageable pageable,
-                                            @Param("employerIsd") List<Long> employerIds,
+                                            @Param("employerIds") List<Long> employerIds,
                                             @Param("isActive") Boolean isActive);
 }

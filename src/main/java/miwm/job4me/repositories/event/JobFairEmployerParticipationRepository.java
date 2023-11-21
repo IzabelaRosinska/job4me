@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Repository
 public interface JobFairEmployerParticipationRepository extends JpaRepository<JobFairEmployerParticipation, Long> {
-    Set<JobFairEmployerParticipation> findAllByJobFair_Id(Long id);
+    Set<Long> findAllEmployersIdsByJobFair_Id(Long id);
 
     @Query("SELECT DISTINCT j FROM JobFairEmployerParticipation j " +
             "WHERE (:isAccepted IS NULL OR j.isAccepted = :isAccepted)" +

@@ -3,7 +3,9 @@ package miwm.job4me.services.offer;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.model.users.Employer;
 import miwm.job4me.repositories.offer.JobOfferRepository;
+import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
@@ -35,6 +37,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final LocalizationService localizationService;
     private final RequirementService requirementService;
     private final ExtraSkillService extraSkillService;
+    private final EmployerService employerService;
 
     private final String ENTITY_NAME = "JobOffer";
 
@@ -46,7 +49,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             "5", Sort.by(Sort.Direction.DESC, "offerName")
     );
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
@@ -58,6 +61,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         this.localizationService = localizationService;
         this.requirementService = requirementService;
         this.extraSkillService = extraSkillService;
+        this.employerService = employerService;
     }
 
     @Override
@@ -80,6 +84,9 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public JobOfferDto save(JobOffer jobOffer) {
+        Employer employer = employerService.getAuthEmployer();
+        jobOffer.setEmployer(employer);
+
         idValidator.validateNoIdForCreate(jobOffer.getId(), ENTITY_NAME);
         jobOfferValidator.validate(jobOffer);
 
@@ -183,6 +190,9 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public JobOfferDto saveDto(JobOfferDto jobOfferDto) {
+        Employer employer = employerService.getAuthEmployer();
+        jobOfferDto.setEmployerId(employer.getId());
+
         idValidator.validateNoIdForCreate(jobOfferDto.getId(), ENTITY_NAME);
 
         return saveJobOfferDto(jobOfferDto);
