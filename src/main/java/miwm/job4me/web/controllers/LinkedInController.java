@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 import static miwm.job4me.messages.AppMessages.*;
 
 @RestController
-@RequestMapping("/linkedin")
+//@RequestMapping("/linkedin")
 public class LinkedInController {
 
     private final UserAuthenticationService authService;
@@ -59,13 +59,12 @@ public class LinkedInController {
         this.employerService = employerService;
         this.environment = environment;
     }
-
+/*
     @GetMapping("/signin")
     public void signInLinkedIn(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
         response.setHeader("Access-Control-Allow-Origin", "*");
-
         response.sendRedirect(URL);
     }
 
@@ -116,6 +115,8 @@ public class LinkedInController {
             }
         }
     }
+
+ */
 
     private String getLinkedinAccessToken(String link) throws IOException {
         URL url = new URL(link);
