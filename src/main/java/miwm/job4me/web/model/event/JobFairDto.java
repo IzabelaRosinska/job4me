@@ -33,6 +33,6 @@ public class JobFairDto {
     @Schema(description = "Job fair description displayed as summary of event", example = "Akademickie targi pracy znowu w Warszawie! Branże IT i finanse.")
     private String displayDescription;
 
-    @Schema(description = "Job fair photo advertising event", example = "")
+    @Schema(description = "Job fair photo advertising event", example = "https://picsum.photos/100/100")
     private String photo;
 }

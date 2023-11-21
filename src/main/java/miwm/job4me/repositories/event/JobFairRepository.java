@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface JobFairRepository extends JpaRepository<JobFair, Long> {
     @Query("SELECT jf FROM JobFair jf")
     Page<JobFair> findAllByFilters(Pageable pageable);
+
+    Page<JobFair> findAllByOrganizerId(Pageable pageable, Long organizerId);
 }

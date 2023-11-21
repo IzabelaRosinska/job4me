@@ -83,6 +83,7 @@ public class TestController {
     @GetMapping("/auth/linkedin/callback")
     @CrossOrigin(origins = "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net")
     public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) {
+
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
                 .replaceQuery(null)

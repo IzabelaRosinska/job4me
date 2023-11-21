@@ -9,6 +9,10 @@ public class ExceptionMessages {
         return String.format("%s with id %d not found", className, id);
     }
 
+    public static String unauthorized(String className) {
+        return String.format("%s unauthorized", className);
+    }
+
     public static String elementNotFoundByName(String className, String name) {
         return String.format("%s with name %s not found", className, name);
     }
@@ -87,5 +91,9 @@ public class ExceptionMessages {
 
     public static String dateFromPast(String className, String dateFieldName) {
         return String.format("%s %s must be from future.", className, dateFieldName);
+    }
+
+    public static String stringFilterNotNull(String className, String fieldName) {
+        return String.format("%s %s filter can not be null. Please use empty string if no filtering needed.", className, fieldName);
     }
 }
