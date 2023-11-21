@@ -7,12 +7,16 @@ import miwm.job4me.repositories.offer.JobOfferRepository;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
+import miwm.job4me.web.model.filters.JobOfferFilterDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +37,14 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final ExtraSkillService extraSkillService;
 
     private final String ENTITY_NAME = "JobOffer";
+
+    private final Map<String, Sort> orderMap = Map.of(
+            "1", Sort.unsorted(),
+            "2", Sort.by(Sort.Direction.ASC, "salaryFrom"),
+            "3", Sort.by(Sort.Direction.DESC, "salaryFrom"),
+            "4", Sort.by(Sort.Direction.ASC, "offerName"),
+            "5", Sort.by(Sort.Direction.DESC, "offerName")
+    );
 
     public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService) {
         this.jobOfferRepository = jobOfferRepository;
@@ -93,10 +105,80 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public Page<JobOfferDto> findByFilters(int page, int size) {
-        return jobOfferRepository
-                .findAll(PageRequest.of(page, size))
+    public Page<JobOfferDto> findAllByPage(int page, int size, String order) {
+        return jobOfferRepository.findAll(PageRequest.of(page, size, prepareSort(order)))
                 .map(jobOfferMapper::toDto);
+    }
+
+    @Override
+    public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive) {
+        Sort sort = prepareSort(order);
+
+        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive);
+    }
+
+    @Override
+    public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive) {
+        jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
+        Sort sort = prepareSort(order);
+
+        return jobOfferRepository.findAllOffersByFilters(PageRequest.of(page, size, sort),
+                employerIds,
+                isActive,
+                jobOfferFilterDto.getCities(),
+                jobOfferFilterDto.getEmploymentFormNames(),
+                jobOfferFilterDto.getLevelNames(),
+                jobOfferFilterDto.getContractTypeNames(),
+                jobOfferFilterDto.getSalaryFrom(),
+                jobOfferFilterDto.getSalaryTo(),
+                jobOfferFilterDto.getIndustryNames(),
+                jobOfferFilterDto.getOfferName());
+    }
+
+    @Override
+    public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive) {
+        Sort sort = prepareSort(order);
+        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive);
+    }
+
+    private Sort prepareSort(String order) {
+        if (order == null) {
+            return Sort.unsorted();
+        }
+
+        return orderMap.getOrDefault(order, Sort.unsorted());
+    }
+
+    private JobOfferFilterDto prepareFilter(JobOfferFilterDto jobOfferFilterDto) {
+        if (jobOfferFilterDto == null) {
+            return new JobOfferFilterDto();
+        }
+
+        if (jobOfferFilterDto.getOfferName() == null) {
+            jobOfferFilterDto.setOfferName("");
+        }
+
+        if (jobOfferFilterDto.getCities().isEmpty()) {
+            jobOfferFilterDto.setCities(null);
+        }
+
+        if (jobOfferFilterDto.getEmploymentFormNames().isEmpty()) {
+            jobOfferFilterDto.setEmploymentFormNames(null);
+        }
+
+        if (jobOfferFilterDto.getLevelNames().isEmpty()) {
+            jobOfferFilterDto.setLevelNames(null);
+        }
+
+        if (jobOfferFilterDto.getContractTypeNames().isEmpty()) {
+            jobOfferFilterDto.setContractTypeNames(null);
+        }
+
+        if (jobOfferFilterDto.getIndustryNames().isEmpty()) {
+            jobOfferFilterDto.setIndustryNames(null);
+        }
+
+        return jobOfferFilterDto;
     }
 
     @Override

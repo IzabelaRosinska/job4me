@@ -33,6 +33,4 @@ public class JobOfferFilterDto {
     @Schema(description = "Offer name to filter offers by", example = "Java")
     private String offerName;
 
-    @Schema(description = "Order to sort offers by (1 - salaryFrom ASC, 2 - salaryFrom DESC, 3 - offerName ASC, 4 - offerName DESC)", example = "1")
-    private String order;
 }

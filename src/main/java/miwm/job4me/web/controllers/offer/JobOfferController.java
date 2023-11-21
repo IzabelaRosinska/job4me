@@ -26,8 +26,9 @@ public class JobOfferController {
     @Operation(summary = "Get all job offers", description = "Gets all job offers from database")
     public ResponseEntity<Page<JobOfferDto>> getAllJobOffers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFilters(page, size);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order) {
+        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findAllByPage(page, size, order);
 
         if (jobOfferDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
