@@ -1,4 +1,4 @@
-package miwm.job4me.services.offer;
+package miwm.job4me.services.offer.parameters;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
