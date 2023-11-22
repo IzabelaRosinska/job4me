@@ -1,9 +1,7 @@
 package miwm.job4me.services.offer;
 
-import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
-import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.model.offer.SavedOffer;
 import miwm.job4me.model.users.Employee;
@@ -156,10 +154,9 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public Set<Long> findAllOfferIdsForCurrentEmployee() {
         Employee employee = employeeService.getAuthEmployee();
 
-        if (employee != null) {
-            return savedOfferRepository.findAllOfferIdsByEmployee_Id(employee.getId());
-        } else {
-            throw new AuthException(ExceptionMessages.unauthorized(ENTITY_EMPLOYEE));
-        }
+        return savedOfferRepository.getSavedForEmployee(employee.getId())
+                .stream()
+                .map(savedOffer -> savedOffer.getOffer().getId())
+                .collect(Collectors.toSet());
     }
 }
