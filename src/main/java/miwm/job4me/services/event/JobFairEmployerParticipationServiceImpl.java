@@ -100,6 +100,17 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
+    public Set<Long> findAllEmployersIdsForJobFair(Long jobFairId) {
+        jobFairService.strictExistsById(jobFairId);
+
+        return jobFairEmployerParticipationRepository
+                .findByJobFair_IdAndIsAccepted(jobFairId, true)
+                .stream()
+                .map(jobFairEmployerParticipation -> jobFairEmployerParticipation.getEmployer().getId())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public Page<JobFairEmployerParticipation> findAllByFilters(int page, int size, Boolean status, Long jobFairId, Long employerId, String jobFairName, String employerCompanyName) {
         filterArgumentValidator.validateStringFilter(jobFairName, ENTITY_NAME, "jobFairName");
         filterArgumentValidator.validateStringFilter(employerCompanyName, ENTITY_NAME, "employerCompanyName");

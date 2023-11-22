@@ -1,4 +1,4 @@
-package miwm.job4me.services.offer;
+package miwm.job4me.services.offer.description;
 
 import miwm.job4me.model.offer.Requirement;
 import miwm.job4me.services.BaseDtoService;

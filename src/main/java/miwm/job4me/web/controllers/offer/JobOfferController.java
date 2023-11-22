@@ -25,17 +25,10 @@ public class JobOfferController {
     @GetMapping("job-offers")
     @Operation(summary = "Get all job offers", description = "Gets all job offers from database")
     public ResponseEntity<Page<JobOfferDto>> getAllJobOffers(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String employmentFormName,
-            @RequestParam(required = false) String levelName,
-            @RequestParam(required = false) String contractTypeName,
-            @RequestParam(required = false) Integer salaryFrom,
-            @RequestParam(required = false) Integer salaryTo,
-            @RequestParam(required = false) String industryName,
-            @RequestParam(required = false) String offerName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFilters(page, size, city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order) {
+        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findAllByPage(page, size, order);
 
         if (jobOfferDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

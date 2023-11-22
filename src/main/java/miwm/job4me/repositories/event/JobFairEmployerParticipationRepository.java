@@ -8,8 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 @Repository
 public interface JobFairEmployerParticipationRepository extends JpaRepository<JobFairEmployerParticipation, Long> {
+    Set<JobFairEmployerParticipation> findByJobFair_IdAndIsAccepted(Long jobFairId, Boolean isAccepted);
+
     @Query("SELECT DISTINCT j FROM JobFairEmployerParticipation j " +
             "WHERE (:isAccepted IS NULL OR j.isAccepted = :isAccepted)" +
             "AND (:jobFairId IS NULL OR j.jobFair.id = :jobFairId) " +

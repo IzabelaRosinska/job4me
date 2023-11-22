@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SavedOfferRepository extends JpaRepository<SavedOffer, Long> {
-
     @Query(nativeQuery = true, value = "select * from saved_offers where offer_id = ?1 AND employee_id = ?2")
     Optional<SavedOffer> findByIds(Long offerId, Long employeeId);
 

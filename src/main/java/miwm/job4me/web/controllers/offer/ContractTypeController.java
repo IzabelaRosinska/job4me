@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.services.offer.ContractTypeService;
+import miwm.job4me.services.offer.parameters.ContractTypeService;
 import miwm.job4me.web.model.offer.ContractTypeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

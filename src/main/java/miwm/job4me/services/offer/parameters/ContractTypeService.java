@@ -1,4 +1,4 @@
-package miwm.job4me.services.offer;
+package miwm.job4me.services.offer.parameters;
 
 import miwm.job4me.model.offer.ContractType;
 import miwm.job4me.services.BaseDtoService;

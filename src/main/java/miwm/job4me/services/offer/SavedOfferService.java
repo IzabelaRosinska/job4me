@@ -6,6 +6,7 @@ import miwm.job4me.web.model.offer.JobOfferReviewDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SavedOfferService extends BaseService<SavedOffer, Long> {
 
@@ -22,4 +23,6 @@ public interface SavedOfferService extends BaseService<SavedOffer, Long> {
     void addOfferToSaved(Long id);
 
     JobOfferReviewDto findOfferWithIdByUser(Long id);
+
+    Set<Long> findAllOfferIdsForCurrentEmployee();
 }
