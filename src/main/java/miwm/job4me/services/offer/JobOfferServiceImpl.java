@@ -190,7 +190,14 @@ public class JobOfferServiceImpl implements JobOfferService {
         JobOfferFilterPresenceDto jobOfferFilterPresenceDto = new JobOfferFilterPresenceDto();
 
         if (jobOfferFilterDto == null) {
-            return new JobOfferFilterPresenceDto();
+            jobOfferFilterPresenceDto.setIsCitiesDefined(false);
+            jobOfferFilterPresenceDto.setIsEmploymentFormNamesDefined(false);
+            jobOfferFilterPresenceDto.setIsLevelNamesDefined(false);
+            jobOfferFilterPresenceDto.setIsContractTypeNamesDefined(false);
+            jobOfferFilterPresenceDto.setIsIndustryNamesDefined(false);
+            jobOfferFilterPresenceDto.setIsOfferIdsDefined(false);
+            jobOfferFilterPresenceDto.setIsEmployerIdsDefined(false);
+            return jobOfferFilterPresenceDto;
         }
 
         jobOfferFilterPresenceDto.setIsCitiesDefined(
