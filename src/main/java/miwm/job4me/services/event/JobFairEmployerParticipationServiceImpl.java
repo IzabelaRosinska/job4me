@@ -104,7 +104,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         jobFairService.strictExistsById(jobFairId);
 
         return jobFairEmployerParticipationRepository
-                .findByJobFair_Id(jobFairId)
+                .findByJobFair_IdAndIsAccepted(jobFairId, true)
                 .stream()
                 .map(jobFairEmployerParticipation -> jobFairEmployerParticipation.getEmployer().getId())
                 .collect(Collectors.toSet());
