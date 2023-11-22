@@ -1,5 +1,6 @@
 package miwm.job4me.web.mappers.listDisplay;
 
+import miwm.job4me.model.event.JobFairEmployerParticipation;
 import miwm.job4me.model.offer.*;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
@@ -9,6 +10,22 @@ import java.util.Set;
 
 @Component
 public class ListDisplayMapper {
+    public ListDisplayDto toDtoFromJobFairEmployerParticipation(JobFairEmployerParticipation jobFairEmployerParticipation) {
+        ListDisplayDto listDisplayDto = new ListDisplayDto();
+        listDisplayDto.setId(jobFairEmployerParticipation.getId());
+
+        Long companyId = jobFairEmployerParticipation.getEmployer().getId();
+        String companyName = jobFairEmployerParticipation.getEmployer().getCompanyName();
+
+        String jobFairName = jobFairEmployerParticipation.getJobFair().getName();
+        Long jobFairId = jobFairEmployerParticipation.getJobFair().getId();
+
+        listDisplayDto.setName(jobFairName + " - " + companyName);
+        listDisplayDto.setDisplayDescription("Zgłoszenie firmy #" + companyId + companyName + " do targów pracy #" + jobFairId + jobFairName);
+        listDisplayDto.setPhoto(jobFairEmployerParticipation.getEmployer().getPhoto());
+
+        return listDisplayDto;
+    }
 
     public ListDisplayDto toDtoFromEmployer(Employer employer) {
         ListDisplayDto listDisplayDto = new ListDisplayDto();

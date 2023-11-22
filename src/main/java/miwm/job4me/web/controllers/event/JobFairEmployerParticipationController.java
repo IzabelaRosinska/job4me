@@ -3,6 +3,7 @@ package miwm.job4me.web.controllers.event;
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.event.JobFairEmployerParticipationService;
 import miwm.job4me.web.model.event.JobFairEmployerParticipationDto;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,14 +44,14 @@ public class JobFairEmployerParticipationController {
 
     @GetMapping("organizer/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for organizer by status", description = "Gets job fair employer participation requests from database by status")
-    public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForOrganizer(
+    public ResponseEntity<Page<ListDisplayDto>> getJobFairEmployerParticipationRequestsByStatusForOrganizer(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "") String jobFairName,
             @RequestParam(defaultValue = "") String employerCompanyName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndFilters(page, size, status, jobFairName, employerCompanyName);
+        Page<ListDisplayDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.listDisplayFindAllByOrganizerAndFilters(page, size, status, jobFairName, employerCompanyName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -61,14 +62,14 @@ public class JobFairEmployerParticipationController {
 
     @GetMapping("organizer/job-fairs/{jobFairId}/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for organizer by job fair id and status", description = "Gets job fair employer participation requests from database by job fair id and status")
-    public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByJobFairIdAndStatusForOrganizer(
+    public ResponseEntity<Page<ListDisplayDto>> getJobFairEmployerParticipationRequestsByJobFairIdAndStatusForOrganizer(
             @PathVariable Long jobFairId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "") String employerCompanyName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByOrganizerAndJobFairAndFilters(page, size, jobFairId, status, employerCompanyName);
+        Page<ListDisplayDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.listDisplayFindAllByOrganizerAndJobFairAndFilters(page, size, jobFairId, status, employerCompanyName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -79,13 +80,13 @@ public class JobFairEmployerParticipationController {
 
     @GetMapping("employer/employer-participation")
     @Operation(summary = "Get job fair employer participation requests for employer by status", description = "Gets job fair employer participation requests from database by status")
-    public ResponseEntity<Page<JobFairEmployerParticipationDto>> getJobFairEmployerParticipationRequestsByStatusForEmployer(
+    public ResponseEntity<Page<ListDisplayDto>> getJobFairEmployerParticipationRequestsByStatusForEmployer(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "") String jobFairName) {
 
-        Page<JobFairEmployerParticipationDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.findAllByEmployerAndFilters(page, size, status, jobFairName);
+        Page<ListDisplayDto> jobFairEmployerParticipationDtoPage = jobFairEmployerParticipationService.listDisplayFindAllByEmployerAndFilters(page, size, status, jobFairName);
 
         if (jobFairEmployerParticipationDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
