@@ -11,11 +11,11 @@ import java.util.List;
 public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, Long> {
     Page<JobOfferDto> findAllByPage(int page, int size, String order);
 
-    Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive);
+    Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds);
 
-    Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive);
+    Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds);
 
-    Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive);
+    Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds);
 
     JobOfferDto saveDto(JobOfferDto jobOfferDto);
 

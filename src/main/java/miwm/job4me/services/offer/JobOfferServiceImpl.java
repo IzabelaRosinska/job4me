@@ -121,15 +121,17 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
-    public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive) {
+    public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds) {
+        offerIds = prepareEmployerIds(offerIds);
         Sort sort = prepareSort(order);
 
-        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive);
+        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, offerIds);
     }
 
     @Override
-    public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive) {
+    public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
+        offerIds = prepareEmployerIds(offerIds);
         Sort sort = prepareSort(order);
 
         return jobOfferRepository.findAllOffersByFilters(PageRequest.of(page, size, sort),
@@ -142,13 +144,24 @@ public class JobOfferServiceImpl implements JobOfferService {
                 jobOfferFilterDto.getSalaryFrom(),
                 jobOfferFilterDto.getSalaryTo(),
                 jobOfferFilterDto.getIndustryNames(),
-                jobOfferFilterDto.getOfferName());
+                jobOfferFilterDto.getOfferName(),
+                offerIds);
     }
 
     @Override
-    public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive) {
+    public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
         Sort sort = prepareSort(order);
-        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive);
+        offerIds = prepareEmployerIds(offerIds);
+
+        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
+    }
+
+    private List<Long> prepareEmployerIds(List<Long> employerIds) {
+        if (employerIds == null || employerIds.isEmpty()) {
+            return null;
+        }
+
+        return employerIds;
     }
 
     private Sort prepareSort(String order) {

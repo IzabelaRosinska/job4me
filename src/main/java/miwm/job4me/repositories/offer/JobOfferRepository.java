@@ -13,8 +13,11 @@ import java.util.List;
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
     @Query("SELECT j FROM JobOffer j " +
-            "WHERE :isActive IS NULL OR j.isActive = :isActive")
-    Page<JobOffer> findByIsActive(Pageable pageable, @Param("isActive") Boolean isActive);
+            "WHERE :offerIds IS NULL OR j.id IN (:offerIds)" +
+            "AND (:isActive IS NULL OR j.isActive = :isActive)")
+    Page<JobOffer> findByIsActive(Pageable pageable,
+                                  @Param("isActive") Boolean isActive,
+                                  @Param("offerIds") List<Long> offerIds);
 
 
     @Query("SELECT DISTINCT j FROM JobOffer j " +
@@ -23,7 +26,8 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "LEFT JOIN j.levels level " +
             "LEFT JOIN j.contractTypes contractType " +
             "LEFT JOIN j.industries industry " +
-            "WHERE :employerId IS NULL OR j.employer.id IN (:employerIds) " +
+            "WHERE :offerIds IS NULL OR j.id IN (:offerIds) " +
+            "AND :employerIds IS NULL OR j.employer.id IN (:employerIds) " +
             "AND (:isActive IS NULL OR j.isActive = :isActive) " +
             "AND (:cities IS NULL OR loc.city IN (:cities)) " +
             "AND (:employmentFormNames IS NULL OR empForm.name IN (:employmentFormNames)) " +
@@ -43,12 +47,16 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
                                           @Param("salaryFrom") Integer salaryFrom,
                                           @Param("salaryTo") Integer salaryTo,
                                           @Param("industryNames") List<String> industryNames,
-                                          @Param("offerName") String offerName);
+                                          @Param("offerName") String offerName,
+                                          @Param("offerIds") List<Long> offerIds);
 
     @Query("SELECT DISTINCT j FROM JobOffer j " +
-            "WHERE :employerId IS NULL OR j.employer.id IN (:employerIds)" +
+            "WHERE :offerIds IS NULL OR j.id IN (:offerIds) " +
+            "AND :employerIds IS NULL OR j.employer.id IN (:employerIds)" +
             "AND (:isActive IS NULL OR j.isActive = :isActive)")
     Page<JobOffer> findAllOffersOfEmployers(Pageable pageable,
                                             @Param("employerIds") List<Long> employerIds,
-                                            @Param("isActive") Boolean isActive);
+                                            @Param("isActive") Boolean isActive,
+                                            @Param("offerIds") List<Long> offerIds);
+
 }

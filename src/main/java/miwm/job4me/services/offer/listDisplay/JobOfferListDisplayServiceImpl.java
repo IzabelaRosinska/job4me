@@ -38,14 +38,14 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllActiveOffers(int page, int size, String order) {
         return jobOfferService
-                .findByPage(page, size, order, true)
+                .findByPage(page, size, order, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
     @Override
     public Page<ListDisplayDto> findAllActiveOffersByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
         return jobOfferService
-                .findByFilters(page, size, order, jobOfferFilterDto, null, true)
+                .findByFilters(page, size, order, jobOfferFilterDto, null, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -54,7 +54,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService
-                .findAllOffersOfEmployers(page, size, order, List.of(employerId), true)
+                .findAllOffersOfEmployers(page, size, order, List.of(employerId), true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -63,7 +63,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService
-                .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), true)
+                .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -72,7 +72,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService
-                .findAllOffersOfEmployers(page, size, order, List.of(employerId), isActive)
+                .findAllOffersOfEmployers(page, size, order, List.of(employerId), isActive, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -81,7 +81,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService
-                .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), isActive)
+                .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), isActive, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -96,7 +96,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .toList();
 
         return jobOfferService
-                .findAllOffersOfEmployers(page, size, order, employersIds, true)
+                .findAllOffersOfEmployers(page, size, order, employersIds, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
     }
 
@@ -110,48 +110,110 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .toList();
 
         return jobOfferService
-                .findByFilters(page, size, order, jobOfferFilterDto, employersIds, true)
+                .findByFilters(page, size, order, jobOfferFilterDto, employersIds, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
+    }
+
+    private ListDisplaySavedDto setSavedTrue(ListDisplaySavedDto listDisplaySaved) {
+        listDisplaySaved.setIsSaved(true);
+        return listDisplaySaved;
+    }
+
+    private ListDisplaySavedDto setSaved(ListDisplaySavedDto listDisplaySaved) {
+        Boolean isSaved = savedOfferService.checkIfSaved(listDisplaySaved.getId());
+        listDisplaySaved.setIsSaved(isSaved);
+        return listDisplaySaved;
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllSavedOffersEmployeeView(int page, int size, String order) {
-        return null;
+        List<Long> employeeSavedOffersIds = savedOfferService
+                .findAllOfferIdsForCurrentEmployee()
+                .stream()
+                .toList();
+
+        return jobOfferService
+                .findByPage(page, size, order, true, employeeSavedOffersIds)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSavedTrue);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllSavedOffersByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
-        return null;
+        List<Long> employeeSavedOffersIds = savedOfferService
+                .findAllOfferIdsForCurrentEmployee()
+                .stream()
+                .toList();
+
+        return jobOfferService
+                .findByFilters(page, size, order, jobOfferFilterDto, null, true, employeeSavedOffersIds)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSavedTrue);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersEmployeeView(int page, int size, String order) {
-        return null;
+        return jobOfferService
+                .findByPage(page, size, order, true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
-        return null;
+        return jobOfferService
+                .findByFilters(page, size, order, jobOfferFilterDto, null, true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, String direction, Long employerId) {
-        return null;
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+
+        return jobOfferService
+                .findAllOffersOfEmployers(page, size, order, List.of(employerId), true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfEmployerByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId) {
-        return null;
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+
+        return jobOfferService
+                .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfJobFairEmployeeView(int page, int size, String order, Long jobFairId) {
-        return null;
+        idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
+
+        List<Long> employersIds = jobFairEmployerParticipationService
+                .findAllEmployersIdsForJobFair(jobFairId)
+                .stream()
+                .toList();
+
+        return jobOfferService
+                .findAllOffersOfEmployers(page, size, order, employersIds, true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
     }
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfJobFairByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long jobFairId) {
-        return null;
-    }
+        idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
 
+        List<Long> employersIds = jobFairEmployerParticipationService
+                .findAllEmployersIdsForJobFair(jobFairId)
+                .stream()
+                .toList();
+
+        return jobOfferService
+                .findByFilters(page, size, order, jobOfferFilterDto, employersIds, true, null)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
+    }
 }
