@@ -181,23 +181,23 @@ public class JobOfferServiceImpl implements JobOfferService {
             jobOfferFilterDto.setOfferName("");
         }
 
-        if (jobOfferFilterDto.getCities().isEmpty()) {
+        if (jobOfferFilterDto.getCities() != null && jobOfferFilterDto.getCities().isEmpty()) {
             jobOfferFilterDto.setCities(null);
         }
 
-        if (jobOfferFilterDto.getEmploymentFormNames().isEmpty()) {
+        if (jobOfferFilterDto.getEmploymentFormNames() != null && jobOfferFilterDto.getEmploymentFormNames().isEmpty()) {
             jobOfferFilterDto.setEmploymentFormNames(null);
         }
 
-        if (jobOfferFilterDto.getLevelNames().isEmpty()) {
+        if (jobOfferFilterDto.getLevelNames() != null && jobOfferFilterDto.getLevelNames().isEmpty()) {
             jobOfferFilterDto.setLevelNames(null);
         }
 
-        if (jobOfferFilterDto.getContractTypeNames().isEmpty()) {
+        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
             jobOfferFilterDto.setContractTypeNames(null);
         }
 
-        if (jobOfferFilterDto.getIndustryNames().isEmpty()) {
+        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
             jobOfferFilterDto.setIndustryNames(null);
         }
 
