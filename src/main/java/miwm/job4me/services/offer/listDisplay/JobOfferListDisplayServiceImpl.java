@@ -3,6 +3,7 @@ package miwm.job4me.services.offer.listDisplay;
 import miwm.job4me.services.event.JobFairEmployerParticipationService;
 import miwm.job4me.services.offer.JobOfferService;
 import miwm.job4me.services.offer.SavedOfferService;
+import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.mappers.listDisplay.ListDisplaySavedMapper;
@@ -21,17 +22,19 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     private final JobFairEmployerParticipationService jobFairEmployerParticipationService;
     private final JobOfferService jobOfferService;
     private final SavedOfferService savedOfferService;
+    private final EmployerService employerService;
 
     private final IdValidator idValidator;
     private final String ENTITY_EMPLOYER = "Employer";
     private final String ENTITY_JOB_FAIR = "JobFair";
 
-    public JobOfferListDisplayServiceImpl(ListDisplayMapper listDisplayMapper, ListDisplaySavedMapper listDisplaySavedMapper, JobFairEmployerParticipationService jobFairEmployerParticipationService, JobOfferService jobOfferService, SavedOfferService savedOfferService, IdValidator idValidator) {
+    public JobOfferListDisplayServiceImpl(ListDisplayMapper listDisplayMapper, ListDisplaySavedMapper listDisplaySavedMapper, JobFairEmployerParticipationService jobFairEmployerParticipationService, JobOfferService jobOfferService, SavedOfferService savedOfferService, EmployerService employerService, IdValidator idValidator) {
         this.listDisplayMapper = listDisplayMapper;
         this.listDisplaySavedMapper = listDisplaySavedMapper;
         this.jobFairEmployerParticipationService = jobFairEmployerParticipationService;
         this.jobOfferService = jobOfferService;
         this.savedOfferService = savedOfferService;
+        this.employerService = employerService;
         this.idValidator = idValidator;
     }
 
@@ -50,7 +53,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     }
 
     @Override
-    public Page<ListDisplayDto> findAllActiveOffersOfEmployer(int page, int size, String order, String direction, Long employerId) {
+    public Page<ListDisplayDto> findAllActiveOffersOfEmployer(int page, int size, String order, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService
@@ -68,8 +71,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     }
 
     @Override
-    public Page<ListDisplayDto> findAllOffersOfEmployerEmployerView(int page, int size, String order, String direction, Long employerId, Boolean isActive) {
-        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+    public Page<ListDisplayDto> findAllOffersOfEmployerEmployerView(int page, int size, String order, Boolean isActive) {
+        Long employerId = employerService.getAuthEmployer().getId();
 
         return jobOfferService
                 .findAllOffersOfEmployers(page, size, order, List.of(employerId), isActive, null)
@@ -77,8 +80,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     }
 
     @Override
-    public Page<ListDisplayDto> findAllOffersOfEmployerByFilterEmployerView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId, Boolean isActive) {
-        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+    public Page<ListDisplayDto> findAllOffersOfEmployerByFilterEmployerView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Boolean isActive) {
+        Long employerId = employerService.getAuthEmployer().getId();
 
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), isActive, null)
@@ -168,7 +171,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     }
 
     @Override
-    public Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, String direction, Long employerId) {
+    public Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
 
         return jobOfferService

@@ -10,13 +10,13 @@ public interface JobOfferListDisplayService {
 
     Page<ListDisplayDto> findAllActiveOffersByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto);
 
-    Page<ListDisplayDto> findAllActiveOffersOfEmployer(int page, int size, String order, String direction, Long employerId);
+    Page<ListDisplayDto> findAllActiveOffersOfEmployer(int page, int size, String order, Long employerId);
 
     Page<ListDisplayDto> findAllActiveOffersOfEmployerByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId);
 
-    Page<ListDisplayDto> findAllOffersOfEmployerEmployerView(int page, int size, String order, String direction, Long employerId, Boolean isActive);
+    Page<ListDisplayDto> findAllOffersOfEmployerEmployerView(int page, int size, String order, Boolean isActive);
 
-    Page<ListDisplayDto> findAllOffersOfEmployerByFilterEmployerView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId, Boolean isActive);
+    Page<ListDisplayDto> findAllOffersOfEmployerByFilterEmployerView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Boolean isActive);
 
     Page<ListDisplayDto> findAllActiveOffersOfJobFair(int page, int size, String order, Long jobFairId);
 
@@ -30,7 +30,7 @@ public interface JobOfferListDisplayService {
 
     Page<ListDisplaySavedDto> findAllOffersByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto);
 
-    Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, String direction, Long employerId);
+    Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, Long employerId);
 
     Page<ListDisplaySavedDto> findAllOffersOfEmployerByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId);
 
