@@ -123,10 +123,11 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds) {
+        Boolean isOfferIdsDefined = offerIds != null && !offerIds.isEmpty();
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
 
-        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, offerIds);
+        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, isOfferIdsDefined, offerIds);
     }
 
     @Override
@@ -159,11 +160,14 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
+        Boolean isEmployerIdsDefined = employerIds != null && !employerIds.isEmpty();
+        Boolean isOfferIdsDefined = offerIds != null && !offerIds.isEmpty();
+
         Sort sort = prepareSort(order);
         offerIds = prepareIds(offerIds);
         employerIds = prepareIds(employerIds);
 
-        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
+        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), isEmployerIdsDefined, employerIds, isActive, isOfferIdsDefined, offerIds);
     }
 
     private List<Long> prepareIds(List<Long> ids) {

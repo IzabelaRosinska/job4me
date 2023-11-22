@@ -13,10 +13,11 @@ import java.util.List;
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
     @Query("SELECT j FROM JobOffer j " +
-            "WHERE (:offerIds IS NULL OR j.id IN (:offerIds))" +
+            "WHERE (:isOfferIdsDefined IS FALSE OR j.id IN (:offerIds))" +
             "AND (:isActive IS NULL OR j.isActive = :isActive)")
     Page<JobOffer> findByIsActive(Pageable pageable,
                                   @Param("isActive") Boolean isActive,
+                                  @Param("isOfferIdsDefined") Boolean isOfferIdsDefined,
                                   @Param("offerIds") List<Long> offerIds);
 
 
@@ -58,12 +59,14 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
                                           @Param("offerIds") List<Long> offerIds);
 
     @Query("SELECT DISTINCT j FROM JobOffer j " +
-            "WHERE :offerIds IS NULL OR j.id IN (:offerIds) " +
-            "AND :employerIds IS NULL OR j.employer.id IN (:employerIds)" +
+            "WHERE :isOfferIdsDefined IS FALSE OR j.id IN (:offerIds) " +
+            "AND :isEmployerIdsDefined IS FALSE OR j.employer.id IN (:employerIds)" +
             "AND (:isActive IS NULL OR j.isActive = :isActive)")
     Page<JobOffer> findAllOffersOfEmployers(Pageable pageable,
+                                            @Param("isEmployerIdsDefined") Boolean isEmployerIdsDefined,
                                             @Param("employerIds") List<Long> employerIds,
                                             @Param("isActive") Boolean isActive,
+                                            @Param("isOfferIdsDefined") Boolean isOfferIdsDefined,
                                             @Param("offerIds") List<Long> offerIds);
 
 }
