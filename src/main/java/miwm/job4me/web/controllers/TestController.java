@@ -17,10 +17,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,43 +70,29 @@ public class TestController {
 
     @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     @GetMapping("/linkedin/signin")
-    public String proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
-        System.out.println("-----------Test------------");
+    public ResponseEntity<String> proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid 20profile 20email";
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        // Use HttpHeaders to set the proper redirect in the response
-        headers.setLocation(URI.create(URL));
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, URL);
-        httpServletResponse.setStatus(HttpServletResponse.SC_FOUND);
+        ResponseEntity<String> response = restTemplate.exchange(
+                URL,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
 
-        return null;
-        //return new RedirectView(URL);
-    }
-/*
-    @GetMapping("/linkedin/signin")
-    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
-    public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
-        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-        OAuth2Parameters parameters = new OAuth2Parameters();
-        parameters.set("response_type", "code");
-        parameters.set("redirect_uri", "https://job4me.azurewebsites.net/auth/linkedin/callback");
-        parameters.setState("foobar");
-        parameters.setScope("openid profile email");
-
-        String authorizeUrl = oauthOperations.buildAuthorizeUrl(parameters);
-        return "redirect:" + authorizeUrl;
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
- */
 
     @GetMapping("/auth/linkedin/callback")
     @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
-    public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
+    public void linkedinCallback(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        /*OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
                 .replaceQuery(null)
                 .build()
@@ -118,7 +101,25 @@ public class TestController {
         AccessGrant accessGrant = oauthOperations.exchangeForAccess(authorizationCode, currentRedirectUri, null);
 
         String accessToken = accessGrant.getAccessToken();
-        show_user(request, response, accessToken);
+
+         */
+        HttpHeaders headers = new HttpHeaders();
+        String authorizationCode = LINKEDIN_AUTH_CODE + code;
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
+        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + BASIC_LINKEDIN_REDIRECT_URI;
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response2 = restTemplate.exchange(
+                URL,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+        System.out.print(response2.getBody().toString());
+
+        //show_user(request, response, accessToken);
     }
 
     private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) throws IOException {
