@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import static miwm.job4me.messages.AppMessages.*;
@@ -68,23 +70,24 @@ public class TestController {
         this.restTemplate = restTemplate;
     }
 
+
+    @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     @GetMapping("/linkedin/signin")
-    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
-    public ResponseEntity<String> proxyLinkedInRequest() {
+    public String proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
+        System.out.println("-----------Test------------");
         HttpHeaders headers = new HttpHeaders();
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                URL,
-                HttpMethod.GET,
-                entity,
-                String.class
-        );
+        // Use HttpHeaders to set the proper redirect in the response
+        headers.setLocation(URI.create(URL));
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, URL);
+        httpServletResponse.setStatus(HttpServletResponse.SC_FOUND);
 
-        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        return null;
+        //return new RedirectView(URL);
     }
 /*
     @GetMapping("/linkedin/signin")
@@ -104,7 +107,7 @@ public class TestController {
  */
 
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
+    @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) throws IOException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
@@ -135,6 +138,7 @@ public class TestController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
             String email = jsonNode.get("email").asText();
+            System.out.println(email);
 
             Person user = authService.loadUserByUsername(email);
             if(user == null)
@@ -152,7 +156,6 @@ public class TestController {
                 response.getWriter().write(user.getUserRole().toString() + ';' + token);
                 response.setHeader("Authorization", "Token " + token);
             }
-
             if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                 employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
                 response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
@@ -160,5 +163,7 @@ public class TestController {
                 employerService.saveEmployerDataFromLinkedin(user, jsonNode);
                 response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
             }
+
+
     }
 }
