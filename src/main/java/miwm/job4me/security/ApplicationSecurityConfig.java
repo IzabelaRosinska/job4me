@@ -47,8 +47,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/home").permitAll()
                     .antMatchers("/levels").permitAll()
                     .antMatchers("/linkedin/**").permitAll()
+                    .antMatchers("/auth/linkedin/callback").permitAll()
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/login").permitAll()
+
 
                     .and().formLogin().loginPage("/login").permitAll().successHandler(appAuthenticationSuccessHandler())
                     .and().httpBasic()
