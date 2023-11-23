@@ -74,7 +74,7 @@ public class TestController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid 20profile 20email";
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid profile email";
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
