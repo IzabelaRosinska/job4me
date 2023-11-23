@@ -132,7 +132,8 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
     @Override
     public Page<ListDisplayDto> listDisplayFindAllByFilters(int page, int size, Boolean status, Long jobFairId, Long employerId, String jobFairName, String employerCompanyName) {
-        return null;
+        return findAllByFilters(page, size, status, jobFairId, employerId, jobFairName, employerCompanyName)
+                .map(listDisplayMapper::toDtoFromJobFairEmployerParticipation);
     }
 
     @Override

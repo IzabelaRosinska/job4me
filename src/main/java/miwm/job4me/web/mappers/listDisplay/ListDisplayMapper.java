@@ -1,5 +1,6 @@
 package miwm.job4me.web.mappers.listDisplay;
 
+import miwm.job4me.model.event.JobFair;
 import miwm.job4me.model.event.JobFairEmployerParticipation;
 import miwm.job4me.model.offer.*;
 import miwm.job4me.model.users.Employer;
@@ -10,6 +11,18 @@ import java.util.Set;
 
 @Component
 public class ListDisplayMapper {
+    public ListDisplayDto toDtoFromJobFair(JobFair jobFair) {
+        ListDisplayDto listDisplayDto = new ListDisplayDto();
+        listDisplayDto.setId(jobFair.getId());
+        listDisplayDto.setName(jobFair.getName());
+
+        String displayDescription = jobFair.getDateStart() + " - " + jobFair.getDateEnd() + "\n" + jobFair.getAddress() + "\n" + jobFair.getDisplayDescription();
+
+        listDisplayDto.setDisplayDescription(displayDescription);
+        listDisplayDto.setPhoto(jobFair.getPhoto());
+        return listDisplayDto;
+    }
+
     public ListDisplayDto toDtoFromJobFairEmployerParticipation(JobFairEmployerParticipation jobFairEmployerParticipation) {
         ListDisplayDto listDisplayDto = new ListDisplayDto();
         listDisplayDto.setId(jobFairEmployerParticipation.getId());
