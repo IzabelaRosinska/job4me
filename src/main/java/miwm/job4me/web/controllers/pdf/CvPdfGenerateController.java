@@ -1,6 +1,7 @@
 package miwm.job4me.web.controllers.pdf;
 
-import miwm.job4me.services.cv.pdf.CvPdfGenerateService;
+import miwm.job4me.services.pdf.cv.CvPdfGenerateService;
+import miwm.job4me.services.pdf.cv.CvPdfGenerateServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CvPdfGenerateController {
     private final CvPdfGenerateService cvPdfGenerateService;
 
-    public CvPdfGenerateController(CvPdfGenerateService cvPdfGenerateService) {
+    public CvPdfGenerateController(CvPdfGenerateServiceImpl cvPdfGenerateService) {
         this.cvPdfGenerateService = cvPdfGenerateService;
     }
 
