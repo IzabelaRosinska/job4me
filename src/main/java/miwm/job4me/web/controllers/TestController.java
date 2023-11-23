@@ -70,22 +70,15 @@ public class TestController {
 
     @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     @GetMapping("/linkedin/signin")
-    public ResponseEntity<String> proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
+    public void proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid+profile+email";
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid profile email";
 
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, URL);
+        httpServletResponse.setStatus(HttpServletResponse.SC_FOUND);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                URL,
-                HttpMethod.GET,
-                entity,
-                String.class
-        );
-
-        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
 
@@ -107,7 +100,7 @@ public class TestController {
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
-        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + BASIC_LINKEDIN_REDIRECT_URI;
+        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + AZURE_LINKEDIN_REDIRECT_URI;
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -117,9 +110,11 @@ public class TestController {
                 entity,
                 String.class
         );
-        System.out.print(response2.getBody().toString());
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(response2.getBody());
+        String accessToken = jsonNode.get("access_token").asText();
 
-        //show_user(request, response, accessToken);
+        show_user(request, response, accessToken);
     }
 
     private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) throws IOException {
@@ -157,14 +152,17 @@ public class TestController {
                 response.getWriter().write(user.getUserRole().toString() + ';' + token);
                 response.setHeader("Authorization", "Token " + token);
             }
+
             if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                 employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
+                response.sendRedirect(FRONT_HOST + "/employee/account");
             } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
                 employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
+                response.sendRedirect(FRONT_HOST + "/employer/account");
             }
 
 
+        //employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
+        //response.sendRedirect(FRONT_HOST + "/employee/account");
     }
 }
