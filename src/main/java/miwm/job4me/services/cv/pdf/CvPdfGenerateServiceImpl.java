@@ -41,15 +41,9 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
             renderer.finishPDF();
 
             byte[] bytes = target.toByteArray();
-            String fileName = "CV";
-//            String string = Base64.getEncoder().encodeToString(bytes);
 
             HttpHeaders header = new HttpHeaders();
-//            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName+".pdf");
             header.add("Content-Type", "application/pdf");
-//            header.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//            header.add("Pragma", "no-cache");
-//            header.add("Expires", "0");
             System.out.println("htmlContent");
             System.out.println(htmlContent);
 
@@ -65,46 +59,6 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
             throw new InvalidArgumentException("Document exception");
         }
     }
-
-//    @Override
-//    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data, String pdfFileName) {
-//        Context context = new Context();
-//        context.setVariables(data);
-//
-//        String htmlContent = templateEngine.process(templateName, context);
-//        try {
-//            ByteArrayOutputStream target = new ByteArrayOutputStream();
-//            ITextRenderer renderer = new ITextRenderer();
-//            renderer.setDocumentFromString(htmlContent);
-//            renderer.layout();
-//            renderer.createPDF(target, true);
-//            renderer.finishPDF();
-//
-//            byte[] bytes = target.toByteArray();
-//            String fileName = "CV";
-////            String string = Base64.getEncoder().encodeToString(bytes);
-//
-//            HttpHeaders header = new HttpHeaders();
-////            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName+".pdf");
-//            header.add("Content-Type", "application/pdf");
-////            header.add("Cache-Control", "no-cache, no-store, must-revalidate");
-////            header.add("Pragma", "no-cache");
-////            header.add("Expires", "0");
-//            System.out.println("htmlContent");
-//            System.out.println(htmlContent);
-//
-//            System.out.println("bytes");
-//            System.out.println(bytes);
-//
-//            return ResponseEntity.ok()
-//                .headers(header)
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(bytes);
-//
-//        } catch (DocumentException e) {
-//            throw new InvalidArgumentException("Document exception");
-//        }
-//    }
 
     @Override
     public ResponseEntity<byte[]> downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
@@ -144,51 +98,4 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
         return generateAndDownloadPdfFile("quotation", data, "quotation.pdf");
     }
 
-//    @Override
-//    public ResponseEntity<byte[]> downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
-//        Context context = new Context();
-//        context.setVariables(data);
-//
-//        String htmlContent = templateEngine.process(templateName, context);
-//        try {
-//            FileOutputStream fileOutputStream = new FileOutputStream(pdfDirectory + pdfFileName);
-//            ITextRenderer renderer = new ITextRenderer();
-//            renderer.setDocumentFromString(htmlContent);
-//            renderer.layout();
-//            renderer.createPDF(fileOutputStream, false);
-//            renderer.finishPDF();
-//        } catch (FileNotFoundException e) {
-//            logger.error(e.getMessage(), e);
-//        } catch (DocumentException e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//        WebContext context = new WebContext(request, response, servletContext);
-//        context.setVariable("eJournalResponse", eJournalResponse);
-//        String cvHtmlTemplate = templateEngine.process("eJournalHtmlTemplate", context);
-//
-//        ByteArrayOutputStream target = new ByteArrayOutputStream();
-//        ConverterProperties converterProperties = new ConverterProperties();
-//        converterProperties.setBaseUri("http://localhost:8080");
-//
-//        HtmlConverter.convertToPdf(cvHtmlTemplate, target, converterProperties);
-//
-//        byte[] bytes = target.toByteArray();
-//        String fileName = "CV";
-//
-//        HttpHeaders header = new HttpHeaders();
-//        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName+".pdf");
-//        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//        header.add("Pragma", "no-cache");
-//        header.add("Expires", "0");
-//
-//        return ResponseEntity.ok()
-//                .headers(header)
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(bytes);
-//
-//        return ResponseEntity.ok()
-////                .headers(header)
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(null);
-//    }
 }
