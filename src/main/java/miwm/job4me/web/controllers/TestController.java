@@ -1,8 +1,8 @@
 package miwm.job4me.web.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import miwm.job4me.messages.AppMessages;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.users.EmployeeService;
@@ -17,14 +17,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionData;
-import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.social.linkedin.connect.LinkedInConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.OAuth2Operations;
@@ -32,11 +32,10 @@ import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,6 +52,7 @@ public class TestController {
     private final UserAuthenticationService authService;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
+    private final RestTemplate restTemplate;
 
     @Autowired
     private ConnectionRepository connectionRepository;
@@ -60,15 +60,35 @@ public class TestController {
     @Autowired
     private LinkedInConnectionFactory connectionFactory;
 
-    public TestController(Environment environment, UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService) {
+    public TestController(Environment environment, UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, RestTemplate restTemplate) {
         this.environment = environment;
         this.authService = authService;
         this.employeeService = employeeService;
         this.employerService = employerService;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/linkedin/signin")
-    @CrossOrigin(origins = {"https://www.linkedin.com", "https://www.linkedin.com"})
+    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
+    public ResponseEntity<String> proxyLinkedInRequest() {
+        HttpHeaders headers = new HttpHeaders();
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                URL,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+    }
+/*
+    @GetMapping("/linkedin/signin")
+    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuth2Parameters parameters = new OAuth2Parameters();
@@ -81,9 +101,11 @@ public class TestController {
         return "redirect:" + authorizeUrl;
     }
 
+ */
+
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = {"https://www.linkedin.com", "https://www.linkedin.com"})
-    public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) {
+    @CrossOrigin(origins = {"https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
+    public void linkedinCallback(@RequestParam("code") String authorizationCode, HttpServletRequest request, HttpServletResponse response) throws IOException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
                 .replaceQuery(null)
@@ -93,71 +115,50 @@ public class TestController {
         AccessGrant accessGrant = oauthOperations.exchangeForAccess(authorizationCode, currentRedirectUri, null);
 
         String accessToken = accessGrant.getAccessToken();
-        //System.out.print(accessToken);
         show_user(request, response, accessToken);
-        /*
-        ConnectionData connectionData = new ConnectionData(
-                "linkedin", // ProviderId (e.g., linkedin)
-                "uniqueProviderUserId", // Unique provider user ID
-                "displayName", // Display name
-                "profileUrl", // Profile URL
-                "imageUrl", // Image URL
-                accessToken, // Access token
-                null, // Secret (This might not be available in AccessGrant)
-                null, // Refresh token (This might not be available in AccessGrant)
-                null // Expire time (This might not be available in AccessGrant)
-        );
-
-        ConnectionFactory<LinkedIn> linkedInConnectionFactory = new LinkedInConnectionFactory(
-                environment.getProperty("spring.social.linkedin.app-id"), // Replace with your LinkedIn client ID
-                environment.getProperty("spring.social.linkedin.app-secret") // Replace with your LinkedIn client secret
-        );
-        Connection<LinkedIn> connection = linkedInConnectionFactory.createConnection(connectionData);
-        connectionRepository.addConnection(connection);
-
-        return "redirect:/profile";
-
-         */
     }
 
-    private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) {
-        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
-            final HttpGet httpGet = new HttpGet(BASIC_LINKEDIN_PROFILE_URL);
-            httpGet.addHeader("Authorization", "Bearer " + accessToken);
-            //httpGet.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
+    private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) throws IOException {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken);
 
-            try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
-                String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(responseBody.toString());
-                String email = jsonNode.get("email").asText();
+            HttpEntity<String> entity = new HttpEntity<>(headers);
 
-                Person user = authService.loadUserByUsername(email);
-                if(user == null)
-                    user = authService.registerLinkedinUser(jsonNode);
+            ResponseEntity<String> linkedin_response = restTemplate.exchange(
+                    BASIC_LINKEDIN_PROFILE_URL,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
 
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if(authentication.getPrincipal().equals("anonymousUser")) {
-                    String token = authService.loginLinkedinUser(email);
-                    //Cookie tokenCookie = new Cookie(AppMessages.JWT_TOKEN_NAME, token);
-                    //tokenCookie.setHttpOnly(true);
-                    //tokenCookie.setPath("/");
-                    //response.addCookie(tokenCookie);
-                    response.getWriter().write(user.getUserRole().toString() + ';' + token);
-                    response.setHeader("Authorization", "Token " + token);
-                    //response.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
-                }
+            String responseBody = linkedin_response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
+            String email = jsonNode.get("email").asText();
 
-                if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
-                    employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-                    response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
-                } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
-                    employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-                    response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
-                }
+            Person user = authService.loadUserByUsername(email);
+            if(user == null)
+                user = authService.registerLinkedinUser(jsonNode);
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if(authentication.getPrincipal().equals("anonymousUser")) {
+                String token = authService.loginLinkedinUser(email);
+            /*    response.setHeader("Access-Control-Allow-Origin", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
+                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+                response.setHeader("Access-Control-Max-Age", "3600");
+                response.setHeader("Access-Control-Allow-Headers", "Authorization");
+
+             */
+                response.getWriter().write(user.getUserRole().toString() + ';' + token);
+                response.setHeader("Authorization", "Token " + token);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
+                employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
+                response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
+            } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
+                employerService.saveEmployerDataFromLinkedin(user, jsonNode);
+                response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
+            }
     }
 }

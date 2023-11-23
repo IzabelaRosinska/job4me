@@ -11,6 +11,7 @@ import org.springframework.social.config.annotation.SocialConfigurerAdapter;
 import org.springframework.social.connect.ConnectionFactory;
 import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.social.linkedin.connect.LinkedInConnectionFactory;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableSocial
@@ -25,6 +26,11 @@ public class SocialConfig extends SocialConfigurerAdapter {
     @Bean
     public LinkedInConnectionFactory linkedInConnectionFactory() {
         return new LinkedInConnectionFactory(linkedinClientId, linkedinClientSecret);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     @Override
