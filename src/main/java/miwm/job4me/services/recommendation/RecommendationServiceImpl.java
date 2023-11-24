@@ -40,7 +40,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, String order, Long jobFairId) {
+    public Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, Long jobFairId) {
         jobFairService.strictExistsById(jobFairId);
         Long employeeId = employeeService.getAuthEmployee().getId();
 
