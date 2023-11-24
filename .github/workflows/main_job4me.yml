@@ -66,3 +66,5 @@ jobs:
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
             LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
             LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+            RECOMMENDATION_API_URL: ${{ secrets.RECOMMENDATION_API_URL }}
+            RECOMMENDATION_API_KEY: ${{ secrets.RECOMMENDATION_API_KEY }}
