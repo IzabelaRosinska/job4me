@@ -3,6 +3,7 @@ package miwm.job4me.services.recommendation;
 import miwm.job4me.exceptions.RecommendationException;
 import miwm.job4me.services.event.JobFairService;
 import miwm.job4me.services.offer.listDisplay.JobOfferListDisplayService;
+import miwm.job4me.services.pagination.ListDisplaySavedPageServiceImpl;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
 import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
@@ -30,13 +31,15 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final EmployeeService employeeService;
     private final JobFairService jobFairService;
     private final JobOfferListDisplayService jobOfferListDisplayService;
-    private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Unexpected response format";
+    private final ListDisplaySavedPageServiceImpl listDisplaySavedPageServiceImpl;
+    private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Recommendation system failure";
 
 
-    public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService) {
+    public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService, ListDisplaySavedPageServiceImpl listDisplaySavedPageServiceImpl) {
         this.employeeService = employeeService;
         this.jobFairService = jobFairService;
         this.jobOfferListDisplayService = jobOfferListDisplayService;
+        this.listDisplaySavedPageServiceImpl = listDisplaySavedPageServiceImpl;
     }
 
     @Override
@@ -46,7 +49,12 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
 
-        return jobOfferListDisplayService.findAllById(page, size, recommendedOffersIds);
+        List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
+                .stream()
+                .map(jobOfferListDisplayService::findByOfferId)
+                .toList();
+
+        return listDisplaySavedPageServiceImpl.createPage(recommendedOffers, size, page);
     }
 
     @Override
@@ -61,13 +69,21 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .toList();
 
         for (Long id : filteredOffersIds) {
-            if (!recommendedOffersIds.contains(id)) {
+            if (recommendedOffersIds != null && !recommendedOffersIds.contains(id)) {
                 recommendedOffersIds.remove(id);
             }
         }
 
-        return jobOfferListDisplayService
-                .findAllById(page, size, recommendedOffersIds);
+        if (recommendedOffersIds == null) {
+            recommendedOffersIds = recommendedOffersIds.subList(0, 10);
+        }
+
+        List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
+                .stream()
+                .map(jobOfferListDisplayService::findByOfferId)
+                .toList();
+
+        return listDisplaySavedPageServiceImpl.createPage(recommendedOffers, size, page);
     }
 
     private List<Long> getRecommendedOffersIds(Long employeeId, Long jobFairId) {
@@ -83,25 +99,21 @@ public class RecommendationServiceImpl implements RecommendationService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
             if (response.statusCode() == 200) {
                 JSONArray jsonArray = new JSONArray(response.body());
                 List<Long> recommendedOffersIds = new ArrayList<>();
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     recommendedOffersIds.add(jsonArray.getLong(i));
                 }
-                System.out.println(recommendedOffersIds);
+
                 return recommendedOffersIds;
             } else {
-                System.out.println("ODPOWIEDŹ: " + response.statusCode());
                 throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
             }
-
-
         } catch (IOException | InterruptedException e) {
-            System.out.println("BŁĄD");
-            e.printStackTrace();
+            throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
         }
-
-        return null;
     }
 }
