@@ -13,7 +13,6 @@ import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
-import miwm.job4me.web.model.filters.JobOfferFilterPresenceDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -123,51 +122,39 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds) {
-        Boolean isOfferIdsDefined = offerIds != null && !offerIds.isEmpty();
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
 
-        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, isOfferIdsDefined, offerIds);
+        return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, offerIds);
     }
 
     @Override
     public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
-        JobOfferFilterPresenceDto jobOfferFilterPresenceDto = prepareFilterDefinition(jobOfferFilterDto, employerIds, offerIds);
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
 
         return jobOfferRepository.findAllOffersByFilters(PageRequest.of(page, size, sort),
-                jobOfferFilterPresenceDto.getIsEmployerIdsDefined(),
                 employerIds,
                 isActive,
-                jobOfferFilterPresenceDto.getIsCitiesDefined(),
                 jobOfferFilterDto.getCities(),
-                jobOfferFilterPresenceDto.getIsEmploymentFormNamesDefined(),
                 jobOfferFilterDto.getEmploymentFormNames(),
-                jobOfferFilterPresenceDto.getIsLevelNamesDefined(),
                 jobOfferFilterDto.getLevelNames(),
-                jobOfferFilterPresenceDto.getIsContractTypeNamesDefined(),
                 jobOfferFilterDto.getContractTypeNames(),
                 jobOfferFilterDto.getSalaryFrom(),
                 jobOfferFilterDto.getSalaryTo(),
-                jobOfferFilterPresenceDto.getIsIndustryNamesDefined(),
                 jobOfferFilterDto.getIndustryNames(),
                 jobOfferFilterDto.getOfferName(),
-                jobOfferFilterPresenceDto.getIsOfferIdsDefined(),
                 offerIds);
     }
 
     @Override
     public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
-        Boolean isEmployerIdsDefined = employerIds != null && !employerIds.isEmpty();
-        Boolean isOfferIdsDefined = offerIds != null && !offerIds.isEmpty();
-
         Sort sort = prepareSort(order);
         offerIds = prepareIds(offerIds);
         employerIds = prepareIds(employerIds);
 
-        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), isEmployerIdsDefined, employerIds, isActive, isOfferIdsDefined, offerIds);
+        return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
     }
 
     private List<Long> prepareIds(List<Long> ids) {
@@ -186,42 +173,6 @@ public class JobOfferServiceImpl implements JobOfferService {
         return orderMap.getOrDefault(order, Sort.unsorted());
     }
 
-    private JobOfferFilterPresenceDto prepareFilterDefinition(JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, List<Long> offerIds) {
-        JobOfferFilterPresenceDto jobOfferFilterPresenceDto = new JobOfferFilterPresenceDto();
-
-        if (jobOfferFilterDto == null) {
-            jobOfferFilterPresenceDto.setIsCitiesDefined(false);
-            jobOfferFilterPresenceDto.setIsEmploymentFormNamesDefined(false);
-            jobOfferFilterPresenceDto.setIsLevelNamesDefined(false);
-            jobOfferFilterPresenceDto.setIsContractTypeNamesDefined(false);
-            jobOfferFilterPresenceDto.setIsIndustryNamesDefined(false);
-            jobOfferFilterPresenceDto.setIsOfferIdsDefined(false);
-            jobOfferFilterPresenceDto.setIsEmployerIdsDefined(false);
-            return jobOfferFilterPresenceDto;
-        }
-
-        jobOfferFilterPresenceDto.setIsCitiesDefined(
-                jobOfferFilterDto.getCities() != null && !jobOfferFilterDto.getCities().isEmpty());
-
-        jobOfferFilterPresenceDto.setIsEmploymentFormNamesDefined(
-                jobOfferFilterDto.getEmploymentFormNames() != null && !jobOfferFilterDto.getEmploymentFormNames().isEmpty());
-
-        jobOfferFilterPresenceDto.setIsLevelNamesDefined(
-                jobOfferFilterDto.getLevelNames() != null && !jobOfferFilterDto.getLevelNames().isEmpty());
-
-        jobOfferFilterPresenceDto.setIsIndustryNamesDefined(
-                jobOfferFilterDto.getIndustryNames() != null && !jobOfferFilterDto.getIndustryNames().isEmpty());
-
-        jobOfferFilterPresenceDto.setIsIndustryNamesDefined(
-                jobOfferFilterDto.getIndustryNames() != null && !jobOfferFilterDto.getIndustryNames().isEmpty());
-
-        jobOfferFilterPresenceDto.setIsEmployerIdsDefined(employerIds != null && !employerIds.isEmpty());
-
-        jobOfferFilterPresenceDto.setIsOfferIdsDefined(offerIds != null && !offerIds.isEmpty());
-
-        return jobOfferFilterPresenceDto;
-    }
-
     private JobOfferFilterDto prepareFilter(JobOfferFilterDto jobOfferFilterDto) {
         if (jobOfferFilterDto == null) {
             jobOfferFilterDto = new JobOfferFilterDto();
@@ -231,24 +182,24 @@ public class JobOfferServiceImpl implements JobOfferService {
             jobOfferFilterDto.setOfferName("");
         }
 
-        if (jobOfferFilterDto.getCities() != null && jobOfferFilterDto.getCities().isEmpty()) {
-            jobOfferFilterDto.setCities(null);
+        if (jobOfferFilterDto.getCities() == null) {
+            jobOfferFilterDto.setCities(List.of());
         }
 
-        if (jobOfferFilterDto.getEmploymentFormNames() != null && jobOfferFilterDto.getEmploymentFormNames().isEmpty()) {
-            jobOfferFilterDto.setEmploymentFormNames(null);
+        if (jobOfferFilterDto.getEmploymentFormNames() == null) {
+            jobOfferFilterDto.setEmploymentFormNames(List.of());
         }
 
-        if (jobOfferFilterDto.getLevelNames() != null && jobOfferFilterDto.getLevelNames().isEmpty()) {
-            jobOfferFilterDto.setLevelNames(null);
+        if (jobOfferFilterDto.getLevelNames() == null) {
+            jobOfferFilterDto.setLevelNames(List.of());
         }
 
-        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
-            jobOfferFilterDto.setContractTypeNames(null);
+        if (jobOfferFilterDto.getIndustryNames() == null) {
+            jobOfferFilterDto.setContractTypeNames(List.of());
         }
 
-        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
-            jobOfferFilterDto.setIndustryNames(null);
+        if (jobOfferFilterDto.getIndustryNames() == null) {
+            jobOfferFilterDto.setIndustryNames(List.of());
         }
 
         return jobOfferFilterDto;
