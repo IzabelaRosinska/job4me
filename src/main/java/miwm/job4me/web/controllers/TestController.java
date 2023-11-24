@@ -68,7 +68,7 @@ public class TestController {
     }
 
 
-    @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
+    @CrossOrigin(origins = "*")
     @GetMapping("/linkedin/signin")
     public void proxyLinkedInRequest(HttpServletResponse httpServletResponse) {
         HttpHeaders headers = new HttpHeaders();
@@ -76,8 +76,13 @@ public class TestController {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid profile email";
 
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, Location, Content-Type, Authorization, Accept, X-Requested-With, remember-me");
         httpServletResponse.setHeader(HttpHeaders.LOCATION, URL);
         httpServletResponse.setStatus(HttpServletResponse.SC_FOUND);
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
 
     }
 
@@ -85,17 +90,6 @@ public class TestController {
     @GetMapping("/auth/linkedin/callback")
     @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
     public void linkedinCallback(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        /*OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-        String currentRedirectUri = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
-                .replaceQuery(null)
-                .build()
-                .toUriString();
-
-        AccessGrant accessGrant = oauthOperations.exchangeForAccess(authorizationCode, currentRedirectUri, null);
-
-        String accessToken = accessGrant.getAccessToken();
-
-         */
         HttpHeaders headers = new HttpHeaders();
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
@@ -143,12 +137,6 @@ public class TestController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if(authentication.getPrincipal().equals("anonymousUser")) {
                 String token = authService.loginLinkedinUser(email);
-            /*    response.setHeader("Access-Control-Allow-Origin", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-                response.setHeader("Access-Control-Max-Age", "3600");
-                response.setHeader("Access-Control-Allow-Headers", "Authorization");
-
-             */
                 response.getWriter().write(user.getUserRole().toString() + ';' + token);
                 response.setHeader("Authorization", "Token " + token);
             }
@@ -160,9 +148,5 @@ public class TestController {
                 employerService.saveEmployerDataFromLinkedin(user, jsonNode);
                 response.sendRedirect(FRONT_HOST + "/employer/account");
             }
-
-
-        //employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-        //response.sendRedirect(FRONT_HOST + "/employee/account");
     }
 }
