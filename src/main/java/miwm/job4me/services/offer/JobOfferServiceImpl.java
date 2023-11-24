@@ -130,65 +130,9 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
-        System.out.println("przed przygotowaniem start");
-        if (jobOfferFilterDto == null) {
-            System.out.println("jobOfferFilterDto is null");
-        } else {
-            System.out.println("jobOfferFilterDto is not null");
-
-            if (jobOfferFilterDto.getCities() == null) {
-                System.out.println("jobOfferFilterDto.getCities() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getCities() is not null" + jobOfferFilterDto.getCities().size());
-            }
-
-            if (jobOfferFilterDto.getEmploymentFormNames() == null) {
-                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is not null" + jobOfferFilterDto.getEmploymentFormNames().size());
-            }
-
-            if (jobOfferFilterDto.getLevelNames() == null) {
-                System.out.println("jobOfferFilterDto.getLevelNames() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getLevelNames() is not null" + jobOfferFilterDto.getLevelNames().size());
-            }
-        }
-        System.out.println("przed przygotowaniem koniec");
-
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
-
-        System.out.println("po przygotowaniu start");
-        if (jobOfferFilterDto == null) {
-            System.out.println("jobOfferFilterDto is null");
-        } else {
-            System.out.println("jobOfferFilterDto is not null");
-
-            if (jobOfferFilterDto.getCities() == null) {
-                System.out.println("jobOfferFilterDto.getCities() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getCities() is not null" + jobOfferFilterDto.getCities().size());
-            }
-
-            if (jobOfferFilterDto.getEmploymentFormNames() == null) {
-                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is not null" + jobOfferFilterDto.getEmploymentFormNames().size());
-            }
-
-            if (jobOfferFilterDto.getLevelNames() == null) {
-                System.out.println("jobOfferFilterDto.getLevelNames() is null");
-            } else {
-                System.out.println("jobOfferFilterDto.getLevelNames() is not null" + jobOfferFilterDto.getLevelNames().size());
-            }
-        }
-        System.out.println("po przygotowaniu koniec");
-
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
-
-        System.out.println("cities: " + jobOfferFilterDto.getCities());
-        System.out.println("levelNames: " + jobOfferFilterDto.getLevelNames());
 
         return jobOfferRepository.findAllOffersByFilters(PageRequest.of(page, size, sort),
                 employerIds,
