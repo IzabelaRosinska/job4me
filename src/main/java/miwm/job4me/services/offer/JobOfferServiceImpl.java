@@ -11,6 +11,7 @@ import miwm.job4me.services.offer.parameters.*;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
 import miwm.job4me.web.model.offer.JobOfferDto;
@@ -32,6 +33,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final JobOfferMapper jobOfferMapper;
     private final JobOfferValidator jobOfferValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
 
     private final ContractTypeService contractTypeService;
     private final EmploymentFormService employmentFormService;
@@ -52,11 +54,12 @@ public class JobOfferServiceImpl implements JobOfferService {
             "5", Sort.by(Sort.Direction.DESC, "offerName")
     );
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, PaginationValidator paginationValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.contractTypeService = contractTypeService;
         this.employmentFormService = employmentFormService;
         this.industryService = industryService;
@@ -116,12 +119,14 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOfferDto> findAllByPage(int page, int size, String order) {
+        paginationValidator.validatePagination(page, size);
         return jobOfferRepository.findAll(PageRequest.of(page, size, prepareSort(order)))
                 .map(jobOfferMapper::toDto);
     }
 
     @Override
     public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds) {
+        paginationValidator.validatePagination(page, size);
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
 
@@ -130,6 +135,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
+        paginationValidator.validatePagination(page, size);
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
         offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
@@ -150,6 +156,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
+        paginationValidator.validatePagination(page, size);
         Sort sort = prepareSort(order);
         offerIds = prepareIds(offerIds);
         employerIds = prepareIds(employerIds);
@@ -159,6 +166,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findAllById(int page, int size, List<Long> offerIds) {
+        paginationValidator.validatePagination(page, size);
         offerIds = prepareIds(offerIds);
         Boolean isActive = true;
 

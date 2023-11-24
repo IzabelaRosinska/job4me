@@ -9,6 +9,7 @@ import miwm.job4me.repositories.event.JobFairRepository;
 import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.validators.entity.event.JobFairValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.event.JobFairMapper;
 import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.model.event.JobFairDto;
@@ -27,15 +28,17 @@ public class JobFairServiceImpl implements JobFairService {
     private final ListDisplayMapper listDisplayMapper;
     private final JobFairValidator jobFairValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final OrganizerService organizerService;
     private final String ENTITY_NAME = "JobFair";
 
-    public JobFairServiceImpl(JobFairRepository jobFairRepository, JobFairMapper jobFairMapper, ListDisplayMapper listDisplayMapper, JobFairValidator jobFairValidator, IdValidator idValidator, OrganizerService organizerService) {
+    public JobFairServiceImpl(JobFairRepository jobFairRepository, JobFairMapper jobFairMapper, ListDisplayMapper listDisplayMapper, JobFairValidator jobFairValidator, IdValidator idValidator, PaginationValidator paginationValidator, OrganizerService organizerService) {
         this.jobFairRepository = jobFairRepository;
         this.jobFairMapper = jobFairMapper;
         this.listDisplayMapper = listDisplayMapper;
         this.jobFairValidator = jobFairValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.organizerService = organizerService;
     }
 
@@ -84,6 +87,8 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<JobFair> findAllByFilters(int page, int size) {
+        paginationValidator.validatePagination(page, size);
+
         return jobFairRepository
                 .findAllByFilters(PageRequest.of(page, size));
     }
@@ -91,6 +96,7 @@ public class JobFairServiceImpl implements JobFairService {
     @Override
     public Page<JobFair> findAllOfOrganizerByFilters(int page, int size) {
         Organizer organizer = organizerService.getAuthOrganizer();
+        paginationValidator.validatePagination(page, size);
 
         return jobFairRepository
                 .findAllByOrganizerId(PageRequest.of(page, size), organizer.getId());
@@ -98,11 +104,13 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size) {
+        paginationValidator.validatePagination(page, size);
         return findAllByFilters(page, size).map(listDisplayMapper::toDtoFromJobFair);
     }
 
     @Override
     public Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size) {
+        paginationValidator.validatePagination(page, size);
         return findAllOfOrganizerByFilters(page, size).map(listDisplayMapper::toDtoFromJobFair);
     }
 

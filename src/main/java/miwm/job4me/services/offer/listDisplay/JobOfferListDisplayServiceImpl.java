@@ -6,6 +6,7 @@ import miwm.job4me.services.offer.JobOfferService;
 import miwm.job4me.services.offer.SavedOfferService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.mappers.listDisplay.ListDisplaySavedMapper;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
@@ -25,22 +26,26 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     private final SavedOfferService savedOfferService;
     private final EmployerService employerService;
 
+    private final PaginationValidator paginationValidator;
     private final IdValidator idValidator;
     private final String ENTITY_EMPLOYER = "Employer";
     private final String ENTITY_JOB_FAIR = "JobFair";
 
-    public JobOfferListDisplayServiceImpl(ListDisplayMapper listDisplayMapper, ListDisplaySavedMapper listDisplaySavedMapper, JobFairEmployerParticipationService jobFairEmployerParticipationService, JobOfferService jobOfferService, SavedOfferService savedOfferService, EmployerService employerService, IdValidator idValidator) {
+    public JobOfferListDisplayServiceImpl(ListDisplayMapper listDisplayMapper, ListDisplaySavedMapper listDisplaySavedMapper, JobFairEmployerParticipationService jobFairEmployerParticipationService, JobOfferService jobOfferService, SavedOfferService savedOfferService, EmployerService employerService, PaginationValidator paginationValidator, IdValidator idValidator) {
         this.listDisplayMapper = listDisplayMapper;
         this.listDisplaySavedMapper = listDisplaySavedMapper;
         this.jobFairEmployerParticipationService = jobFairEmployerParticipationService;
         this.jobOfferService = jobOfferService;
         this.savedOfferService = savedOfferService;
         this.employerService = employerService;
+        this.paginationValidator = paginationValidator;
         this.idValidator = idValidator;
     }
 
     @Override
     public Page<ListDisplayDto> findAllActiveOffers(int page, int size, String order) {
+        paginationValidator.validatePagination(page, size);
+
         return jobOfferService
                 .findByPage(page, size, order, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
@@ -48,6 +53,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplayDto> findAllActiveOffersByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
+        paginationValidator.validatePagination(page, size);
+
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, null, true, null)
                 .map(listDisplayMapper::toDtoFromJobOffer);
@@ -56,6 +63,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllActiveOffersOfEmployer(int page, int size, String order, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findAllOffersOfEmployers(page, size, order, List.of(employerId), true, null)
@@ -65,6 +73,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllActiveOffersOfEmployerByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), true, null)
@@ -74,6 +83,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllOffersOfEmployerEmployerView(int page, int size, String order, Boolean isActive) {
         Long employerId = employerService.getAuthEmployer().getId();
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findAllOffersOfEmployers(page, size, order, List.of(employerId), isActive, null)
@@ -83,6 +93,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllOffersOfEmployerByFilterEmployerView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Boolean isActive) {
         Long employerId = employerService.getAuthEmployer().getId();
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), isActive, null)
@@ -93,6 +104,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllActiveOffersOfJobFair(int page, int size, String order, Long jobFairId) {
         idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
+        paginationValidator.validatePagination(page, size);
 
         List<Long> employersIds = jobFairEmployerParticipationService
                 .findAllEmployersIdsForJobFair(jobFairId)
@@ -107,6 +119,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplayDto> findAllActiveOffersOfJobFairByFilter(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long jobFairId) {
         idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
+        paginationValidator.validatePagination(page, size);
 
         List<Long> employersIds = jobFairEmployerParticipationService
                 .findAllEmployersIdsForJobFair(jobFairId)
@@ -131,6 +144,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplaySavedDto> findAllSavedOffersEmployeeView(int page, int size, String order) {
+        paginationValidator.validatePagination(page, size);
+
         List<Long> employeeSavedOffersIds = savedOfferService
                 .findAllOfferIdsForCurrentEmployee()
                 .stream()
@@ -144,6 +159,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplaySavedDto> findAllSavedOffersByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
+        paginationValidator.validatePagination(page, size);
+
         List<Long> employeeSavedOffersIds = savedOfferService
                 .findAllOfferIdsForCurrentEmployee()
                 .stream()
@@ -157,6 +174,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersEmployeeView(int page, int size, String order) {
+        paginationValidator.validatePagination(page, size);
+
         return jobOfferService
                 .findByPage(page, size, order, true, null)
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
@@ -165,6 +184,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplaySavedDto> findAllOffersByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto) {
+        paginationValidator.validatePagination(page, size);
+
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, null, true, null)
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
@@ -174,6 +195,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfEmployerEmployeeView(int page, int size, String order, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findAllOffersOfEmployers(page, size, order, List.of(employerId), true, null)
@@ -184,6 +206,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfEmployerByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        paginationValidator.validatePagination(page, size);
 
         return jobOfferService
                 .findByFilters(page, size, order, jobOfferFilterDto, List.of(employerId), true, null)
@@ -194,6 +217,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfJobFairEmployeeView(int page, int size, String order, Long jobFairId) {
         idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
+        paginationValidator.validatePagination(page, size);
 
         List<Long> employersIds = jobFairEmployerParticipationService
                 .findAllEmployersIdsForJobFair(jobFairId)
@@ -209,6 +233,7 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     @Override
     public Page<ListDisplaySavedDto> findAllOffersOfJobFairByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long jobFairId) {
         idValidator.validateLongId(jobFairId, ENTITY_JOB_FAIR);
+        paginationValidator.validatePagination(page, size);
 
         List<Long> employersIds = jobFairEmployerParticipationService
                 .findAllEmployersIdsForJobFair(jobFairId)
@@ -223,6 +248,8 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
 
     @Override
     public Page<ListDisplaySavedDto> findAllById(int page, int size, List<Long> offerIds) {
+        paginationValidator.validatePagination(page, size);
+
         return jobOfferService
                 .findAllById(page, size, offerIds)
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
