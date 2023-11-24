@@ -38,7 +38,7 @@ public class JobFairEmployerServiceImpl implements JobFairEmployerService {
     }
 
     @Override
-    public Page<ListDisplayDto> findAllEmployersForJobFairOrganizerView(int page, int size, Long jobFairId, String employerCompanyName) {
+    public Page<ListDisplayDto> findAllEmployersForJobFairGeneralView(int page, int size, Long jobFairId, String employerCompanyName) {
         return jobFairEmployerParticipationService.findAllByFilters(page, size, true, jobFairId, null, "", employerCompanyName)
                 .map(JobFairEmployerParticipation::getEmployer)
                 .map(listDisplayMapper::toDtoFromEmployer);

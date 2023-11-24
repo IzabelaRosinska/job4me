@@ -43,7 +43,7 @@ public class JobFairEmployerController {
             @RequestParam(defaultValue = "20") int size,
             @PathVariable Long jobFairId,
             @RequestParam(defaultValue = "") String employerCompanyName) {
-        Page<ListDisplayDto> listDisplayDtoPage = jobFairEmployerService.findAllEmployersForJobFairOrganizerView(page, size, jobFairId, employerCompanyName);
+        Page<ListDisplayDto> listDisplayDtoPage = jobFairEmployerService.findAllEmployersForJobFairGeneralView(page, size, jobFairId, employerCompanyName);
 
         if (listDisplayDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
