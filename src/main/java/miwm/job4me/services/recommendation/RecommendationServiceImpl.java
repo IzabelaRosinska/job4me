@@ -7,7 +7,6 @@ import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
 import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final JobOfferListDisplayService jobOfferListDisplayService;
     private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Unexpected response format";
 
+
     public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService) {
         this.employeeService = employeeService;
         this.jobFairService = jobFairService;
@@ -46,8 +46,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
 
-        return jobOfferListDisplayService
-                .findAllRecommendedOffersEmployeeView(page, size, recommendedOffersIds);
+        return jobOfferListDisplayService.findAllById(page, size, recommendedOffersIds);
     }
 
     @Override
@@ -56,46 +55,53 @@ public class RecommendationServiceImpl implements RecommendationService {
         Long employeeId = employeeService.getAuthEmployee().getId();
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
+        List<Long> filteredOffersIds = jobOfferListDisplayService
+                .findAllOffersByFilterEmployeeView(page, size, "1", jobOfferFilterDto)
+                .map(ListDisplaySavedDto::getId)
+                .toList();
+
+        for (Long id : filteredOffersIds) {
+            if (!recommendedOffersIds.contains(id)) {
+                recommendedOffersIds.remove(id);
+            }
+        }
 
         return jobOfferListDisplayService
-                .findAllRecommendedOffersByFilterEmployeeView(page, size, jobOfferFilterDto, recommendedOffersIds);
+                .findAllById(page, size, recommendedOffersIds);
     }
 
-    private ArrayList<Long> getRecommendedOffersIds(Long employeeId, Long jobFairId) {
+    private List<Long> getRecommendedOffersIds(Long employeeId, Long jobFairId) {
+        String url = recommendationApiUrl + "/recommend/" + jobFairId + "/" + employeeId;
+
         try {
-            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(recommendationApiUrl + "/recommend/" + jobFairId + "/" + employeeId))
+                    .uri(URI.create(url))
                     .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
                     .header("API-Key", recommendationApiKey)
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONObject jsonResponse = new JSONObject(response.body());
-
-            if (jsonResponse.has("data")) {
-                JSONArray dataArray = jsonResponse.getJSONArray("data");
-                ArrayList<Long> dataList = new ArrayList<>();
-
-                for (int i = 0; i < dataArray.length(); i++) {
-                    dataList.add(dataArray.getLong(i));
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                JSONArray jsonArray = new JSONArray(response.body());
+                List<Long> recommendedOffersIds = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    recommendedOffersIds.add(jsonArray.getLong(i));
                 }
-
-                System.out.println("Success: " + dataList);
-
-                return dataList;
-            } else if (jsonResponse.has("error")) {
-                String errorMessage = jsonResponse.getString("error");
-                System.out.println("Error: " + errorMessage);
-
-                throw new RecommendationException(errorMessage);
+                System.out.println(recommendedOffersIds);
+                return recommendedOffersIds;
             } else {
-                System.out.println("Error: Unexpected response format");
-
-                throw new RecommendationException("Unexpected response format");
+                System.out.println("ODPOWIEDŹ: " + response.statusCode());
+                throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
             }
+
+
         } catch (IOException | InterruptedException e) {
-            throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
+            System.out.println("BŁĄD");
+            e.printStackTrace();
         }
+
+        return null;
     }
 }

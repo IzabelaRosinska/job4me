@@ -221,18 +221,11 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
     }
 
     @Override
-    public Page<ListDisplaySavedDto> findAllRecommendedOffersEmployeeView(int page, int size, List<Long> offerIds) {
+    public Page<ListDisplaySavedDto> findAllById(int page, int size, List<Long> offerIds) {
         return jobOfferService
-                .findRecommendedOffers(page, size, offerIds)
+                .findAllById(page, size, offerIds)
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
                 .map(this::setSaved);
     }
 
-    @Override
-    public Page<ListDisplaySavedDto> findAllRecommendedOffersByFilterEmployeeView(int page, int size, JobOfferFilterDto jobOfferFilterDto, List<Long> offerIds) {
-        return jobOfferService
-                .findRecommendedOffersByFilters(page, size, jobOfferFilterDto, offerIds)
-                .map(listDisplaySavedMapper::toDtoFromJobOffer)
-                .map(this::setSaved);
-    }
 }
