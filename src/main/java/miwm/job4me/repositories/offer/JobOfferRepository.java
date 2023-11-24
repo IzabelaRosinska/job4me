@@ -8,10 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
+    Page<JobOffer> findAllByIdInAndIsActive(Pageable pageable, Collection<Long> ids, Boolean isActive);
+
     @Query("SELECT j FROM JobOffer j " +
             "WHERE (COALESCE(:offerIds, '') = '' OR j.id IN (:offerIds)) " +
             "AND (:isActive IS NULL OR j.isActive = :isActive)")

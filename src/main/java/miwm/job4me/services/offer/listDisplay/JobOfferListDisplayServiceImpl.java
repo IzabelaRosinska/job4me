@@ -1,5 +1,6 @@
 package miwm.job4me.services.offer.listDisplay;
 
+import miwm.job4me.model.offer.JobOffer;
 import miwm.job4me.services.event.JobFairEmployerParticipationService;
 import miwm.job4me.services.offer.JobOfferService;
 import miwm.job4me.services.offer.SavedOfferService;
@@ -219,4 +220,21 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
                 .map(this::setSaved);
     }
+
+    @Override
+    public Page<ListDisplaySavedDto> findAllById(int page, int size, List<Long> offerIds) {
+        return jobOfferService
+                .findAllById(page, size, offerIds)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
+    }
+
+    @Override
+    public ListDisplaySavedDto findByOfferId(Long offerId) {
+        JobOffer jobOffer = jobOfferService.findOfferById(offerId);
+        ListDisplaySavedDto listDisplaySavedDto = listDisplaySavedMapper.toDtoFromJobOffer(jobOffer);
+
+        return setSaved(listDisplaySavedDto);
+    }
+
 }

@@ -157,6 +157,14 @@ public class JobOfferServiceImpl implements JobOfferService {
         return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
     }
 
+    @Override
+    public Page<JobOffer> findAllById(int page, int size, List<Long> offerIds) {
+        offerIds = prepareIds(offerIds);
+        Boolean isActive = true;
+
+        return jobOfferRepository.findAllByIdInAndIsActive(PageRequest.of(page, size), offerIds, isActive);
+    }
+
     private List<Long> prepareIds(List<Long> ids) {
         if (ids == null) {
             return List.of();
