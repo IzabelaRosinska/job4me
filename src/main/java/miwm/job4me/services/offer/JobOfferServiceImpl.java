@@ -122,7 +122,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds) {
-        offerIds = prepareEmployerIds(offerIds);
+        offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
 
         return jobOfferRepository.findByIsActive(PageRequest.of(page, size, sort), isActive, offerIds);
@@ -130,9 +130,65 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public Page<JobOffer> findByFilters(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
+        System.out.println("przed przygotowaniem start");
+        if (jobOfferFilterDto == null) {
+            System.out.println("jobOfferFilterDto is null");
+        } else {
+            System.out.println("jobOfferFilterDto is not null");
+
+            if (jobOfferFilterDto.getCities() == null) {
+                System.out.println("jobOfferFilterDto.getCities() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getCities() is not null" + jobOfferFilterDto.getCities().size());
+            }
+
+            if (jobOfferFilterDto.getEmploymentFormNames() == null) {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is not null" + jobOfferFilterDto.getEmploymentFormNames().size());
+            }
+
+            if (jobOfferFilterDto.getLevelNames() == null) {
+                System.out.println("jobOfferFilterDto.getLevelNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getLevelNames() is not null" + jobOfferFilterDto.getLevelNames().size());
+            }
+        }
+        System.out.println("przed przygotowaniem koniec");
+
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
-        offerIds = prepareEmployerIds(offerIds);
+
+        System.out.println("po przygotowaniu start");
+        if (jobOfferFilterDto == null) {
+            System.out.println("jobOfferFilterDto is null");
+        } else {
+            System.out.println("jobOfferFilterDto is not null");
+
+            if (jobOfferFilterDto.getCities() == null) {
+                System.out.println("jobOfferFilterDto.getCities() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getCities() is not null" + jobOfferFilterDto.getCities().size());
+            }
+
+            if (jobOfferFilterDto.getEmploymentFormNames() == null) {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is not null" + jobOfferFilterDto.getEmploymentFormNames().size());
+            }
+
+            if (jobOfferFilterDto.getLevelNames() == null) {
+                System.out.println("jobOfferFilterDto.getLevelNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getLevelNames() is not null" + jobOfferFilterDto.getLevelNames().size());
+            }
+        }
+        System.out.println("po przygotowaniu koniec");
+
+        offerIds = prepareIds(offerIds);
         Sort sort = prepareSort(order);
+
+        System.out.println("cities: " + jobOfferFilterDto.getCities());
+        System.out.println("levelNames: " + jobOfferFilterDto.getLevelNames());
 
         return jobOfferRepository.findAllOffersByFilters(PageRequest.of(page, size, sort),
                 employerIds,
@@ -151,17 +207,17 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     public Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds) {
         Sort sort = prepareSort(order);
-        offerIds = prepareEmployerIds(offerIds);
+        offerIds = prepareIds(offerIds);
 
         return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
     }
 
-    private List<Long> prepareEmployerIds(List<Long> employerIds) {
-        if (employerIds == null || employerIds.isEmpty()) {
-            return null;
+    private List<Long> prepareIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
         }
 
-        return employerIds;
+        return ids;
     }
 
     private Sort prepareSort(String order) {
@@ -181,24 +237,24 @@ public class JobOfferServiceImpl implements JobOfferService {
             jobOfferFilterDto.setOfferName("");
         }
 
-        if (jobOfferFilterDto.getCities() != null && jobOfferFilterDto.getCities().isEmpty()) {
-            jobOfferFilterDto.setCities(null);
+        if (jobOfferFilterDto.getCities() == null) {
+            jobOfferFilterDto.setCities(List.of());
         }
 
-        if (jobOfferFilterDto.getEmploymentFormNames() != null && jobOfferFilterDto.getEmploymentFormNames().isEmpty()) {
-            jobOfferFilterDto.setEmploymentFormNames(null);
+        if (jobOfferFilterDto.getEmploymentFormNames() == null) {
+            jobOfferFilterDto.setEmploymentFormNames(List.of());
         }
 
-        if (jobOfferFilterDto.getLevelNames() != null && jobOfferFilterDto.getLevelNames().isEmpty()) {
-            jobOfferFilterDto.setLevelNames(null);
+        if (jobOfferFilterDto.getLevelNames() == null) {
+            jobOfferFilterDto.setLevelNames(List.of());
         }
 
-        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
-            jobOfferFilterDto.setContractTypeNames(null);
+        if (jobOfferFilterDto.getIndustryNames() == null) {
+            jobOfferFilterDto.setContractTypeNames(List.of());
         }
 
-        if (jobOfferFilterDto.getIndustryNames() != null && jobOfferFilterDto.getIndustryNames().isEmpty()) {
-            jobOfferFilterDto.setIndustryNames(null);
+        if (jobOfferFilterDto.getIndustryNames() == null) {
+            jobOfferFilterDto.setIndustryNames(List.of());
         }
 
         return jobOfferFilterDto;

@@ -32,6 +32,33 @@ public class JobOfferListDisplayController {
                                                                            @RequestParam(defaultValue = "10") int size,
                                                                            @RequestParam(defaultValue = "1") String order,
                                                                            @RequestBody JobOfferFilterDto jobOfferFilterDto) {
+
+        System.out.println("kontroler");
+        if (jobOfferFilterDto == null) {
+            System.out.println("jobOfferFilterDto is null");
+        } else {
+            System.out.println("jobOfferFilterDto is not null");
+
+            if (jobOfferFilterDto.getCities() == null) {
+                System.out.println("jobOfferFilterDto.getCities() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getCities() is not null" + jobOfferFilterDto.getCities().size());
+            }
+
+            if (jobOfferFilterDto.getEmploymentFormNames() == null) {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getEmploymentFormNames() is not null" + jobOfferFilterDto.getEmploymentFormNames().size());
+            }
+
+            if (jobOfferFilterDto.getLevelNames() == null) {
+                System.out.println("jobOfferFilterDto.getLevelNames() is null");
+            } else {
+                System.out.println("jobOfferFilterDto.getLevelNames() is not null" + jobOfferFilterDto.getLevelNames().size());
+            }
+        }
+        System.out.println("koniec kontrolera");
+
         return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersByFilter(page, size, order, jobOfferFilterDto), HttpStatus.OK);
     }
 

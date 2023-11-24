@@ -23,20 +23,20 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
     @Query("SELECT DISTINCT j FROM JobOffer j " +
             "LEFT JOIN j.localizations loc " +
             "LEFT JOIN j.employmentForms empForm " +
-            "LEFT JOIN j.levels level " +
+            "LEFT JOIN j.levels lev " +
             "LEFT JOIN j.contractTypes contractType " +
             "LEFT JOIN j.industries industry " +
-            "WHERE ((:offerIds) IS NULL OR j.id IN (:offerIds))" +
-            "AND ((:employerIds) IS NULL OR j.employer.id IN (:employerIds)) " +
-            "AND ((:isActive) IS NULL OR j.isActive = :isActive) " +
-            "AND ((:cities) IS NULL OR loc.city IN (:cities)) " +
-            "AND ((:employmentFormNames) IS NULL OR empForm.name IN (:employmentFormNames)) " +
-            "AND ((:levelNames) IS NULL OR level.name IN (:levelNames)) " +
-            "AND ((:contractTypeNames) IS NULL OR contractType.name IN (:contractTypeNames)) " +
-            "AND ((:salaryFrom) IS NULL OR j.salaryFrom >= :salaryFrom) " +
-            "AND ((:salaryTo) IS NULL OR j.salaryTo <= :salaryTo) " +
-            "AND ((:industryNames) IS NULL OR industry.name IN (:industryNames)) " +
-            "AND ((:offerName) IS NULL OR LOWER(j.offerName) LIKE LOWER(CONCAT('%', :offerName, '%')))")
+            "WHERE (COALESCE(:offerIds, '') = '' OR j.id IN (:offerIds))" +
+            "AND (COALESCE(:employerIds, '') = '' OR j.employer.id IN (:employerIds))" +
+            "AND (:isActive IS NULL OR j.isActive = :isActive) " +
+            "AND (COALESCE(:cities, '') = '' OR loc.city IN (:cities)) " +
+            "AND (COALESCE(:employmentFormNames, '') = '' OR empForm.name IN (:employmentFormNames)) " +
+            "AND (COALESCE(:levelNames, '') = '' OR lev.name IN (:levelNames)) " +
+            "AND (COALESCE(:contractTypeNames, '') = '' OR contractType.name IN (:contractTypeNames)) " +
+            "AND (:salaryFrom IS NULL OR j.salaryFrom >= :salaryFrom) " +
+            "AND (:salaryTo IS NULL OR j.salaryTo <= :salaryTo) " +
+            "AND (COALESCE(:industryNames, '') = '' OR industry.name IN (:industryNames)) " +
+            "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(CONCAT('%', :offerName, '%')))")
     Page<JobOffer> findAllOffersByFilters(Pageable pageable,
                                           @Param("employerIds") List<Long> employerIds,
                                           @Param("isActive") Boolean isActive,
