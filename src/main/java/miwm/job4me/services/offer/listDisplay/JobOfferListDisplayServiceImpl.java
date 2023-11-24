@@ -219,4 +219,20 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .map(listDisplaySavedMapper::toDtoFromJobOffer)
                 .map(this::setSaved);
     }
+
+    @Override
+    public Page<ListDisplaySavedDto> findAllRecommendedOffersEmployeeView(int page, int size, List<Long> offerIds) {
+        return jobOfferService
+                .findRecommendedOffers(page, size, offerIds)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
+    }
+
+    @Override
+    public Page<ListDisplaySavedDto> findAllRecommendedOffersByFilterEmployeeView(int page, int size, JobOfferFilterDto jobOfferFilterDto, List<Long> offerIds) {
+        return jobOfferService
+                .findRecommendedOffersByFilters(page, size, jobOfferFilterDto, offerIds)
+                .map(listDisplaySavedMapper::toDtoFromJobOffer)
+                .map(this::setSaved);
+    }
 }

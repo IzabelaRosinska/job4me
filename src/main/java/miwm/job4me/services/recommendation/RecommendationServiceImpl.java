@@ -1,7 +1,11 @@
 package miwm.job4me.services.recommendation;
 
-import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.exceptions.RecommendationException;
+import miwm.job4me.services.event.JobFairService;
+import miwm.job4me.services.offer.listDisplay.JobOfferListDisplayService;
 import miwm.job4me.services.users.EmployeeService;
+import miwm.job4me.web.model.filters.JobOfferFilterDto;
+import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
@@ -24,22 +29,43 @@ public class RecommendationServiceImpl implements RecommendationService {
     private String recommendationApiKey;
 
     private final EmployeeService employeeService;
+    private final JobFairService jobFairService;
+    private final JobOfferListDisplayService jobOfferListDisplayService;
+    private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Unexpected response format";
 
-    public RecommendationServiceImpl(EmployeeService employeeService) {
+    public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService) {
         this.employeeService = employeeService;
+        this.jobFairService = jobFairService;
+        this.jobOfferListDisplayService = jobOfferListDisplayService;
     }
 
     @Override
-    public Page<JobOffer> getRecommendedOffers(int page, int size, String order) throws IOException, InterruptedException {
-        getRecommendedOffersIds();
-        return null;
+    public Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, String order, Long jobFairId) {
+        jobFairService.strictExistsById(jobFairId);
+        Long employeeId = employeeService.getAuthEmployee().getId();
+
+        List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
+
+        return jobOfferListDisplayService
+                .findAllRecommendedOffersEmployeeView(page, size, recommendedOffersIds);
     }
 
-    private ArrayList<Long> getRecommendedOffersIds() throws IOException, InterruptedException {
+    @Override
+    public Page<ListDisplaySavedDto> getRecommendedOffersByFilter(int page, int size, JobOfferFilterDto jobOfferFilterDto, Long jobFairId) {
+        jobFairService.strictExistsById(jobFairId);
+        Long employeeId = employeeService.getAuthEmployee().getId();
+
+        List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
+
+        return jobOfferListDisplayService
+                .findAllRecommendedOffersByFilterEmployeeView(page, size, jobOfferFilterDto, recommendedOffersIds);
+    }
+
+    private ArrayList<Long> getRecommendedOffersIds(Long employeeId, Long jobFairId) {
         try {
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(recommendationApiUrl + "/recommend/1/2"))
+                    .uri(URI.create(recommendationApiUrl + "/recommend/" + jobFairId + "/" + employeeId))
                     .header("Content-Type", "application/json")
                     .header("API-Key", recommendationApiKey)
                     .build();
@@ -62,16 +88,14 @@ public class RecommendationServiceImpl implements RecommendationService {
                 String errorMessage = jsonResponse.getString("error");
                 System.out.println("Error: " + errorMessage);
 
-                return null;
+                throw new RecommendationException(errorMessage);
             } else {
                 System.out.println("Error: Unexpected response format");
 
-                return null;
+                throw new RecommendationException("Unexpected response format");
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
         }
-
-        return null;
     }
 }

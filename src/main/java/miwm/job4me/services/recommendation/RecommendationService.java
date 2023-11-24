@@ -1,10 +1,11 @@
 package miwm.job4me.services.recommendation;
 
-import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.web.model.filters.JobOfferFilterDto;
+import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.springframework.data.domain.Page;
 
-import java.io.IOException;
-
 public interface RecommendationService {
-    Page<JobOffer> getRecommendedOffers(int page, int size, String order) throws IOException, InterruptedException;
+    Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, String order, Long jobFairId);
+
+    Page<ListDisplaySavedDto> getRecommendedOffersByFilter(int page, int size, JobOfferFilterDto jobOfferFilterDto, Long jobFairId);
 }

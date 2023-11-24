@@ -157,6 +157,32 @@ public class JobOfferServiceImpl implements JobOfferService {
         return jobOfferRepository.findAllOffersOfEmployers(PageRequest.of(page, size, sort), employerIds, isActive, offerIds);
     }
 
+    @Override
+    public Page<JobOffer> findRecommendedOffers(int page, int size, List<Long> offerIds) {
+        offerIds = prepareIds(offerIds);
+
+        return jobOfferRepository.findAllRecommendedOffers(PageRequest.of(page, size), offerIds);
+    }
+
+    @Override
+    public Page<JobOffer> findRecommendedOffersByFilters(int page, int size, JobOfferFilterDto jobOfferFilterDto, List<Long> offerIds) {
+        jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
+        offerIds = prepareIds(offerIds);
+
+        return jobOfferRepository.findAllRecommendedOffersByFilters(
+                PageRequest.of(page, size),
+                List.of(),
+                jobOfferFilterDto.getCities(),
+                jobOfferFilterDto.getEmploymentFormNames(),
+                jobOfferFilterDto.getLevelNames(),
+                jobOfferFilterDto.getContractTypeNames(),
+                jobOfferFilterDto.getSalaryFrom(),
+                jobOfferFilterDto.getSalaryTo(),
+                jobOfferFilterDto.getIndustryNames(),
+                jobOfferFilterDto.getOfferName(),
+                offerIds);
+    }
+
     private List<Long> prepareIds(List<Long> ids) {
         if (ids == null) {
             return List.of();

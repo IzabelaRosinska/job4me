@@ -17,6 +17,10 @@ public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, L
 
     Page<JobOffer> findAllOffersOfEmployers(int page, int size, String order, List<Long> employerIds, Boolean isActive, List<Long> offerIds);
 
+    Page<JobOffer> findRecommendedOffers(int page, int size, List<Long> offerIds);
+
+    Page<JobOffer> findRecommendedOffersByFilters(int page, int size, JobOfferFilterDto jobOfferFilterDto, List<Long> offerIds);
+
     JobOfferDto saveDto(JobOfferDto jobOfferDto);
 
     boolean existsById(Long id);

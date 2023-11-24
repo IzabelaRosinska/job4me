@@ -5,6 +5,8 @@ import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface JobOfferListDisplayService {
     Page<ListDisplayDto> findAllActiveOffers(int page, int size, String order);
 
@@ -38,4 +40,7 @@ public interface JobOfferListDisplayService {
 
     Page<ListDisplaySavedDto> findAllOffersOfJobFairByFilterEmployeeView(int page, int size, String order, JobOfferFilterDto jobOfferFilterDto, Long jobFairId);
 
+    Page<ListDisplaySavedDto> findAllRecommendedOffersEmployeeView(int page, int size, List<Long> offerIds);
+
+    Page<ListDisplaySavedDto> findAllRecommendedOffersByFilterEmployeeView(int page, int size, JobOfferFilterDto jobOfferFilterDto, List<Long> offerIds);
 }
