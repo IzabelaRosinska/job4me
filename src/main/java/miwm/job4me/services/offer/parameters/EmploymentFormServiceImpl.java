@@ -8,6 +8,7 @@ import miwm.job4me.repositories.offer.EmploymentFormRepository;
 import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.EmploymentFormValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.EmploymentFormMapper;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,16 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
     private final EmploymentFormMapper employmentFormMapper;
     private final EmploymentFormValidator employmentFormValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "EmploymentForm";
 
-    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
+    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
         this.employmentFormRepository = employmentFormRepository;
         this.employmentFormMapper = employmentFormMapper;
         this.employmentFormValidator = employmentFormValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.filterArgumentValidator = filterArgumentValidator;
     }
 
@@ -66,6 +69,7 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
 
     @Override
     public Page<EmploymentFormDto> findByNameContaining(int page, int size, String name) {
+        paginationValidator.validatePagination(page, size);
         filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return employmentFormRepository

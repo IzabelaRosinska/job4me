@@ -8,6 +8,7 @@ import miwm.job4me.repositories.offer.ContractTypeRepository;
 import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.ContractTypeValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.ContractTypeMapper;
 import miwm.job4me.web.model.offer.ContractTypeDto;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,16 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     private final ContractTypeMapper contractTypeMapper;
     private final ContractTypeValidator contractTypeValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "ContractType";
 
-    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
+    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
         this.contractTypeRepository = contractTypeRepository;
         this.contractTypeMapper = contractTypeMapper;
         this.contractTypeValidator = contractTypeValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.filterArgumentValidator = filterArgumentValidator;
     }
 
@@ -95,6 +98,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public Page<ContractTypeDto> findByNameContaining(int page, int size, String name) {
+        paginationValidator.validatePagination(page, size);
         filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return contractTypeRepository

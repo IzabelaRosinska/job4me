@@ -8,6 +8,7 @@ import miwm.job4me.repositories.offer.LevelRepository;
 import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.LevelValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.LevelMapper;
 import miwm.job4me.web.model.offer.LevelDto;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,16 @@ public class LevelServiceImpl implements LevelService {
     private final LevelMapper levelMapper;
     private final LevelValidator levelValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "Level";
 
-    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
+    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
         this.levelRepository = levelRepository;
         this.levelMapper = levelMapper;
         this.levelValidator = levelValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.filterArgumentValidator = filterArgumentValidator;
     }
 
@@ -66,6 +69,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public Page<LevelDto> findByNameContaining(int page, int size, String name) {
+        paginationValidator.validatePagination(page, size);
         filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return levelRepository

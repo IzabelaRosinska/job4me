@@ -8,6 +8,7 @@ import miwm.job4me.repositories.offer.LocalizationRepository;
 import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.LocalizationValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.LocalizationMapper;
 import miwm.job4me.web.model.offer.LocalizationDto;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,16 @@ public class LocalizationServiceImpl implements LocalizationService {
     private final LocalizationMapper localizationMapper;
     private final LocalizationValidator localizationValidator;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_CITY = "Localization";
 
-    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, FilterArgumentValidator filterArgumentValidator) {
+    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
         this.localizationRepository = localizationRepository;
         this.localizationMapper = localizationMapper;
         this.localizationValidator = localizationValidator;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
         this.filterArgumentValidator = filterArgumentValidator;
     }
 
@@ -66,6 +69,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public Page<LocalizationDto> findByCityContaining(int page, int size, String city) {
+        paginationValidator.validatePagination(page, size);
         filterArgumentValidator.validateStringFilter(city, ENTITY_CITY, "city");
 
         return localizationRepository

@@ -5,6 +5,7 @@ import miwm.job4me.services.event.JobFairService;
 import miwm.job4me.services.offer.listDisplay.JobOfferListDisplayService;
 import miwm.job4me.services.pagination.ListDisplaySavedPageServiceImpl;
 import miwm.job4me.services.users.EmployeeService;
+import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.model.filters.JobOfferFilterDto;
 import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.json.JSONArray;
@@ -32,20 +33,23 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final JobFairService jobFairService;
     private final JobOfferListDisplayService jobOfferListDisplayService;
     private final ListDisplaySavedPageServiceImpl listDisplaySavedPageServiceImpl;
+    private final PaginationValidator paginationValidator;
     private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Recommendation system failure";
 
 
-    public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService, ListDisplaySavedPageServiceImpl listDisplaySavedPageServiceImpl) {
+    public RecommendationServiceImpl(EmployeeService employeeService, JobFairService jobFairService, JobOfferListDisplayService jobOfferListDisplayService, ListDisplaySavedPageServiceImpl listDisplaySavedPageServiceImpl, PaginationValidator paginationValidator) {
         this.employeeService = employeeService;
         this.jobFairService = jobFairService;
         this.jobOfferListDisplayService = jobOfferListDisplayService;
         this.listDisplaySavedPageServiceImpl = listDisplaySavedPageServiceImpl;
+        this.paginationValidator = paginationValidator;
     }
 
     @Override
     public Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, Long jobFairId) {
         jobFairService.strictExistsById(jobFairId);
         Long employeeId = employeeService.getAuthEmployee().getId();
+        paginationValidator.validatePagination(size, page);
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
 
