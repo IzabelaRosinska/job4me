@@ -67,7 +67,7 @@ public class TestController {
         this.restTemplate = restTemplate;
     }
 
-
+/*
     @CrossOrigin(origins = "*")
     @GetMapping("/linkedin/signin")
     public RedirectView proxyLinkedInRequest(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
@@ -90,7 +90,7 @@ public class TestController {
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
 
-         */
+
 
     }
 
@@ -110,15 +110,20 @@ public class TestController {
 
         //con.disconnect();
     }
+    */
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/linkedin/test2/signin")
+    @GetMapping("/linkedin/signin")
     public ResponseEntity<Void> linkedIn2Request() throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
 
         HttpHeaders headers = new HttpHeaders();
+        //headers.clearContentHeaders();
         headers.add("Location", URL_init);
+        headers.setOrigin("www.linkedin.com");
+        //headers.setAccessControlAllowOrigin("*");
+
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
@@ -127,7 +132,7 @@ public class TestController {
 
 
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
+    @CrossOrigin(origins = "*")
     public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
        // return new RedirectView(URL_init);
