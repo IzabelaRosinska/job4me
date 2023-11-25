@@ -118,12 +118,12 @@ public class TestController {
     @GetMapping("/linkedin/signin")
     public ResponseEntity<Void> linkedIn2Request() throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
-
+        //String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=https://job4me.azurewebsites.net/auth/linkedin/callback&state=foobar&scope=openid%20profile%20email";
         HttpHeaders headers = new HttpHeaders();
         //headers.clearContentHeaders();
         headers.add("Location", URL_init);
-        headers.setOrigin("https://job4me.azurewebsites.net");
+        headers.setOrigin("https://www.linkedin.com");
         //headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
         //headers.setAccessControlAllowCredentials(true);
         headers.setAccessControlMaxAge(3600);
@@ -133,8 +133,6 @@ public class TestController {
 
         List<String> allowedHeaders = Arrays.asList("*");
         headers.setAccessControlAllowHeaders(allowedHeaders);
-
-
 
 
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
