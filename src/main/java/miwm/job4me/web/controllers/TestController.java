@@ -121,10 +121,11 @@ public class TestController {
         String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.clearContentHeaders();
+        //headers.clearContentHeaders();
         headers.add("Location", URL_init);
-        headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
-        headers.setAccessControlAllowCredentials(true);
+        headers.setOrigin("https://job4me.azurewebsites.net");
+        //headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
+        //headers.setAccessControlAllowCredentials(true);
         headers.setAccessControlMaxAge(3600);
 
         List<HttpMethod> allowedMethods = Arrays.asList(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS, HttpMethod.PATCH);
@@ -140,6 +141,16 @@ public class TestController {
     }
 
 
+
+/*
+    @GetMapping("/linkedin/signin")
+    public RedirectView proxyLinkedInRequest(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        return new RedirectView(URL_init);
+    }
+
+ */
 
 
 
