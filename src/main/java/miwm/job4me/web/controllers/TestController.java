@@ -96,25 +96,10 @@ public class TestController {
 
     }
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/linkedin/test/signin")
-    public void linkedInRequest() throws IOException {
-        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
-       // String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
 
-        // Create a URL object
-        URL url = new URL(URL_init);
-
-        // Open a connection
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setInstanceFollowRedirects(true);
-
-        //con.disconnect();
-    }
     */
 
-
+/*
     @GetMapping("/linkedin/signin")
     public ResponseEntity<Void> linkedIn2Request() throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
@@ -138,9 +123,11 @@ public class TestController {
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
+ */
 
 
-/*
+
+
     @GetMapping("/linkedin/signin")
     public RedirectView proxyLinkedInRequest(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
@@ -148,7 +135,7 @@ public class TestController {
         return new RedirectView(URL_init);
     }
 
- */
+
 
 
 
