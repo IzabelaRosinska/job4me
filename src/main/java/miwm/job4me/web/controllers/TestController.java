@@ -122,7 +122,7 @@ public class TestController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", URL_init);
-        headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
+        //headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
         headers.setAccessControlAllowCredentials(true);
         headers.setAccessControlMaxAge(3600);
 
@@ -131,6 +131,7 @@ public class TestController {
 
         List<String> allowedHeaders = Arrays.asList("*");
         headers.setAccessControlAllowHeaders(allowedHeaders);
+
 
 
 
