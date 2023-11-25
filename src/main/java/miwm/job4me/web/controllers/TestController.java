@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 import static miwm.job4me.messages.AppMessages.*;
 
@@ -119,10 +121,18 @@ public class TestController {
         String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
 
         HttpHeaders headers = new HttpHeaders();
-        //headers.clearContentHeaders();
         headers.add("Location", URL_init);
-        headers.setOrigin("www.linkedin.com");
-        //headers.setAccessControlAllowOrigin("*");
+        headers.setAccessControlAllowOrigin("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net");
+        headers.setAccessControlAllowCredentials(true);
+        headers.setAccessControlMaxAge(3600);
+
+        List<HttpMethod> allowedMethods = Arrays.asList(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS, HttpMethod.PATCH);
+        headers.setAccessControlAllowMethods(allowedMethods);
+
+        List<String> allowedHeaders = Arrays.asList("*");
+        headers.setAccessControlAllowHeaders(allowedHeaders);
+
+
 
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
