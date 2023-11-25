@@ -112,7 +112,7 @@ public class TestController {
     }
     */
 
-    @CrossOrigin(origins = "*")
+
     @GetMapping("/linkedin/signin")
     public ResponseEntity<Void> linkedIn2Request() throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
@@ -132,7 +132,6 @@ public class TestController {
 
 
     @GetMapping("/auth/linkedin/callback")
-    @CrossOrigin(origins = "*")
     public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
        // return new RedirectView(URL_init);
