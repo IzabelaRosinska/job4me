@@ -127,7 +127,7 @@ public class TestController {
 
 
 
-
+/*
     @GetMapping("/linkedin/signin")
     public RedirectView proxyLinkedInRequest(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
@@ -135,7 +135,20 @@ public class TestController {
         return new RedirectView(URL_init);
     }
 
+ */
 
+    @GetMapping("/linkedin/signin")
+    public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
+        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
+        OAuth2Parameters parameters = new OAuth2Parameters();
+        parameters.set("response_type", "code");
+        parameters.set("redirect_uri", "https://job4me.azurewebsites.net/auth/linkedin/callback");
+        parameters.setState("foobar");
+        parameters.setScope("openid profile email");
+
+        String authorizeUrl = oauthOperations.buildAuthorizeUrl(parameters);
+        return "redirect:" + authorizeUrl;
+    }
 
 
 
