@@ -39,8 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 import static miwm.job4me.messages.AppMessages.*;
@@ -68,40 +67,88 @@ public class TestController {
         this.restTemplate = restTemplate;
     }
 
-/*
+
     @CrossOrigin(origins = "*")
     @GetMapping("/linkedin/signin")
-    public void proxyLinkedInRequest(HttpServletResponse httpServletResponse) throws UnsupportedEncodingException {
-        HttpHeaders headers = new HttpHeaders();
+    public RedirectView proxyLinkedInRequest(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        return new RedirectView(URL_init);
+        /*HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
        // httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, Location, Content-Type, Authorization, Accept, X-Requested-With, remember-me");
        // httpServletResponse.addHeader("Origin", "http://localhost:8080");
         //String URL = "https://api.allorigins.win/raw?url=" + BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + NEW_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + "scope=openid profile email";
         String URL = "www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
-        String url2 = URLEncoder.encode(URL, "UTF-8");
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, "https://cors-anywhere.herokuapp.com/" + url2);
-        httpServletResponse.setStatus(HttpServletResponse.SC_FOUND);
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        //String url2 = URLEncoder.encode(URL, "UTF-8");
+        httpServletRequest.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+        httpServletRequest.setHeader(HttpHeaders.LOCATION,  URL);
+        httpServletRequest.setStatus(HttpServletResponse.SC_FOUND);
+        hhttpServletRequest.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletRequest.setHeader("Access-Control-Allow-Credentials", "true");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS, DELETE, PUT");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
 
-
+         */
 
     }
-    */
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/linkedin/test/signin")
+    public void linkedInRequest() throws IOException {
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+       // String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
+
+        // Create a URL object
+        URL url = new URL(URL_init);
+
+        // Open a connection
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setInstanceFollowRedirects(true);
+
+        //con.disconnect();
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/linkedin/test2/signin")
+    public ResponseEntity<Void> linkedIn2Request() throws IOException {
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
+        String URL_init = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", URL_init);
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
+
+
+
 
 
     @GetMapping("/auth/linkedin/callback")
     @CrossOrigin(origins = {"http://localhost:4200", "https://www.linkedin.com", "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://job4me.azurewebsites.net"})
-    public void linkedinCallback(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //String URL_init = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ebvrc0c0fjtq&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flinkedin%2Fcallback&state=foobar&scope=openid%20profile%20email";
+       // return new RedirectView(URL_init);
+        /* HttpHeaders headers_init = new HttpHeaders();
+        HttpEntity<String> entity_init = new HttpEntity<>(headers_init);
+
+        ResponseEntity<String> response_init = restTemplate.exchange(
+                URL_init,
+                HttpMethod.GET,
+                entity_init,
+                String.class
+        );
+        System.out.print(response_init.getBody());
+
+        */
+
         HttpHeaders headers = new HttpHeaders();
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
-        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + NEW_LINKEDIN_REDIRECT_URI;
+        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + AZURE_LINKEDIN_REDIRECT_URI;
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -150,10 +197,10 @@ public class TestController {
 
             if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                 employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST + "/employee/account");
+                response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
             } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
                 employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST + "/employer/account");
+                response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
             }
     }
 }
