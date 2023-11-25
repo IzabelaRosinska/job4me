@@ -13,9 +13,8 @@ public class CorsConfig extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "http://localhost:4200", "https://www.linkedin.com")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*")
-                .exposedHeaders("Access-Control-Allow-Headers")
+                .allowedMethods("POST, GET, PATCH, OPTIONS, DELETE, PUT")
+                .allowedHeaders("Origin, Content-Type, Authorization, Accept, X-Requested-With, remember-me")
                 .allowCredentials(true)
                 .maxAge(3600); // You can set the max age of the preflight request in seconds
     }
