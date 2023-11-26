@@ -12,6 +12,7 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,13 +94,13 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public Set<ExperienceDto> findAllByEmployeeId(Long employeeId) {
+    public List<ExperienceDto> findAllByEmployeeId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_NAME);
         return experienceRepository
                 .findAllByEmployeeId(employeeId)
                 .stream()
                 .map(experienceMapper::toDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override

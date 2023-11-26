@@ -372,7 +372,7 @@ class ExperienceServiceImplTest {
         when(experienceMapper.toDto(experience1)).thenReturn(experienceDto1);
         when(experienceMapper.toDto(experience2)).thenReturn(experienceDto2);
 
-        Set<ExperienceDto> result = experienceService.findAllByEmployeeId(employee.getId());
+        List<ExperienceDto> result = experienceService.findAllByEmployeeId(employee.getId());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(experienceDto1));
@@ -384,7 +384,7 @@ class ExperienceServiceImplTest {
     public void testFindAllByEmployeeIdEmpty() {
         when(experienceRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of());
 
-        Set<ExperienceDto> result = experienceService.findAllByEmployeeId(employee.getId());
+        List<ExperienceDto> result = experienceService.findAllByEmployeeId(employee.getId());
 
         assertEquals(0, result.size());
     }

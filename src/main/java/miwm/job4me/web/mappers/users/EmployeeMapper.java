@@ -9,11 +9,13 @@ import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Component
 public class EmployeeMapper {
+
     public EmployeeDto toDto(Employee employee) {
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employee.getId());
@@ -46,10 +48,13 @@ public class EmployeeMapper {
         return employee;
     }
 
-    public ArrayList<String> educationSetToStringList(Set<Education> education) {
+    public ArrayList<String> educationSetToStringList(Set<Education> educationSet) {
         ArrayList<String> educationList = new ArrayList<>();
 
-        if (education != null) {
+        if (educationSet != null) {
+            ArrayList<Education> education = new ArrayList<>(educationSet.stream().toList());
+            education.sort(Comparator.comparingLong(Education::getId));
+
             for (Education e : education) {
                 educationList.add(e.getDescription());
             }
@@ -58,10 +63,13 @@ public class EmployeeMapper {
         return educationList;
     }
 
-    public ArrayList<String> experienceSetToStringList(Set<Experience> experience) {
+    public ArrayList<String> experienceSetToStringList(Set<Experience> experienceSet) {
         ArrayList<String> experienceList = new ArrayList<>();
 
-        if (experience != null) {
+        if (experienceSet != null) {
+            ArrayList<Experience> experience = new ArrayList<>(experienceSet.stream().toList());
+            experience.sort(Comparator.comparingLong(Experience::getId));
+
             for (Experience e : experience) {
                 experienceList.add(e.getDescription());
             }
@@ -70,10 +78,13 @@ public class EmployeeMapper {
         return experienceList;
     }
 
-    public ArrayList<String> projectsSetToStringList(Set<Project> projects) {
+    public ArrayList<String> projectsSetToStringList(Set<Project> projectsSet) {
         ArrayList<String> projectsList = new ArrayList<>();
 
-        if (projects != null) {
+        if (projectsSet != null) {
+            ArrayList<Project> projects = new ArrayList<>(projectsSet.stream().toList());
+            projects.sort(Comparator.comparingLong(Project::getId));
+
             for (Project p : projects) {
                 projectsList.add(p.getDescription());
             }
@@ -82,10 +93,13 @@ public class EmployeeMapper {
         return projectsList;
     }
 
-    public ArrayList<String> skillsSetToStringList(Set<Skill> skills) {
+    public ArrayList<String> skillsSetToStringList(Set<Skill> skillsSet) {
         ArrayList<String> skillsList = new ArrayList<>();
 
-        if (skills != null) {
+        if (skillsSet != null) {
+            ArrayList<Skill> skills = new ArrayList<>(skillsSet.stream().toList());
+            skills.sort(Comparator.comparingLong(Skill::getId));
+
             for (Skill s : skills) {
                 skillsList.add(s.getDescription());
             }
@@ -95,7 +109,7 @@ public class EmployeeMapper {
     }
 
     public Set<Education> stringListToEducationSet(ArrayList<String> education) {
-        Set<Education> educationSet = new HashSet<>();
+        Set<Education> educationSet = new LinkedHashSet<>();
 
         if (education != null) {
             for (String e : education) {
@@ -108,7 +122,7 @@ public class EmployeeMapper {
     }
 
     public Set<Experience> stringListToExperienceSet(ArrayList<String> experience) {
-        Set<Experience> experienceSet = new HashSet<>();
+        Set<Experience> experienceSet = new LinkedHashSet<>();
 
         if (experience != null) {
             for (String e : experience) {
@@ -121,7 +135,7 @@ public class EmployeeMapper {
     }
 
     public Set<Project> stringListToProjectsSet(ArrayList<String> projects) {
-        Set<Project> projectsSet = new HashSet<>();
+        Set<Project> projectsSet = new LinkedHashSet<>();
 
         if (projects != null) {
             for (String p : projects) {
@@ -134,7 +148,7 @@ public class EmployeeMapper {
     }
 
     public Set<Skill> stringListToSkillsSet(ArrayList<String> skills) {
-        Set<Skill> skillsSet = new HashSet<>();
+        Set<Skill> skillsSet = new LinkedHashSet<>();
 
         if (skills != null) {
             for (String s : skills) {
