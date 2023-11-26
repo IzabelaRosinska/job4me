@@ -12,6 +12,7 @@ import miwm.job4me.web.model.offer.RequirementDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,13 +99,13 @@ public class RequirementServiceImpl implements RequirementService {
     }
 
     @Override
-    public Set<RequirementDto> findAllByJobOfferId(Long id) {
+    public List<RequirementDto> findAllByJobOfferId(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         return requirementRepository
                 .findAllByJobOfferId(id)
                 .stream()
                 .map(requirementMapper::toDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
