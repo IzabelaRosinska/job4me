@@ -30,9 +30,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and().csrf().disable()
+                    .and()
                     .addFilterBefore(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JwtTokenVerifier(secretKey), BasicAuthenticationFilter.class)
 
@@ -47,8 +48,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/home").permitAll()
                     .antMatchers("/levels").permitAll()
                     .antMatchers("/linkedin/**").permitAll()
+                    .antMatchers("/auth/linkedin/callback").permitAll()
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/login").permitAll()
+
 
                     .and().formLogin().loginPage("/login").permitAll().successHandler(appAuthenticationSuccessHandler())
                     .and().httpBasic()
@@ -65,6 +68,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                                 }
                             })
                           );
+        http.headers().frameOptions().disable();
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package miwm.job4me;
+package miwm.job4me.config;
 
 import lombok.extern.slf4j.Slf4j;
 import miwm.job4me.model.cv.Education;

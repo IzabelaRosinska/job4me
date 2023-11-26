@@ -1,17 +1,14 @@
 package miwm.job4me.web.controllers;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import miwm.job4me.messages.AppMessages;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.UserAuthenticationService;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,10 +18,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,17 +30,12 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static miwm.job4me.messages.AppMessages.*;
 
+
 @RestController
-//@RequestMapping("/linkedin")
+@RequestMapping("/linkedin")
 public class LinkedInController {
 
     private final UserAuthenticationService authService;
@@ -63,28 +53,24 @@ public class LinkedInController {
     @GetMapping("/signin")
     public void signInLinkedIn(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-
-        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
-
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + BASIC_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.sendRedirect(URL);
     }
 
     @GetMapping("/authorized")
-    public void linkedinAuthorized(HttpServletResponse response, HttpServletRequest request, @RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) throws IOException, InterruptedException, URISyntaxException {
+    public void linkedinAuthorized(HttpServletResponse response, HttpServletRequest request, @RequestParam(name="code", required=false) String code, @RequestParam(name="state", required=false) String state) throws IOException {
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
         String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
         String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
-        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + AZURE_LINKEDIN_REDIRECT_URI;
+        String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + BASIC_LINKEDIN_REDIRECT_URI;
 
         String accessToken = getLinkedinAccessToken(URL);
 
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build()) {
             final HttpGet httpGet = new HttpGet(BASIC_LINKEDIN_PROFILE_URL);
             httpGet.addHeader("Authorization", "Bearer " + accessToken);
-            httpGet.setHeader("Access-Control-Allow-Origin", "*");
-
-
+            httpGet.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
 
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpGet)) {
                 String responseBody = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
@@ -105,25 +91,20 @@ public class LinkedInController {
                     response.addCookie(tokenCookie);
                     response.getWriter().write(user.getUserRole().toString() + ';' + token);
                     response.setHeader("Authorization", "Token " + token);
-
-                    response.setHeader("Access-Control-Allow-Origin", "*");
-
+                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
                 }
 
                 if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
                     employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-
-                    response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
+                    response.sendRedirect(FRONT_HOST + "/employee/account");
                 } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
                     employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-                    response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
-
+                    response.sendRedirect(FRONT_HOST + "/employer/account");
                 }
             }
         }
     }
 
- */
 
     private String getLinkedinAccessToken(String link) throws IOException {
         URL url = new URL(link);
@@ -143,4 +124,7 @@ public class LinkedInController {
         String accessToken = jsonNode.get("access_token").asText();
         return accessToken;
     }
+
+ */
+
 }
