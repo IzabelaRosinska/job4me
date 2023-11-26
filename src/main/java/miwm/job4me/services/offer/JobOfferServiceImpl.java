@@ -257,7 +257,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
         jobOffer.setLocalizations(jobOfferDto.getLocalizations()
                 .stream()
-                .map(localizationService::findByCity)
+                .map(localizationService::findByCityOrCreate)
                 .collect(Collectors.toSet()));
 
         jobOffer.setIsEmbeddingCurrent(false);
