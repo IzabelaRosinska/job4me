@@ -4,29 +4,204 @@
     <meta charset="UTF-8"/>
     <title>CV</title>
     <style>
+        @page {
+            margin: 0;
+        }
+
         body {
             font-family: "Roboto", sans-serif;
-            background-color: #d5d4d4;
+            font-size: 12px;
+            color: #000000;
+            line-height: 22px;
         }
 
-        .content {
-            margin: 0 auto;
-            padding: 20px;
+        .main .content {
             width: 100%;
             height: 100%;
-            background-color: #d5d4d4;
         }
 
+        .resume-title {
+            font-size: 20px;
+        }
+
+        .resume-dark-title {
+            color: #3b6871;
+        }
+
+        .main {
+            margin: 0 auto;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .div-main-name {
+            padding-top: 20px;
+            height: 10px;
+        }
+
+        .main-name {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .bold {
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .contact-name {
+            text-transform: uppercase;
+        }
+
+        .resume-about {
+            text-align: justify;
+        }
+
+        .resume-consent {
+            border-top: #ffffff 2px solid;
+            padding: 10px;
+            background-color: #e8e8e8;
+        }
+
+        .resume-left {
+            width: 40%;
+            color: #ffffff;
+            background-color: #3b6871;
+            padding: 0px 15px 15px;
+            border-right: #ffffff 2px solid;
+            vertical-align: top;
+        }
+
+        .resume-right {
+            width: 70%;
+            background-color: #e8e8e8;
+            padding: 0px 20px 0px;
+        }
+
+        .resume-hobby {
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-<div class="content">
-    <h1 th:text="${employee.firstName} + ' ' + ${employee.lastName}">Imię nazwisko</h1>
-    <i class="fa-solid fa-envelope"></i>
-    <h3 th:text="${employee.contactEmail}">email</h3>
-    <!--        ikonka telefonu -->
-    <h3 th:text="${employee.telephone}">telefon</h3>
 
+<div class="main">
+    <div class="content">
+        <table class="content">
+            <tr>
+                <td class="resume-left div-main-name">
+                    <div class="title div-main-name">
+                        <p class="bold main-name" th:text="${employee.firstName} + ' ' + ${employee.lastName}">Imię
+                            nazwisko</p>
+                    </div>
+                </td>
+                <td class="resume-right" rowspan="2">
+                    <div class="resume-about" th:if="${employee.aboutMe != ''}">
+                        <div class="title">
+                            <p class="bold resume-title resume-dark-title">O mnie</p>
+                        </div>
+                        <p th:text="${employee.aboutMe}">Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                            Perspiciatis illo fugit officiis distinctio culpa officia totam atque exercitationem
+                            inventore repudiandae?</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="resume-left">
+                    <div class="title">
+                        <p class="bold resume-title">Kontakt</p>
+                    </div>
+                    <p>
+                        <span class="contact-name">E-mail:</span> <span th:text="${employee.contactEmail}">email</span>
+                    </p>
+                    <p>
+                        <span class="contact-name">Telefon:</span> <span th:text="${employee.telephone}">telefon</span>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td class="resume-left" rowspan="3">
+                    <!--                    if list is empty -->
+                    <div class="resume-about"
+                         th:if="${employee.skills != null and not #lists.isEmpty(employee.skills)}">
+                        <div class="title">
+                            <p class="bold resume-title">Umiejętności</p>
+                            <ul>
+                                <li th:each="skill : ${employee.skills}" th:text="${skill.description}">Umiejętność</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="resume-hobby resume-about" th:if="${employee.interests != ''}">
+                        <div class="title">
+                            <p class="bold resume-title">Hobby</p>
+                        </div>
+                        <p th:text="${employee.interests}">Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                            Perspiciatis illo fugit officiis distinctio culpa officia totam atque exercitationem
+                            inventore repudiandae?</p>
+                    </div>
+                </td>
+                <td class="resume-right">
+                    <div class="resume-about"
+                         th:if="${employee.experience != null and not #lists.isEmpty(employee.experience)}">
+                        <div class="title">
+                            <p class="bold resume-title resume-dark-title">Doświadczenie</p>
+                            <ul>
+                                <li th:each="experience : ${employee.experience}" th:text="${experience.description}">
+                                    Doświadczenie
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="resume-right">
+                    <div class="resume-about"
+                         th:if="${employee.education != null and not #lists.isEmpty(employee.education)}">
+                        <div class="title">
+                            <p class="bold resume-title resume-dark-title">Edukacja</p>
+                            <ul>
+                                <li th:each="education : ${employee.education}" th:text="${education.description}">
+                                    Edukacja
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="resume-right">
+                    <div class="resume-about"
+                         th:if="${employee.projects != null  and not #lists.isEmpty(employee.projects)}">
+                        <div class="title">
+                            <p class="bold resume-title resume-dark-title">Projekty</p>
+                            <ul>
+                                <li th:each="project : ${employee.projects}" th:text="${project.description}">Projekt
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="resume-consent" colspan="2">
+                    <p class="resume-about">
+                        Wyrażam zgodę na przetwarzanie moich danych osobowych dla potrzeb niezbędnych do realizacji
+                        procesu rekrutacji zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z
+                        dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych
+                        osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE
+                        (RODO).
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 </body>
 </html>
