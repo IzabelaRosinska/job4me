@@ -1,4 +1,4 @@
-package miwm.job4me.web.controllers;
+package miwm.job4me.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,6 @@ import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurerAdapter;
-import org.springframework.social.connect.ConnectionFactory;
-import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.social.linkedin.connect.LinkedInConnectionFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,7 +41,6 @@ public class SocialConfig extends SocialConfigurerAdapter {
         return new UserIdSource() {
             @Override
             public String getUserId() {
-                // Provide the user ID (username) - for demo purposes
                 return "testuser";
             }
         };
