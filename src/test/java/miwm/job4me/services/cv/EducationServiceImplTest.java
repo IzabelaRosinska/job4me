@@ -371,7 +371,7 @@ class EducationServiceImplTest {
         when(educationMapper.toDto(education1)).thenReturn(educationDto1);
         when(educationMapper.toDto(education2)).thenReturn(educationDto2);
 
-        Set<EducationDto> result = educationServiceImpl.findAllByEmployeeId(employee.getId());
+        List<EducationDto> result = educationServiceImpl.findAllByEmployeeId(employee.getId());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(educationDto1));
@@ -383,7 +383,7 @@ class EducationServiceImplTest {
     public void testFindAllByEmployeeIdEmpty() {
         when(educationRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of());
 
-        Set<EducationDto> result = educationServiceImpl.findAllByEmployeeId(employee.getId());
+        List<EducationDto> result = educationServiceImpl.findAllByEmployeeId(employee.getId());
 
         assertEquals(0, result.size());
     }

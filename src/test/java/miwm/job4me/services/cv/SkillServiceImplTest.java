@@ -371,7 +371,7 @@ class SkillServiceImplTest {
         when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
         when(skillMapper.toDto(skill2)).thenReturn(skillDto2);
 
-        Set<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
+        List<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(skillDto1));
@@ -383,7 +383,7 @@ class SkillServiceImplTest {
     public void testFindAllByEmployeeIdEmpty() {
         when(skillRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of());
 
-        Set<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
+        List<SkillDto> result = skillService.findAllByEmployeeId(employee.getId());
 
         assertEquals(0, result.size());
     }
