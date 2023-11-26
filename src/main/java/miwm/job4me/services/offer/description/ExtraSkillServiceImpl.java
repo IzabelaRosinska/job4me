@@ -12,6 +12,7 @@ import miwm.job4me.web.model.offer.ExtraSkillDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,13 +99,13 @@ public class ExtraSkillServiceImpl implements ExtraSkillService {
     }
 
     @Override
-    public Set<ExtraSkillDto> findAllByJobOfferId(Long id) {
+    public List<ExtraSkillDto> findAllByJobOfferId(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         return extraSkillRepository
                 .findAllByJobOfferId(id)
                 .stream()
                 .map(extraSkillMapper::toDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
