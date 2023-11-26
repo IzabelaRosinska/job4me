@@ -1,10 +1,12 @@
 package miwm.job4me.services.users;
 
 import miwm.job4me.exceptions.AuthException;
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
+import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.OrganizerMapper;
 import miwm.job4me.web.model.users.OrganizerDto;
 import org.hibernate.validator.constraints.Length;
@@ -19,18 +21,22 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static miwm.job4me.messages.AppMessages.ROLE_ORGANIZER_ENABLED;
+
 @Service
 public class OrganizerServiceImpl implements OrganizerService {
 
     private final OrganizerMapper organizerMapper;
     private final OrganizerRepository organizerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IdValidator idValidator;
     private final String ENTITY_NAME = "Organizer";
 
-    public OrganizerServiceImpl(OrganizerMapper organizerMapper, OrganizerRepository organizerRepository, PasswordEncoder passwordEncoder) {
+    public OrganizerServiceImpl(OrganizerMapper organizerMapper, OrganizerRepository organizerRepository, PasswordEncoder passwordEncoder, IdValidator idValidator) {
         this.organizerMapper = organizerMapper;
         this.organizerRepository = organizerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.idValidator = idValidator;
     }
 
     @Override
@@ -44,6 +50,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public boolean existsById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         return organizerRepository.existsById(id);
     }
 
@@ -71,25 +78,34 @@ public class OrganizerServiceImpl implements OrganizerService {
     }
 
     @Override
-    public Organizer findById(Long aLong) {
+    public Organizer findById(Long id) {
         return organizerRepository
-                .findById(aLong)
-                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, aLong)));
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
 
     @Override
-    public Organizer save(Organizer object) {
-        return null;
+    public Organizer save(Organizer organizer) {
+        if(organizer != null)
+            return organizerRepository.save(organizer);
+        else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
-    public void delete(Organizer object) {
-
+    public void delete(Organizer organizer) {
+        if(organizer!= null)
+            organizerRepository.delete(organizer);
+        else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public void deleteById(Long id) {
+        if(findById(id) != null)
+            organizerRepository.deleteById(id);
+        else
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -111,7 +127,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Transactional
     public void updateAccountStatusAfterPayment() {
         Organizer organizer = getAuthOrganizer();
-        organizer.setUserRole(new SimpleGrantedAuthority("ROLE_ORGANIZER_ENABLED"));
+        organizer.setUserRole(new SimpleGrantedAuthority(ROLE_ORGANIZER_ENABLED));
         organizer.setLocked(false);
         organizerRepository.save(organizer);
     }
@@ -122,7 +138,7 @@ public class OrganizerServiceImpl implements OrganizerService {
         if (organizer.isPresent())
             return organizer;
         else
-            throw new NoSuchElementFoundException("Organizer with given token id not found");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
     }
 
     @Override
@@ -138,7 +154,6 @@ public class OrganizerServiceImpl implements OrganizerService {
         Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
 
         if (organizer == null) {
-            System.out.println("Organizer is null");
             throw new AuthException(ExceptionMessages.unauthorized(ENTITY_NAME));
         }
 

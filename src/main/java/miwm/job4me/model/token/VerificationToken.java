@@ -8,12 +8,13 @@ import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
+
+import static miwm.job4me.messages.AppMessages.ROLE_EMPLOYEE;
+import static miwm.job4me.messages.AppMessages.ROLE_EMPLOYER;
 
 @Getter
 @Setter
@@ -28,10 +29,10 @@ public class VerificationToken extends BaseEntity {
     public VerificationToken(Long id, String token, Person person) {
         super(id);
         this.token = token;
-        if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYEE")) {
+        if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYEE)) {
             this.employee = (Employee) person;
         }
-        else if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYER")) {
+        else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER)) {
             this.employer = (Employer) person;
         }
         this.expiryDate = calculateExpiryDate(EXPIRATION);

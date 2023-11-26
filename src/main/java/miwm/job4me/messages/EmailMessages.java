@@ -40,4 +40,20 @@ public class EmailMessages {
     public static String organizerJobFairParticipationDeleteEmailText(String employerName, Long jobFairId, String jobFairName) {
         return String.format("Firma %s odwołała swój udział w targach pracy #%d %s. Uczestnictwo w targach pracy zostało usunięte z systemu.", employerName, jobFairId, jobFairName);
     }
+
+    public static String resetPasswordEmailText() {
+        return "Zresetuj swoje hasło\n Kliknij na poniższy link, aby zresetować swoje hasło.\n\n";
+    }
+
+    public static String resetPasswordEmailSubject(String email) {
+        return String.format("Reset hasła użytkownika %s", email);
+    }
+
+    public static String confirmRegistrationEmailText() {
+        return "Witaj w Job4Me!\n Kliknij w poniższy link, aby aktywować swoje konto\n\n";
+    }
+
+    public static String confirmRegistrationEmailSubject() {
+        return String.format("Potwierdzenie rejestracji konta w Job4Me");
+    }
 }

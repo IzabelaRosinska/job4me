@@ -8,6 +8,7 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.messages.AppMessages;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.messages.UserMessages;
 import miwm.job4me.model.token.PasswordResetToken;
 import miwm.job4me.model.token.VerificationToken;
@@ -36,7 +37,9 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import static miwm.job4me.messages.AppMessages.BACKEND_HOST;
+import static miwm.job4me.messages.AppMessages.*;
+import static miwm.job4me.messages.EmailMessages.resetPasswordEmailSubject;
+import static miwm.job4me.messages.EmailMessages.resetPasswordEmailText;
 
 @Service
 public class UserAuthenticationService implements UserDetailsService {
@@ -123,7 +126,7 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
         if (!emailExist(userDto.getUsername())) {
-            if(userDto.getRole().equals("EMPLOYEE")) {
+            if(userDto.getRole().equals(EMPLOYEE)) {
                 Employee newEmployee = Employee.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
@@ -131,7 +134,7 @@ public class UserAuthenticationService implements UserDetailsService {
                         .userRole(ApplicationUserRole.EMPLOYEE.getUserRole()).build();
                 employeeRepository.save(newEmployee);
                 return newEmployee;
-            }else if(userDto.getRole().equals("EMPLOYER")) {
+            }else if(userDto.getRole().equals(EMPLOYER)) {
                 Employer newEmployer = Employer.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
@@ -139,7 +142,7 @@ public class UserAuthenticationService implements UserDetailsService {
                         .userRole(ApplicationUserRole.EMPLOYER.getUserRole()).build();
                 employerRepository.save(newEmployer);
                 return newEmployer;
-            }else if(userDto.getRole().equals("ORGANIZER")) {
+            }else if(userDto.getRole().equals(ORGANIZER)) {
                 Organizer newOrganizer = Organizer.builder()
                         .email(userDto.getUsername())
                         .password(passwordEncoder.encode(userDto.getPassword()))
@@ -160,14 +163,14 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public void unlockEmployee(Employee employee) {
         Employee savedEmployee = employeeRepository.selectEmployeeByUsername(employee.getEmail());
-        savedEmployee.setUserRole(new SimpleGrantedAuthority("ROLE_EMPLOYEE_ENABLED"));
+        savedEmployee.setUserRole(new SimpleGrantedAuthority(ROLE_EMPLOYEE_ENABLED));
         savedEmployee.setLocked(false);
         employeeRepository.save(savedEmployee);
     }
 
     public void unlockEmployer(Employer employer) {
         Employer savedEmployer = employerRepository.selectEmployerByUsername(employer.getEmail());
-        savedEmployer.setUserRole(new SimpleGrantedAuthority("ROLE_EMPLOYER_ENABLED"));
+        savedEmployer.setUserRole(new SimpleGrantedAuthority(ROLE_EMPLOYER_ENABLED));
         savedEmployer.setLocked(false);
         employerRepository.save(savedEmployer);
     }
@@ -187,9 +190,9 @@ public class UserAuthenticationService implements UserDetailsService {
         createPasswordResetTokenForUser(person, token);
 
         String recipientAddress = person.getEmail();
-        String subject = "Reset your password";
-        String confirmationUrl = contextPath + "/change-password?token=" + token;
-        String text = "Reset your password\n Please click link below to change your password.\n\n" + BACKEND_HOST + confirmationUrl;
+        String subject = resetPasswordEmailSubject(recipientAddress);
+        String confirmationUrl = contextPath + CHANGE_PASSWORD_URL + token;
+        String text = resetPasswordEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
 
         emailService.sendSimpleMessage(recipientAddress, subject, text);
     }
@@ -218,7 +221,7 @@ public class UserAuthenticationService implements UserDetailsService {
             return employer.get();
         else if(organizer.isPresent())
             return organizer.get();
-        throw new NoSuchElementFoundException("Employer with given id not found token");
+        throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound("PasswordResetToken", "token", token));
     }
 
     public void changeUserPassword(Person person, String password) {
@@ -241,7 +244,7 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public String loginLinkedinUser(String email) {
         Employee employee = (Employee)loadUserByUsername(email);
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, "", employee.getAuthorities());
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, LINKEDIN_USER_PASSWORD, employee.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String token = Jwts.builder()

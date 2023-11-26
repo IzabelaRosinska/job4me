@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 
+import static miwm.job4me.messages.AppMessages.*;
+
 
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -38,13 +40,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .addFilterBefore(new JwtTokenVerifier(secretKey), BasicAuthenticationFilter.class)
 
                     .authorizeRequests()
-                    .antMatchers("/employee/account").hasAnyRole("EMPLOYEE", "EMPLOYEE_ENABLED")
-                    .antMatchers("/employer/account").hasAnyRole("EMPLOYER", "EMPLOYER_ENABLED")
-                    .antMatchers("/organizer/account").hasAnyRole("ORGANIZER", "ORGANIZER_ENABLED")
-                    .antMatchers("/employee/**").hasRole("EMPLOYEE_ENABLED")
-                    .antMatchers("/employer/**").hasRole("EMPLOYER_ENABLED")
-                    .antMatchers("/organizer/**").hasRole("ORGANIZER_ENABLED")
-                    .antMatchers("/fragments/**").hasAnyRole("EMPLOYEE","EMPLOYER", "ORGANIZER")
+                    .antMatchers("/employee/account").hasAnyRole(EMPLOYEE, EMPLOYEE_ENABLED)
+                    .antMatchers("/employer/account").hasAnyRole(EMPLOYEE, EMPLOYER_ENABLED)
+                    .antMatchers("/organizer/account").hasAnyRole(ORGANIZER, ORGANIZER_ENABLED)
+                    .antMatchers("/employee/**").hasRole(EMPLOYEE_ENABLED)
+                    .antMatchers("/employer/**").hasRole(EMPLOYER_ENABLED)
+                    .antMatchers("/organizer/**").hasRole(ORGANIZER_ENABLED)
+                    .antMatchers("/fragments/**").hasAnyRole(EMPLOYEE, EMPLOYEE, ORGANIZER)
                     .antMatchers("/home").permitAll()
                     .antMatchers("/levels").permitAll()
                     .antMatchers("/linkedin/**").permitAll()
@@ -53,10 +55,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/login").permitAll()
 
 
-                    .and().formLogin().loginPage("/login").permitAll().successHandler(appAuthenticationSuccessHandler())
+                    .and().formLogin().loginPage(LOGIN_URL).permitAll().successHandler(appAuthenticationSuccessHandler())
                     .and().httpBasic()
                     .and().logout(logout -> logout
-                            .logoutUrl("/logout")
+                            .logoutUrl(LOGOUT_URL)
                             .addLogoutHandler((request, response, auth) -> {
                                 for (Cookie cookie : request.getCookies()) {
                                     String cookieName = cookie.getName();

@@ -22,7 +22,7 @@ public class ExceptionMessages {
     }
 
     public static String nullArgument(String className) {
-        return String.format("%s can not be null", className);
+        return String.format("%s cannot be null", className);
     }
 
     public static String textTooShort(String className, String fieldName, int minLength) {
@@ -96,4 +96,9 @@ public class ExceptionMessages {
     public static String stringFilterNotNull(String className, String fieldName) {
         return String.format("%s %s filter can not be null. Please use empty string if no filtering needed.", className, fieldName);
     }
+
+    public static String untrustedToken(String token) {
+        return String.format("Token %s cannot be trusted", token);
+    }
+
 }

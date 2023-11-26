@@ -2,6 +2,7 @@ package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import miwm.job4me.exceptions.AuthException;
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employer;
@@ -67,7 +68,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employer;
         else
-            throw new NoSuchElementFoundException("Employer with given token not found");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
     }
 
     @Override
@@ -88,7 +89,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employer.get();
         else
-            throw new NoSuchElementFoundException("Employer with given id not found");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -96,7 +97,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer != null)
             return employerRepository.save(employer);
         else
-            throw new NoSuchElementFoundException("Employer cannot be null");
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
@@ -104,7 +105,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer != null)
             employerRepository.delete(employer);
         else
-            throw new NoSuchElementFoundException("Employer cannot be null");
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
@@ -112,7 +113,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(findById(id) != null)
             employerRepository.deleteById(id);
         else
-            throw new NoSuchElementFoundException("Employer with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -121,7 +122,7 @@ public class EmployerServiceImpl implements EmployerService {
         if(employer.isPresent())
             return employerMapper.employerToEmployerDto(employer.get());
         else
-            throw new NoSuchElementFoundException("Employer with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override
