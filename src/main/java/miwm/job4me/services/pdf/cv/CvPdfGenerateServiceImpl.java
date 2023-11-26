@@ -25,21 +25,11 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
     @Override
     public ResponseEntity<byte[]> downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
         Employee employee = employeeService.getAuthEmployee();
-        String fileName = createCvFileName(employee);
-
         Map<String, Object> data = new HashMap<>();
 
         data.put("employee", employee);
-        data.put("education", employee.getEducation());
-        data.put("experience", employee.getExperience());
-        data.put("skills", employee.getSkills());
-        data.put("projects", employee.getProjects());
 
-        return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data, fileName);
-    }
-
-    private String createCvFileName(Employee employee) {
-        return employee.getFirstName() + "_" + employee.getLastName() + "_CV.pdf";
+        return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data);
     }
 
 }

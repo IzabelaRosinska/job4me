@@ -24,7 +24,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data, String pdfFileName) {
+    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data) {
         Context context = new Context();
         context.setVariables(data);
 
@@ -40,7 +40,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Thin.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
-            renderer.createPDF(target, true);
+            renderer.createPDF(target, false);
             renderer.finishPDF();
 
             byte[] bytes = target.toByteArray();

@@ -96,7 +96,7 @@
             <tr>
                 <td class="resume-left div-main-name">
                     <div class="title div-main-name">
-                        <p class="bold main-name" th:text="${employee.firstName} + ' ' + ${employee.lastName}">Imię
+                        <p class="main-name" th:text="${employee.firstName} + ' ' + ${employee.lastName}">Imię
                             nazwisko</p>
                     </div>
                 </td>
@@ -126,7 +126,6 @@
             </tr>
             <tr>
                 <td class="resume-left" rowspan="3">
-                    <!--                    if list is empty -->
                     <div class="resume-about"
                          th:if="${employee.skills != null and not #lists.isEmpty(employee.skills)}">
                         <div class="title">
