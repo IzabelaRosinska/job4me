@@ -76,6 +76,7 @@ public class JobOfferMapper {
 
         if (localizationsSet != null) {
             ArrayList<Localization> localizations = new ArrayList<>(localizationsSet);
+            localizations.sort(Comparator.comparing(Localization::getCity));
 
             for (Localization e : localizations) {
                 localizationsList.add(e.getCity());

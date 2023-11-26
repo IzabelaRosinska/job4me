@@ -151,4 +151,17 @@ public class LocalizationServiceImpl implements LocalizationService {
 
         return localization;
     }
+
+    @Override
+    public Localization findByCityOrCreate(String city) {
+        Localization localization = localizationRepository.findByCity(city);
+
+        if (localization == null) {
+            localization = new Localization();
+            localization.setCity(city);
+            localization = localizationRepository.save(localization);
+        }
+
+        return localization;
+    }
 }
