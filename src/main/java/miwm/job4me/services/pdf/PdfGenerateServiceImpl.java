@@ -13,6 +13,7 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,7 +25,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data) {
+    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
         Context context = new Context();
         context.setVariables(data);
 
@@ -33,11 +34,18 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
             ITextRenderer renderer = new ITextRenderer();
-            renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Bold.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Light.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Medium.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont("src/main/resources/static/fonts/Roboto-Thin.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            for (String font : fonts) {
+                renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            }
+
+            fonts.stream().forEach(font -> {
+                try {
+                    renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                } catch (DocumentException | IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
             renderer.createPDF(target, false);

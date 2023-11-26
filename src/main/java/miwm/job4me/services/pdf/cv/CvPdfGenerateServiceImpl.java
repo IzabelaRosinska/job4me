@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,7 +31,14 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
 
         data.put("employee", employee);
 
-        return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data);
+        List<String> fonts = new ArrayList<>();
+        fonts.add("src/main/resources/static/fonts/Roboto-Bold.ttf");
+        fonts.add("src/main/resources/static/fonts/Roboto-Regular.ttf");
+        fonts.add("src/main/resources/static/fonts/Roboto-Light.ttf");
+        fonts.add("src/main/resources/static/fonts/Roboto-Medium.ttf");
+        fonts.add("src/main/resources/static/fonts/Roboto-Thin.ttf");
+
+        return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data, fonts);
     }
 
 }
