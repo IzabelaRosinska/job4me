@@ -22,7 +22,7 @@ public class ExceptionMessages {
     }
 
     public static String nullArgument(String className) {
-        return String.format("%s cannot be null", className);
+        return String.format("%s can not be null", className);
     }
 
     public static String textTooShort(String className, String fieldName, int minLength) {
