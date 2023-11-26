@@ -25,16 +25,25 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import net.glxn.qrgen.javase.QRCode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST;
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST_AZURE;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -293,5 +302,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return employee;
+    }
+
+    @Override
+    public BufferedImage generateQRCodeImage() throws Exception {
+        String barcodeText = BACKEND_HOST_AZURE + "/employer/employee/" + getAuthEmployee().getId() + "/account";
+        URL url = new URL(barcodeText);
+        ByteArrayOutputStream stream = QRCode
+                .from(String.valueOf(url))
+                .withSize(250, 250)
+                .stream();
+        ByteArrayInputStream bis = new ByteArrayInputStream(stream.toByteArray());
+
+        return ImageIO.read(bis);
     }
 }
