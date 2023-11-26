@@ -16,7 +16,7 @@ public class JobOfferController {
         this.jobOfferService = jobOfferService;
     }
 
-    @PostMapping("job-offers")
+    @PostMapping("employer/job-offers")
     @Operation(summary = "Create job offer", description = "Creates new job offer in database")
     public ResponseEntity<JobOfferDto> createJobOffer(@RequestBody JobOfferDto jobOfferDto) {
         return new ResponseEntity<>(jobOfferService.saveDto(jobOfferDto), HttpStatus.CREATED);
@@ -25,17 +25,10 @@ public class JobOfferController {
     @GetMapping("job-offers")
     @Operation(summary = "Get all job offers", description = "Gets all job offers from database")
     public ResponseEntity<Page<JobOfferDto>> getAllJobOffers(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String employmentFormName,
-            @RequestParam(required = false) String levelName,
-            @RequestParam(required = false) String contractTypeName,
-            @RequestParam(required = false) Integer salaryFrom,
-            @RequestParam(required = false) Integer salaryTo,
-            @RequestParam(required = false) String industryName,
-            @RequestParam(required = false) String offerName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findByFilters(page, size, city, employmentFormName, levelName, contractTypeName, salaryFrom, salaryTo, industryName, offerName);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order) {
+        Page<JobOfferDto> jobOfferDtoPage = jobOfferService.findAllByPage(page, size, order);
 
         if (jobOfferDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -50,16 +43,28 @@ public class JobOfferController {
         return new ResponseEntity<>(jobOfferService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("job-offers/{id}")
+    @PutMapping("employer/job-offers/{id}")
     @Operation(summary = "Update job offer", description = "Updates job offer in database")
     public ResponseEntity<JobOfferDto> updateJobOffer(@PathVariable Long id, @RequestBody JobOfferDto jobOfferDto) {
         return new ResponseEntity<>(jobOfferService.update(id, jobOfferDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("job-offers/{id}")
+    @DeleteMapping("employer/job-offers/{id}")
     @Operation(summary = "Delete job offer", description = "Deletes job offer from database")
     public ResponseEntity<Void> deleteJobOffer(@PathVariable Long id) {
         jobOfferService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("employer/job-offers/{id}/activate")
+    @Operation(summary = "Activate job offer", description = "Activates job offer in database")
+    public ResponseEntity<JobOfferDto> activateJobOffer(@PathVariable Long id) {
+        return new ResponseEntity<>(jobOfferService.activateOffer(id), HttpStatus.OK);
+    }
+
+    @GetMapping("employer/job-offers/{id}/deactivate")
+    @Operation(summary = "Deactivate job offer", description = "Deactivates job offer in database")
+    public ResponseEntity<JobOfferDto> deactivateJobOffer(@PathVariable Long id) {
+        return new ResponseEntity<>(jobOfferService.deactivateOffer(id), HttpStatus.OK);
     }
 }

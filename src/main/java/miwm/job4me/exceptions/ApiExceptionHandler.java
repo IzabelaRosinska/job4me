@@ -96,4 +96,24 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PdfGenerationException.class)
+    public ResponseEntity<?> handlePdfGenerationException(PdfGenerationException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("Pdf generation exception")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RecommendationException.class)
+    public ResponseEntity<?> handleRecommendationException(RecommendationException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("Recommendation exception")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

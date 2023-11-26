@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.services.offer.LocalizationService;
+import miwm.job4me.services.offer.parameters.LocalizationService;
 import miwm.job4me.web.model.offer.LocalizationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class LocalizationController {
     @GetMapping("localizations")
     @Operation(summary = "Get all localizations", description = "Gets all localizations from database")
     public ResponseEntity<Page<LocalizationDto>> getAllLocalizations(
-            @RequestParam(required = false) String city,
+            @RequestParam(defaultValue = "") String city,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

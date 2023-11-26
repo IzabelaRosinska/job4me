@@ -28,6 +28,7 @@ public class JobOfferMapper {
         jobOfferDto.setExtraSkills(extraSkillsSetToStringList(jobOffer.getExtraSkills()));
         jobOfferDto.setDuties(jobOffer.getDuties());
         jobOfferDto.setDescription(jobOffer.getDescription());
+        jobOfferDto.setIsActive(jobOffer.getIsActive());
 
         return jobOfferDto;
     }
@@ -49,6 +50,7 @@ public class JobOfferMapper {
         jobOffer.setExtraSkills(stringListToExtraSkillsSet(jobOfferDto.getExtraSkills(), jobOffer));
         jobOffer.setDuties(jobOfferDto.getDuties());
         jobOffer.setDescription(jobOfferDto.getDescription());
+        jobOffer.setIsActive(jobOfferDto.getIsActive());
 
         return jobOffer;
     }

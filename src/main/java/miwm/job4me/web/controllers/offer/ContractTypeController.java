@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.services.offer.ContractTypeService;
+import miwm.job4me.services.offer.parameters.ContractTypeService;
 import miwm.job4me.web.model.offer.ContractTypeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class ContractTypeController {
     @GetMapping("contract-types")
     @Operation(summary = "Get all contract types with pagination and filter", description = "Gets all contract types from database with pagination and filter (by name)")
     public ResponseEntity<Page<ContractTypeDto>> getAllContractTypes(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

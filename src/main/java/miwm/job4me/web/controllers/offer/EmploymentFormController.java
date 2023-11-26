@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.services.offer.EmploymentFormService;
+import miwm.job4me.services.offer.parameters.EmploymentFormService;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class EmploymentFormController {
     @GetMapping("employment-forms")
     @Operation(summary = "Get all employment forms with pagination and filter", description = "Gets all employment forms from database with pagination and filter (by name)")
     public ResponseEntity<Page<EmploymentFormDto>> getAllEmploymentForms(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

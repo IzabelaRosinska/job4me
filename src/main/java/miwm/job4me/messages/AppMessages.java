@@ -13,7 +13,6 @@ public class AppMessages {
     public static final String NEW_LINKEDIN_REDIRECT_URI = "redirect_uri=http://localhost:8080/auth/linkedin/callback";
     public static final String AZURE_LINKEDIN_REDIRECT_URI = "redirect_uri=https://job4me.azurewebsites.net/auth/linkedin/callback";
 
-
     public static final String LINKEDIN_RESPONSE_TYPE = "response_type=code";
     public static final String LINKEDIN_GRANT_TYPE = "grant_type=authorization_code";
     public static final String LINKEDIN_STATE = "state=foobar";

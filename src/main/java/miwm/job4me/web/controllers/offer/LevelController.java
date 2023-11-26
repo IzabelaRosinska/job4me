@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers.offer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.services.offer.LevelService;
+import miwm.job4me.services.offer.parameters.LevelService;
 import miwm.job4me.web.model.offer.LevelDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class LevelController {
     @GetMapping("levels")
     @Operation(summary = "Get all levels with pagination and filter", description = "Gets all levels from database with pagination and filter (by name)")
     public ResponseEntity<Page<LevelDto>> getAllLevels(
-            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
