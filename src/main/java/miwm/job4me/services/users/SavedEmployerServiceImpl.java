@@ -2,6 +2,7 @@ package miwm.job4me.services.users;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.SavedEmployer;
@@ -47,7 +48,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         Optional<SavedEmployer> savedEmployer = savedEmployerRepository.findById(id);
         if(savedEmployer.isPresent())
             return savedEmployer.get();
-        throw new NoSuchElementFoundException("Saved employer with that id does not exist");
+        throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYER, id));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
     public SavedEmployer save(SavedEmployer savedEmployer) {
         if(savedEmployer != null)
             return savedEmployerRepository.save(savedEmployer);
-        throw new InvalidArgumentException("Given employer is null");
+        throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_SAVED_EMPLOYER));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         if(savedEmployerRepository.findById(savedEmployer.getId()).isPresent())
             savedEmployerRepository.delete(savedEmployer);
         else
-            throw new NoSuchElementFoundException("There is no such employer in database");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYER, savedEmployer.getId()));
     }
 
     @Override
@@ -74,7 +75,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         if(savedEmployerRepository.findById(id).isPresent())
             savedEmployerRepository.deleteById(id);
         else
-            throw new NoSuchElementFoundException("Employer with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYER, id));
     }
 
     @Override
@@ -90,7 +91,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         if(employeeService.findById(employeeId) != null && employerService.findById(employerId) != null)
             return savedEmployerRepository.findByIds(employeeId, employerId);
         else
-            throw new NoSuchElementFoundException("User with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYER, employerId));
     }
 
     @Override
@@ -121,7 +122,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
             SavedEmployer savedEmployer = SavedEmployer.builder().employee(employee).employer(employer).build();
             save(savedEmployer);
         } else
-            throw new NoSuchElementFoundException("User does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYER, id));
     }
 
     @Override
@@ -134,7 +135,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
             if (saved.isPresent()) {
                 delete(saved.get());
             } else
-                throw new NoSuchElementFoundException("Employee with given id does not exist");
+                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYER, id));
         }
     }
 
@@ -145,6 +146,6 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
         if(employer != null)
             return employerReviewMapper.employerToEmployerReviewDto(employer, checkIfSaved(id));
         else
-            throw new NoSuchElementFoundException("Employer with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYER, id));
     }
 }

@@ -1,15 +1,17 @@
 package miwm.job4me.security;
 
 import miwm.job4me.emails.EMailService;
-import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.services.users.UserAuthenticationService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
+
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST_AZURE;
+import static miwm.job4me.messages.AppMessages.REGISTRATION_URL;
+import static miwm.job4me.messages.EmailMessages.confirmRegistrationEmailSubject;
+import static miwm.job4me.messages.EmailMessages.confirmRegistrationEmailText;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
@@ -35,9 +37,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String token = UUID.randomUUID().toString();
         userAuthenticationService.createVerificationToken(person, token);
         String recipientAddress = person.getEmail();
-        String subject = "Registration Confirmation";
-        String confirmationUrl = event.getAppUrl() + "/registrationConfirm?token=" + token;
-        String text = "Welcome in Job4Me!\n Please click link below to verify your account.\n\n" + "http://localhost:8080" + confirmationUrl;
+        String subject = confirmRegistrationEmailSubject();
+        String confirmationUrl = event.getAppUrl() + REGISTRATION_URL + token;
+        String text = confirmRegistrationEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
 
         emailService.sendSimpleMessage(recipientAddress, subject, text);
     }

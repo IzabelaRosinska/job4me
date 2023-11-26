@@ -22,9 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.UUID;
 
-import static miwm.job4me.messages.AppMessages.FRONT_HOST;
+import static miwm.job4me.messages.AppMessages.*;
 
 @RestController
 public class AuthController {
@@ -48,9 +47,9 @@ public class AuthController {
             userDto = userMapper.toDto(person);
 
             String appUrl = request.getContextPath();
-            if(registerData.getRole().equals("EMPLOYEE"))
+            if(registerData.getRole().equals(EMPLOYEE))
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employee)person, request.getLocale(), appUrl));
-            else if(registerData.getRole().equals("EMPLOYER"))
+            else if(registerData.getRole().equals(EMPLOYER))
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employer)person, request.getLocale(), appUrl));
 
         } catch (UserAlreadyExistException e) {
@@ -59,25 +58,25 @@ public class AuthController {
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/registrationConfirm")
+    @GetMapping("/registration-confirm")
     @Operation(summary = "Confirms user registration", description = "Confirm registration and unlock user")
-    public void confirmRegistration(WebRequest request, HttpServletResponse response, @RequestParam("token") String token) throws IOException {
+    public void confirmRegistration(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         VerificationToken verificationToken = userAuthService.getVerificationToken(token);
         if (verificationToken == null) {
-            response.sendRedirect("/");
+            response.sendRedirect(ERROR_URL);
         }
         Employee employee = verificationToken.getEmployee();
         Employer employer = verificationToken.getEmployer();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            response.sendRedirect("/");
+            response.sendRedirect(ERROR_URL);
         }
         if(employee != null)
             userAuthService.unlockEmployee(employee);
         else if(employer != null)
             userAuthService.unlockEmployer(employer);
 
-        response.sendRedirect(FRONT_HOST + "/login");
+        response.sendRedirect(FRONT_HOST_AZURE + LOGIN_URL);
     }
 
     @PostMapping("/reset-password")
@@ -95,23 +94,23 @@ public class AuthController {
     @Operation(summary = "Enable changing password", description = "Display password to reset password if token valid")
     public void showChangePasswordPage(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         if(!userAuthService.isValidPasswordResetToken(token))
-            response.sendRedirect("/");
+            response.sendRedirect(ERROR_URL);
         else
-            response.sendRedirect(FRONT_HOST + "/update-password?token=" + token);
+            response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL + token);
     }
 
     @PostMapping("/save-password")
     @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
     public void savePassword(HttpServletResponse response, @Valid PasswordDto passwordDto) throws IOException {
         if(!userAuthService.isValidPasswordResetToken(passwordDto.getToken()))
-            response.sendRedirect("/");
+            response.sendRedirect(ERROR_URL);
 
         Person user = userAuthService.getUserByPasswordResetToken(passwordDto.getToken());
         if(user != null) {
             userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
-            response.sendRedirect(FRONT_HOST + "/login");
+            response.sendRedirect(FRONT_HOST_AZURE + LOGIN_URL);
         } else
-            response.sendRedirect("/");
+            response.sendRedirect(ERROR_URL);
     }
 
     @PostMapping("/update-password")

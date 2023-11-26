@@ -11,14 +11,16 @@ import org.springframework.social.config.annotation.SocialConfigurerAdapter;
 import org.springframework.social.linkedin.connect.LinkedInConnectionFactory;
 import org.springframework.web.client.RestTemplate;
 
+import static miwm.job4me.messages.AppMessages.*;
+
 @Configuration
 @EnableSocial
 public class SocialConfig extends SocialConfigurerAdapter {
 
-    @Value("${spring.social.linkedin.app-id}")
+    @Value(LINKEDIN_ID_PARAM)
     private String linkedinClientId;
 
-    @Value("${spring.social.linkedin.app-secret}")
+    @Value(LINKEDIN_SECRET_PARAM)
     private String linkedinClientSecret;
 
     @Bean
@@ -41,7 +43,7 @@ public class SocialConfig extends SocialConfigurerAdapter {
         return new UserIdSource() {
             @Override
             public String getUserId() {
-                return "testuser";
+                return TEST_USER;
             }
         };
     }

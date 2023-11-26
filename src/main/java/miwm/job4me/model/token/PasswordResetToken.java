@@ -17,6 +17,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
+import static miwm.job4me.messages.AppMessages.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,11 +32,11 @@ public class PasswordResetToken extends BaseEntity {
     public PasswordResetToken(Long id, String token, Person person) {
         super(id);
         this.token = token;
-        if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYEE_ENABLED")) {
+        if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYEE_ENABLED)) {
             this.employee = (Employee) person;
-        } else if(person.getUserRole().getAuthority().equals("ROLE_EMPLOYER_ENABLED")) {
+        } else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER_ENABLED)) {
             this.employer = (Employer) person;
-        } else if(person.getUserRole().getAuthority().equals("ROLE_ORGANIZER_ENABLED")) {
+        } else if(person.getUserRole().getAuthority().equals(ROLE_ORGANIZER_ENABLED)) {
             this.organizer = (Organizer) person;
         }
         this.expiryDate = calculateExpiryDate(EXPIRATION);

@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 
+import static miwm.job4me.messages.AppMessages.ERROR_URL;
+import static miwm.job4me.messages.AppMessages.INCORRECT_CREDENTIALS;
+
 @Component
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
@@ -25,16 +28,11 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        setDefaultFailureUrl("/login.html?error=true");
+        setDefaultFailureUrl(ERROR_URL);
         super.onAuthenticationFailure(request, response, exception);
         Locale locale = localeResolver.resolveLocale(request);
-        String errorMessage = messages.getMessage("message.badCredentials", null, locale);
+        String errorMessage = messages.getMessage(INCORRECT_CREDENTIALS, null, locale);
 
-        if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
-            errorMessage = messages.getMessage("auth.message.disabled", null, locale);
-        } else if (exception.getMessage().equalsIgnoreCase("User account has expired")) {
-            errorMessage = messages.getMessage("auth.message.expired", null, locale);
-        }
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);
     }
 }

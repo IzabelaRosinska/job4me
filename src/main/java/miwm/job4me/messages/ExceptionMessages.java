@@ -96,4 +96,9 @@ public class ExceptionMessages {
     public static String stringFilterNotNull(String className, String fieldName) {
         return String.format("%s %s filter can not be null. Please use empty string if no filtering needed.", className, fieldName);
     }
+
+    public static String untrustedToken(String token) {
+        return String.format("Token %s cannot be trusted", token);
+    }
+
 }

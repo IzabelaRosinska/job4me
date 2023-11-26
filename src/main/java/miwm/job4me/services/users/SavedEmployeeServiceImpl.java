@@ -1,6 +1,8 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
+import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.SavedEmployee;
@@ -48,7 +50,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         Optional<SavedEmployee> savedEmployee = savedEmployeeRepository.findById(id);
         if(savedEmployee.isPresent())
             return savedEmployee.get();
-        throw new NoSuchElementFoundException("Saved employee with that id does not exist");
+        throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYEE, id));
     }
 
     @Override
@@ -56,7 +58,8 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public SavedEmployee save(SavedEmployee savedEmployee) {
         if(savedEmployee != null)
             return savedEmployeeRepository.save(savedEmployee);
-        throw new NoSuchElementFoundException("Given employee is null");
+        else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_SAVED_EMPLOYEE));
     }
 
     @Override
@@ -65,7 +68,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         if(savedEmployeeRepository.findById(savedEmployee.getId()).isPresent())
             savedEmployeeRepository.delete(savedEmployee);
         else
-            throw new NoSuchElementFoundException("There is no such employee in database");
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_SAVED_EMPLOYEE));
     }
 
     @Override
@@ -75,7 +78,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         if(savedEmployeeRepository.findById(id).isPresent())
             savedEmployeeRepository.deleteById(id);
         else
-            throw new NoSuchElementFoundException("Employee with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYEE, id));
     }
 
     @Override
@@ -101,7 +104,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         if(employeeService.findById(employeeId) != null && employerService.findById(employerId) != null)
             return savedEmployeeRepository.findByIds(employerId, employeeId);
         else
-            throw new NoSuchElementFoundException("User with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYEE, employeeId));
     }
 
     @Override
@@ -121,7 +124,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
         if(employee != null)
             return employeeReviewMapper.toDto(employee, checkIfSaved(id));
         else
-            throw new NoSuchElementFoundException("Employee with given id does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYEE, id));
     }
 
     @Override
@@ -134,7 +137,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
             SavedEmployee savedEmployee = SavedEmployee.builder().employee(employee).employer(employer).build();
             save(savedEmployee);
         } else
-            throw new NoSuchElementFoundException("User does not exist");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_EMPLOYEE, id));
     }
 
     @Override
@@ -147,7 +150,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
             if (saved.isPresent()) {
                 delete(saved.get());
             } else
-                throw new NoSuchElementFoundException("Employee with given id does not exist");
+                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYEE, id));
         }
     }
 

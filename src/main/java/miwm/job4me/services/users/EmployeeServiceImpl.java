@@ -155,7 +155,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee.isPresent())
             return employee;
         else
-            throw new NoSuchElementFoundException("No employee with given token");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
-            throw new NoSuchElementFoundException("No employee with given id");
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override

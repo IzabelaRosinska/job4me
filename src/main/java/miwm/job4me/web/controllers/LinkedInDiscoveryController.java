@@ -99,10 +99,10 @@ public class LinkedInDiscoveryController {
     public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
         OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
         OAuth2Parameters parameters = new OAuth2Parameters();
-        parameters.set("response_type", "code");
-        parameters.set("redirect_uri", "https://job4me.azurewebsites.net/auth/linkedin/callback");
-        parameters.setState("foobar");
-        parameters.setScope("openid profile email");
+        parameters.set(LINKEDIN_RESPONSE_TYPE_PARAM, PURE_LINKEDIN_RESPONSE_TYPE);
+        parameters.set(LINKEDIN_REDIRECT_URI_PARAM, PURE_AZURE_LINKEDIN_REDIRECT_URI);
+        parameters.setState(PURE_LINKEDIN_STATE);
+        parameters.setScope(PURE_LINKEDIN_SCOPE);
 
         String authorizeUrl = oauthOperations.buildAuthorizeUrl(parameters);
         return "redirect:" + authorizeUrl;
@@ -112,8 +112,8 @@ public class LinkedInDiscoveryController {
     public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         String authorizationCode = LINKEDIN_AUTH_CODE + code;
-        String client = LINKEDIN_CLIENT_ID + environment.getProperty("spring.social.linkedin.app-id");
-        String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty("spring.social.linkedin.app-secret");
+        String client = LINKEDIN_CLIENT_ID + environment.getProperty(LINKEDIN_ID_PARAM);
+        String secret = LINKEDIN_CLIENT_SECRET + environment.getProperty(LINKEDIN_SECRET_PARAM);
         String URL = BASIC_LINKEDIN_TOKEN_URL + "?" + authorizationCode + "&" + LINKEDIN_GRANT_TYPE + "&" + client + "&" + secret + "&" + AZURE_LINKEDIN_REDIRECT_URI;
 
         HttpEntity<String> entity = new HttpEntity<>(headers);

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import miwm.job4me.messages.ExceptionMessages;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static miwm.job4me.messages.AppMessages.LOGIN_URL;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
@@ -51,7 +54,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (JwtException exception) {
-                throw new IllegalStateException(String.format("Token %s niezaufany", cookieToken));
+                throw new IllegalStateException(ExceptionMessages.untrustedToken(cookieToken));
             }
         }
         filterChain.doFilter(request, response);
@@ -59,6 +62,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().equals("/login");
+        return request.getServletPath().equals(LOGIN_URL);
     }
 }
