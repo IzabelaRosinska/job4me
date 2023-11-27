@@ -28,4 +28,14 @@ public class ListDisplaySavedPageServiceImpl implements PageService<ListDisplayS
 
         return new PageImpl<>(subList, pageRequest, list.size());
     }
+
+    @Override
+    public Page<ListDisplaySavedDto> createPageGivenSublist(List<ListDisplaySavedDto> sublist, int pageSize, int pageNumber, int totalSize) {
+        paginationValidator.validatePagination(pageSize, pageNumber);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return new PageImpl<>(sublist, pageRequest, totalSize);
+    }
+
 }

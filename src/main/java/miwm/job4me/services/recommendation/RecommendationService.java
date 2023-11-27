@@ -8,4 +8,6 @@ public interface RecommendationService {
     Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, Long jobFairId);
 
     Page<ListDisplaySavedDto> getRecommendedOffersByFilter(int page, int size, JobOfferFilterDto jobOfferFilterDto, Long jobFairId);
+
+    void notifyRecommendationService(String url);
 }
