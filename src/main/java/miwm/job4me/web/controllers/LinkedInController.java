@@ -1,37 +1,10 @@
 package miwm.job4me.web.controllers;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import miwm.job4me.messages.AppMessages;
-import miwm.job4me.model.users.Person;
-import miwm.job4me.security.ApplicationUserRole;
-import miwm.job4me.services.users.EmployeeService;
-import miwm.job4me.services.users.EmployerService;
-import miwm.job4me.services.users.UserAuthenticationService;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import miwm.job4me.services.users.*;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import static miwm.job4me.messages.AppMessages.*;
 
 
 @RestController
@@ -41,13 +14,24 @@ public class LinkedInController {
     private final UserAuthenticationService authService;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
+    private final LinkedinService linkedinService;
     private final Environment environment;
 
-    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, Environment environment) {
+    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, LinkedinService linkedinService, Environment environment) {
         this.authService = authService;
         this.employeeService = employeeService;
         this.employerService = employerService;
+        this.linkedinService = linkedinService;
         this.environment = environment;
+    }
+
+    @GetMapping()
+    public ResponseEntity<LinkedinCheckout> getUrlForLinkedinAccount() {
+        LinkedinCheckout checkout = new LinkedinCheckout();
+        checkout.setUrl(linkedinService.loginLinkedinAccount());
+        System.out.println(checkout.getUrl());
+
+        return ResponseEntity.ok(checkout);
     }
 /*
     @GetMapping("/signin")
