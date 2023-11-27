@@ -15,21 +15,21 @@ public class LinkedInController {
     private final UserAuthenticationService authService;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
-    private final LinkedinServiceImpl linkedinServiceImpl;
+    private final LinkedinService linkedinService;
     private final Environment environment;
 
-    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, LinkedinServiceImpl linkedinServiceImpl, Environment environment) {
+    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, LinkedinService linkedinService, Environment environment) {
         this.authService = authService;
         this.employeeService = employeeService;
         this.employerService = employerService;
-        this.linkedinServiceImpl = linkedinServiceImpl;
+        this.linkedinService = linkedinService;
         this.environment = environment;
     }
 
     @GetMapping()
     public ResponseEntity<LinkedinCheckout> getUrlForLinkedinAccount() {
         LinkedinCheckout checkout = new LinkedinCheckout();
-        checkout.setUrl(linkedinServiceImpl.loginLinkedinAccount());
+        checkout.setUrl(linkedinService.loginLinkedinAccount());
         return ResponseEntity.ok(checkout);
     }
 

@@ -257,5 +257,4 @@ public class UserAuthenticationService implements UserDetailsService {
 
         return token;
     }
-
 }
