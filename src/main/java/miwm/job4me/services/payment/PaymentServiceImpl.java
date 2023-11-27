@@ -5,6 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import miwm.job4me.exceptions.PaymentException;
+import miwm.job4me.web.model.payment.PaymentCheckout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,12 @@ public class PaymentServiceImpl implements PaymentService {
     private String recommendationApiKey;
 
     @Override
-    public String payForOrganizerAccount() {
-        return createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer-account/success", BACKEND_HOST_AZURE + "/payment/organizer-account/cancel");
+    public PaymentCheckout payForOrganizerAccount() {
+        PaymentCheckout paymentCheckout = new PaymentCheckout();
+        String url = createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel");
+        paymentCheckout.setUrl(url);
+
+        return paymentCheckout;
     }
 
     @Override
