@@ -12,6 +12,7 @@ import miwm.job4me.web.model.cv.SkillDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -92,13 +93,13 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public Set<SkillDto> findAllByEmployeeId(Long id) {
+    public List<SkillDto> findAllByEmployeeId(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         return skillRepository
                 .findAllByEmployeeId(id)
                 .stream()
                 .map(skillMapper::toDto)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

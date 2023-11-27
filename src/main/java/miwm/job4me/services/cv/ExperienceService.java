@@ -4,7 +4,7 @@ import miwm.job4me.model.cv.Experience;
 import miwm.job4me.services.BaseDtoService;
 import miwm.job4me.web.model.cv.ExperienceDto;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ExperienceService extends BaseDtoService<Experience, ExperienceDto, Long> {
     void strictExistsById(Long id);
@@ -13,7 +13,7 @@ public interface ExperienceService extends BaseDtoService<Experience, Experience
 
     ExperienceDto update(ExperienceDto experience);
 
-    Set<ExperienceDto> findAllByEmployeeId(Long employeeId);
+    List<ExperienceDto> findAllByEmployeeId(Long employeeId);
 
     void deleteAllByEmployeeId(Long employeeId);
 

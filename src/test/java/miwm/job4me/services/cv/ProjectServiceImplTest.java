@@ -371,7 +371,7 @@ class ProjectServiceImplTest {
         when(projectMapper.toDto(project1)).thenReturn(projectDto1);
         when(projectMapper.toDto(project2)).thenReturn(projectDto2);
 
-        Set<ProjectDto> result = projectService.findAllByEmployeeId(employee.getId());
+        List<ProjectDto> result = projectService.findAllByEmployeeId(employee.getId());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(projectDto1));
@@ -383,7 +383,7 @@ class ProjectServiceImplTest {
     public void testFindAllByEmployeeIdEmpty() {
         when(projectRepository.findAllByEmployeeId(employee.getId())).thenReturn(List.of());
 
-        Set<ProjectDto> result = projectService.findAllByEmployeeId(employee.getId());
+        List<ProjectDto> result = projectService.findAllByEmployeeId(employee.getId());
 
         assertEquals(0, result.size());
     }

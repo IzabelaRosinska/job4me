@@ -12,6 +12,7 @@ import miwm.job4me.web.model.cv.ProjectDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -93,13 +94,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Set<ProjectDto> findAllByEmployeeId(Long employeeId) {
+    public List<ProjectDto> findAllByEmployeeId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_NAME);
         return projectRepository
                 .findAllByEmployeeId(employeeId)
                 .stream()
                 .map(projectMapper::toDto)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

@@ -4,7 +4,7 @@ import miwm.job4me.model.offer.Requirement;
 import miwm.job4me.services.BaseDtoService;
 import miwm.job4me.web.model.offer.RequirementDto;
 
-import java.util.Set;
+import java.util.List;
 
 public interface RequirementService extends BaseDtoService<Requirement, RequirementDto, Long> {
     boolean existsById(Long id);
@@ -13,7 +13,7 @@ public interface RequirementService extends BaseDtoService<Requirement, Requirem
 
     RequirementDto update(Long id, RequirementDto requirement);
 
-    Set<RequirementDto> findAllByJobOfferId(Long id);
+    List<RequirementDto> findAllByJobOfferId(Long id);
 
     void deleteAllByJobOfferId(Long id);
 }

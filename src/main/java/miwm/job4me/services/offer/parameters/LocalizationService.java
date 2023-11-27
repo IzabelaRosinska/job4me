@@ -21,4 +21,6 @@ public interface LocalizationService extends BaseDtoService<Localization, Locali
     LocalizationDto update(Long id, LocalizationDto localization);
 
     Localization findByCity(String city);
+
+    Localization findByCityOrCreate(String city);
 }

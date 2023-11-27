@@ -6,7 +6,8 @@ import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Component
@@ -55,10 +56,13 @@ public class JobOfferMapper {
         return jobOffer;
     }
 
-    public ArrayList<String> industriesSetToStringList(Set<Industry> industries) {
+    public ArrayList<String> industriesSetToStringList(Set<Industry> industriesSet) {
         ArrayList<String> industriesList = new ArrayList<>();
 
-        if (industries != null) {
+        if (industriesSet != null) {
+            ArrayList<Industry> industries = new ArrayList<>(industriesSet);
+            industries.sort(Comparator.comparingLong(Industry::getId));
+
             for (Industry e : industries) {
                 industriesList.add(e.getName());
             }
@@ -67,10 +71,13 @@ public class JobOfferMapper {
         return industriesList;
     }
 
-    public ArrayList<String> localizationsSetToStringList(Set<Localization> localizations) {
+    public ArrayList<String> localizationsSetToStringList(Set<Localization> localizationsSet) {
         ArrayList<String> localizationsList = new ArrayList<>();
 
-        if (localizations != null) {
+        if (localizationsSet != null) {
+            ArrayList<Localization> localizations = new ArrayList<>(localizationsSet);
+            localizations.sort(Comparator.comparing(Localization::getCity));
+
             for (Localization e : localizations) {
                 localizationsList.add(e.getCity());
             }
@@ -79,10 +86,13 @@ public class JobOfferMapper {
         return localizationsList;
     }
 
-    public ArrayList<String> employmentFormsSetToStringList(Set<EmploymentForm> employmentForms) {
+    public ArrayList<String> employmentFormsSetToStringList(Set<EmploymentForm> employmentFormsSet) {
         ArrayList<String> employmentFormsList = new ArrayList<>();
 
-        if (employmentForms != null) {
+        if (employmentFormsSet != null) {
+            ArrayList<EmploymentForm> employmentForms = new ArrayList<>(employmentFormsSet);
+            employmentForms.sort(Comparator.comparingLong(EmploymentForm::getId));
+
             for (EmploymentForm e : employmentForms) {
                 employmentFormsList.add(e.getName());
             }
@@ -91,10 +101,13 @@ public class JobOfferMapper {
         return employmentFormsList;
     }
 
-    public ArrayList<String> contractTypesSetToStringList(Set<ContractType> contractTypes) {
+    public ArrayList<String> contractTypesSetToStringList(Set<ContractType> contractTypesSet) {
         ArrayList<String> contractTypesList = new ArrayList<>();
 
-        if (contractTypes != null) {
+        if (contractTypesSet != null) {
+            ArrayList<ContractType> contractTypes = new ArrayList<>(contractTypesSet);
+            contractTypes.sort(Comparator.comparingLong(ContractType::getId));
+
             for (ContractType e : contractTypes) {
                 contractTypesList.add(e.getName());
             }
@@ -103,10 +116,13 @@ public class JobOfferMapper {
         return contractTypesList;
     }
 
-    public ArrayList<String> levelsSetToStringList(Set<Level> levels) {
+    public ArrayList<String> levelsSetToStringList(Set<Level> levelsSet) {
         ArrayList<String> levelsList = new ArrayList<>();
 
-        if (levels != null) {
+        if (levelsSet != null) {
+            ArrayList<Level> levels = new ArrayList<>(levelsSet);
+            levels.sort(Comparator.comparingLong(Level::getId));
+
             for (Level e : levels) {
                 levelsList.add(e.getName());
             }
@@ -115,10 +131,13 @@ public class JobOfferMapper {
         return levelsList;
     }
 
-    public ArrayList<String> requirementsSetToStringList(Set<Requirement> requirements) {
+    public ArrayList<String> requirementsSetToStringList(Set<Requirement> requirementsSet) {
         ArrayList<String> requirementsList = new ArrayList<>();
 
-        if (requirements != null) {
+        if (requirementsSet != null) {
+            ArrayList<Requirement> requirements = new ArrayList<>(requirementsSet);
+            requirements.sort(Comparator.comparingLong(Requirement::getId));
+
             for (Requirement e : requirements) {
                 requirementsList.add(e.getDescription());
             }
@@ -127,10 +146,13 @@ public class JobOfferMapper {
         return requirementsList;
     }
 
-    public ArrayList<String> extraSkillsSetToStringList(Set<ExtraSkill> extraSkills) {
+    public ArrayList<String> extraSkillsSetToStringList(Set<ExtraSkill> extraSkillsSet) {
         ArrayList<String> extraSkillsList = new ArrayList<>();
 
-        if (extraSkills != null) {
+        if (extraSkillsSet != null) {
+            ArrayList<ExtraSkill> extraSkills = new ArrayList<>(extraSkillsSet);
+            extraSkills.sort(Comparator.comparingLong(ExtraSkill::getId));
+
             for (ExtraSkill e : extraSkills) {
                 extraSkillsList.add(e.getDescription());
             }
@@ -140,7 +162,7 @@ public class JobOfferMapper {
     }
 
     public Set<Industry> stringListToIndustriesSet(ArrayList<String> industries) {
-        Set<Industry> industriesSet = new HashSet<>();
+        Set<Industry> industriesSet = new LinkedHashSet<>();
 
         if (industries != null) {
             for (String e : industries) {
@@ -153,7 +175,7 @@ public class JobOfferMapper {
     }
 
     public Set<Localization> stringListToLocalizationsSet(ArrayList<String> localizations) {
-        Set<Localization> localizationsSet = new HashSet<>();
+        Set<Localization> localizationsSet = new LinkedHashSet<>();
 
         if (localizations != null) {
             for (String e : localizations) {
@@ -166,7 +188,7 @@ public class JobOfferMapper {
     }
 
     public Set<EmploymentForm> stringListToEmploymentFormsSet(ArrayList<String> employmentForms) {
-        Set<EmploymentForm> employmentFormsSet = new HashSet<>();
+        Set<EmploymentForm> employmentFormsSet = new LinkedHashSet<>();
 
         if (employmentForms != null) {
             for (String e : employmentForms) {
@@ -179,7 +201,7 @@ public class JobOfferMapper {
     }
 
     public Set<ContractType> stringListToContractTypesSet(ArrayList<String> contractTypes) {
-        Set<ContractType> contractTypesSet = new HashSet<>();
+        Set<ContractType> contractTypesSet = new LinkedHashSet<>();
 
         if (contractTypes != null) {
             for (String e : contractTypes) {
@@ -192,7 +214,7 @@ public class JobOfferMapper {
     }
 
     public Set<Level> stringListToLevelsSet(ArrayList<String> levels) {
-        Set<Level> levelsSet = new HashSet<>();
+        Set<Level> levelsSet = new LinkedHashSet<>();
 
         if (levels != null) {
             for (String e : levels) {
@@ -205,7 +227,7 @@ public class JobOfferMapper {
     }
 
     public Set<Requirement> stringListToRequirementsSet(ArrayList<String> requirements, JobOffer jobOffer) {
-        Set<Requirement> requirementsSet = new HashSet<>();
+        Set<Requirement> requirementsSet = new LinkedHashSet<>();
 
         if (requirements != null) {
             for (String e : requirements) {
@@ -218,7 +240,7 @@ public class JobOfferMapper {
     }
 
     public Set<ExtraSkill> stringListToExtraSkillsSet(ArrayList<String> extraSkills, JobOffer jobOffer) {
-        Set<ExtraSkill> extraSkillsSet = new HashSet<>();
+        Set<ExtraSkill> extraSkillsSet = new LinkedHashSet<>();
 
         if (extraSkills != null) {
             for (String e : extraSkills) {

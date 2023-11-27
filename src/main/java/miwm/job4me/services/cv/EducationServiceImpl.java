@@ -12,6 +12,7 @@ import miwm.job4me.web.model.cv.EducationDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -96,13 +97,13 @@ public class EducationServiceImpl implements EducationService {
     }
 
     @Override
-    public Set<EducationDto> findAllByEmployeeId(Long id) {
+    public List<EducationDto> findAllByEmployeeId(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         return educationRepository
                 .findAllByEmployeeId(id)
                 .stream()
                 .map(educationMapper::toDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
