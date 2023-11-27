@@ -20,14 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentCheckout payForOrganizerAccount() {
         PaymentCheckout paymentCheckout = new PaymentCheckout();
-        String url = createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel");
+        String url = createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel", "https://i.ibb.co/KXsSS6q/job4-Me-2.png");
         paymentCheckout.setUrl(url);
 
         return paymentCheckout;
     }
 
     @Override
-    public String createPaymentSession(Long quantity, Long price, String itemName, String successUrl, String cancelUrl) {
+    public String createPaymentSession(Long quantity, Long price, String itemName, String successUrl, String cancelUrl, String imageUrl) {
         Stripe.apiKey = recommendationApiKey;
 
         try {
@@ -47,6 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
                                                             .setProductData(
                                                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                                             .setName(itemName)
+                                                                            .addImage(imageUrl)
                                                                             .build())
                                                             .build())
                                             .build())
