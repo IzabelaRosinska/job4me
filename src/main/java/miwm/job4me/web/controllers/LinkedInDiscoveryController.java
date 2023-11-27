@@ -33,6 +33,7 @@ import java.util.List;
 import static miwm.job4me.messages.AppMessages.*;
 
 @Controller
+@CrossOrigin
 public class LinkedInDiscoveryController {
 
     private Environment environment;
