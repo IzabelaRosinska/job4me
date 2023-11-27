@@ -73,4 +73,6 @@ public class AppMessages {
 
     public static final String INCORRECT_CREDENTIALS = "message.badCredentials";
 
+    public static final String STRIPE_HOST = "https://checkout.stripe.com";
+
 }
