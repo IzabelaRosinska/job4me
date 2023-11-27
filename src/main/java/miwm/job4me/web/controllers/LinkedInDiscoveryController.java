@@ -95,19 +95,6 @@ public class LinkedInDiscoveryController {
     }
     */
 
-    @GetMapping("/linkedin/signin")
-    public String redirectToLinkedInForAuth(HttpServletRequest request) throws UnsupportedEncodingException {
-        OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-        OAuth2Parameters parameters = new OAuth2Parameters();
-        parameters.set(LINKEDIN_RESPONSE_TYPE_PARAM, PURE_LINKEDIN_RESPONSE_TYPE);
-        parameters.set(LINKEDIN_REDIRECT_URI_PARAM, PURE_AZURE_LINKEDIN_REDIRECT_URI);
-        parameters.setState(PURE_LINKEDIN_STATE);
-        parameters.setScope(PURE_LINKEDIN_SCOPE);
-
-        String authorizeUrl = oauthOperations.buildAuthorizeUrl(parameters);
-        return "redirect:" + authorizeUrl;
-    }
-
     @GetMapping("/auth/linkedin/callback")
     public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpHeaders headers = new HttpHeaders();

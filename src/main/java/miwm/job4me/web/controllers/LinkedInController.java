@@ -2,6 +2,7 @@ package miwm.job4me.web.controllers;
 
 
 import miwm.job4me.services.users.*;
+import miwm.job4me.model.users.LinkedinCheckout;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,25 +15,24 @@ public class LinkedInController {
     private final UserAuthenticationService authService;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
-    private final LinkedinService linkedinService;
+    private final LinkedinServiceImpl linkedinServiceImpl;
     private final Environment environment;
 
-    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, LinkedinService linkedinService, Environment environment) {
+    public LinkedInController(UserAuthenticationService authService, EmployeeService employeeService, EmployerService employerService, LinkedinServiceImpl linkedinServiceImpl, Environment environment) {
         this.authService = authService;
         this.employeeService = employeeService;
         this.employerService = employerService;
-        this.linkedinService = linkedinService;
+        this.linkedinServiceImpl = linkedinServiceImpl;
         this.environment = environment;
     }
 
     @GetMapping()
     public ResponseEntity<LinkedinCheckout> getUrlForLinkedinAccount() {
         LinkedinCheckout checkout = new LinkedinCheckout();
-        checkout.setUrl(linkedinService.loginLinkedinAccount());
-        System.out.println(checkout.getUrl());
-
+        checkout.setUrl(linkedinServiceImpl.loginLinkedinAccount());
         return ResponseEntity.ok(checkout);
     }
+
 /*
     @GetMapping("/signin")
     public void signInLinkedIn(HttpServletResponse response, HttpServletRequest request) throws IOException {
