@@ -116,4 +116,14 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<?> handlePaymentException(PaymentException e, WebRequest request) {
+        ApiException apiException = ApiException.builder()
+                .title("Payment exception")
+                .source(request.getDescription(false))
+                .details(e.getMessage()).build();
+
+        return new ResponseEntity<>(apiException, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
