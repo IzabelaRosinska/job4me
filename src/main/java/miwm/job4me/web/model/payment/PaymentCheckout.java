@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentCheckout {
+
     @Schema(description = "Url to redirect to Stripe Checkout", example = "https://checkout.stripe.com/pay/")
     private String url;
 }

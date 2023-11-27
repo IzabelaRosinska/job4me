@@ -8,6 +8,8 @@ import miwm.job4me.exceptions.PaymentException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static miwm.job4me.messages.AppMessages.BACKEND_HOST_AZURE;
+
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
@@ -16,7 +18,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String payForOrganizerAccount() {
-        return createPaymentSession(1L, 200L, "Organizer account", "http://localhost:8080/payment/organizer-account/success", "http://localhost:8080/payment/organizer-account/cancel");
+        return createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer-account/success", BACKEND_HOST_AZURE + "/payment/organizer-account/cancel");
     }
 
     @Override
