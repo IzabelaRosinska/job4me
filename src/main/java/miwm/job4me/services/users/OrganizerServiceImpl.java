@@ -15,7 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
@@ -41,6 +40,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public OrganizerDto findOrganizerById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         Optional<Organizer> organizer = organizerRepository.findById(id);
         if (organizer.isPresent())
             return organizerMapper.organizerToOrganizerDto(organizer.get());
@@ -56,6 +56,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public void strictExistsById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         if (!existsById(id)) {
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
         }
@@ -63,13 +64,16 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public String getContactEmail(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         Organizer organizer = findById(id);
-
-        if (organizer.getContactEmail() == null) {
-            return organizer.getEmail();
-        } else {
-            return organizer.getContactEmail();
-        }
+        if(organizer != null) {
+            if (organizer.getContactEmail() == null) {
+                return organizer.getEmail();
+            } else {
+                return organizer.getContactEmail();
+            }
+        } else
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
     }
 
     @Override
@@ -79,6 +83,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public Organizer findById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         return organizerRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
@@ -94,7 +99,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public void delete(Organizer organizer) {
-        if(organizer!= null)
+        if(organizer != null)
             organizerRepository.delete(organizer);
         else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
@@ -102,6 +107,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public void deleteById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         if(findById(id) != null)
             organizerRepository.deleteById(id);
         else
@@ -118,9 +124,12 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Override
     @Transactional
     public OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto) {
-        Organizer organizer = organizerMapper.organizerDtoToOrganizer(organizerDto, getAuthOrganizer());
-        organizerRepository.save(organizer);
-        return organizerDto;
+        if(organizerDto != null) {
+            Organizer organizer = organizerMapper.organizerDtoToOrganizer(organizerDto, getAuthOrganizer());
+            organizerRepository.save(organizer);
+            return organizerDto;
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
@@ -134,18 +143,24 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public Optional<Organizer> getOrganizerByToken(String token) {
-        Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);
-        if (organizer.isPresent())
-            return organizer;
-        else
-            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        if(token != null) {
+            Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);
+            if (organizer.isPresent())
+                return organizer;
+            else
+                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument("Token"));
     }
 
     @Override
     @Transactional
     public void updatePassword(Organizer organizer, @Length(min = 5, max = 15) String password) {
-        organizer.setPassword(passwordEncoder.encode(password));
-        save(organizer);
+        if(organizer != null) {
+            organizer.setPassword(passwordEncoder.encode(password));
+            save(organizer);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override

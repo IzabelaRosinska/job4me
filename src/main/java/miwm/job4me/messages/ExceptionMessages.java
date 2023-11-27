@@ -101,4 +101,8 @@ public class ExceptionMessages {
         return String.format("Token %s cannot be trusted", token);
     }
 
+    public static String userAlreadyExists(String username) {
+        return String.format("User %s has already existed", username);
+    }
+
 }

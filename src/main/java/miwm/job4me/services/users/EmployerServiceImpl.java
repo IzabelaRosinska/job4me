@@ -46,35 +46,47 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     @Transactional
     public EmployerDto saveEmployerDetails(EmployerDto employerDto) {
-        Employer employer = getAuthEmployer();
-        employerRepository.save(employerMapper.employerDtoToEmployer(employerDto, employer));
-        return employerDto;
+        if(employerDto != null) {
+            Employer employer = getAuthEmployer();
+            employerRepository.save(employerMapper.employerDtoToEmployer(employerDto, employer));
+            return employerDto;
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     @Transactional
     public void saveEmployerDataFromLinkedin(Person user, JsonNode jsonNode) {
-        Employer employer = employerRepository.selectEmployerByUsername(user.getUsername());
-        String name = jsonNode.get("name").asText();
-        String photo = jsonNode.get("picture").asText();
-        employer.setCompanyName(name);
-        employer.setPhoto(photo);
-        employerRepository.save(employer);
+        if(user != null && jsonNode != null) {
+            Employer employer = employerRepository.selectEmployerByUsername(user.getUsername());
+            String name = jsonNode.get("name").asText();
+            String photo = jsonNode.get("picture").asText();
+            employer.setCompanyName(name);
+            employer.setPhoto(photo);
+            employerRepository.save(employer);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     public Optional<Employer> getEmployerByToken(String token) {
-        Optional<Employer> employer = employerRepository.getEmployerByToken(token);
-        if(employer.isPresent())
-            return employer;
-        else
-            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        if(token != null) {
+            Optional<Employer> employer = employerRepository.getEmployerByToken(token);
+            if (employer.isPresent())
+                return employer;
+            else
+                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     public void updatePassword(Employer employer, @Length(min = 5, max = 15) String password) {
-        employer.setPassword(passwordEncoder.encode(password));
-        save(employer);
+        if(employer != null) {
+            employer.setPassword(passwordEncoder.encode(password));
+            save(employer);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
 
@@ -85,6 +97,7 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public Employer findById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         Optional<Employer> employer = employerRepository.findById(id);
         if(employer.isPresent())
             return employer.get();
@@ -118,6 +131,7 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public EmployerDto findEmployerById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         Optional<Employer> employer = employerRepository.findById(id);
         if(employer.isPresent())
             return employerMapper.employerToEmployerDto(employer.get());

@@ -17,8 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
-
 @Service
 public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
@@ -65,7 +63,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     @Override
     @Transactional
     public void delete(SavedEmployee savedEmployee) {
-        if(savedEmployeeRepository.findById(savedEmployee.getId()).isPresent())
+        if(savedEmployee != null && savedEmployeeRepository.findById(savedEmployee.getId()).isPresent())
             savedEmployeeRepository.delete(savedEmployee);
         else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_SAVED_EMPLOYEE));
