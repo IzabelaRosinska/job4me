@@ -1,5 +1,6 @@
 package miwm.job4me.services.users;
 
+import miwm.job4me.model.users.LinkedinCheckout;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import static miwm.job4me.messages.AppMessages.*;
@@ -14,10 +15,12 @@ public class LinkedinServiceImpl implements LinkedinService {
     }
 
     @Override
-    public String loginLinkedinAccount() {
+    public LinkedinCheckout loginLinkedinAccount() {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty(LINKEDIN_ID_PARAM);
         String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
-        return createLinkedinSession(URL);
+        LinkedinCheckout checkout = new LinkedinCheckout();
+        checkout.setUrl(createLinkedinSession(URL));
+        return checkout;
     }
 
     @Override
