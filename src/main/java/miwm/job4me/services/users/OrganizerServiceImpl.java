@@ -133,15 +133,6 @@ public class OrganizerServiceImpl implements OrganizerService {
     }
 
     @Override
-    @Transactional
-    public void updateAccountStatusAfterPayment() {
-        Organizer organizer = getAuthOrganizer();
-        organizer.setUserRole(new SimpleGrantedAuthority(ROLE_ORGANIZER_ENABLED));
-        organizer.setLocked(false);
-        organizerRepository.save(organizer);
-    }
-
-    @Override
     public Optional<Organizer> getOrganizerByToken(String token) {
         if(token != null) {
             Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);

@@ -10,8 +10,6 @@ public interface OrganizerService extends BaseService<Organizer, Long> {
 
     OrganizerDto saveOrganizerDetails(OrganizerDto organizerDto);
 
-    void updateAccountStatusAfterPayment();
-
     Optional<Organizer> getOrganizerByToken(String token);
 
     void updatePassword(Organizer organizer, String password);
