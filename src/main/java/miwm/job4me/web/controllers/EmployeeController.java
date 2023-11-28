@@ -33,24 +33,15 @@ public class EmployeeController {
     }
 
     @GetMapping("account")
+    @Operation(summary = "Gets employee details", description = "Gets employee account details")
     public ResponseEntity<EmployeeDto> getEmployeeAccount() {
-        EmployeeDto employeeDto;
-        try {
-            employeeDto = employeeService.getEmployeeDetails();
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getEmployeeDetails(), HttpStatus.OK);
     }
 
     @PostMapping("account")
+    @Operation(summary = "Save employee details", description = "Update employee account")
     public ResponseEntity<EmployeeDto> updateEmployeeAccount(@RequestBody EmployeeDto employeeDto) {
-        try {
-            employeeDto = employeeService.saveEmployeeDetails(employeeDto);
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(employeeService.saveEmployeeDetails(employeeDto), HttpStatus.CREATED);
     }
 
     @GetMapping("cv")

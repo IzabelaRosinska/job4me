@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SavedEmployeeService extends BaseService<SavedEmployee, Long> {
-
     boolean checkIfSavedForEmployerWithId(Long employerId, Long employeeId);
+
     List<SavedEmployee> getSavedForEmployerWithId(Long employerId);
 
     Optional<SavedEmployee> findByIds(Long employerId, Long employeeId);
@@ -16,7 +16,9 @@ public interface SavedEmployeeService extends BaseService<SavedEmployee, Long> {
     Boolean checkIfSaved(Long id);
 
     List<EmployeeReviewDto> getSavedEmployees();
+
     void deleteEmployeeFromSaved(Long id);
+
     void addEmployeeToSaved(Long id);
     EmployeeReviewDto findEmployeeWithIdByUser(Long id);
 }

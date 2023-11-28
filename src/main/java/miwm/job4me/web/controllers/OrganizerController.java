@@ -1,7 +1,6 @@
 package miwm.job4me.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.OrganizerService;
@@ -27,24 +26,15 @@ public class OrganizerController {
     }
 
     @GetMapping("account")
+    @Operation(summary = "Gets organizer details", description = "Gets organizer account details")
     public ResponseEntity<OrganizerDto> getOrganizerAccount() {
-        OrganizerDto organizerDto;
-        try {
-            organizerDto = organizerService.getOrganizerDetails();
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(organizerDto, HttpStatus.OK);
+        return new ResponseEntity<>(organizerService.getOrganizerDetails(), HttpStatus.OK);
     }
 
     @PostMapping("account")
+    @Operation(summary = "Save organizer details", description = "Update organizer account")
     public ResponseEntity<OrganizerDto> updateOrganizerAccount(@RequestBody OrganizerDto organizerDto) {
-        try {
-            organizerDto = organizerService.saveOrganizerDetails(organizerDto);
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(organizerDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(organizerService.saveOrganizerDetails(organizerDto), HttpStatus.CREATED);
     }
 
     @GetMapping("employer/{id}/account")

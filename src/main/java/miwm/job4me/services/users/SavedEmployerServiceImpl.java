@@ -62,7 +62,7 @@ public class SavedEmployerServiceImpl implements SavedEmployerService {
     @Override
     @Transactional
     public void delete(SavedEmployer savedEmployer) {
-        if(savedEmployerRepository.findById(savedEmployer.getId()).isPresent())
+        if(savedEmployer != null && savedEmployerRepository.findById(savedEmployer.getId()).isPresent())
             savedEmployerRepository.delete(savedEmployer);
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_SAVED_EMPLOYER, savedEmployer.getId()));
