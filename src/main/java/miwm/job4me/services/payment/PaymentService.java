@@ -5,5 +5,5 @@ import miwm.job4me.web.model.payment.PaymentCheckout;
 public interface PaymentService {
     PaymentCheckout payForOrganizerAccount();
 
-    String createPaymentSession(Long quantity, Long price, String itemName, String successUrl, String cancelUrl, String imageUrl);
+    String createPaymentSession(Long productQuantity, Long productPrice, String productName, String successUrl, String cancelUrl, String productImageUrl, String productDescription);
 }
