@@ -20,7 +20,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentCheckout payForOrganizerAccount() {
         PaymentCheckout paymentCheckout = new PaymentCheckout();
-        String url = createPaymentSession(1L, 200L, "Utworzenie targów pracy", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel", "https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R", "Tworzy targi pracy i umożliwia ich przeprowadzenie.");
+        String url = createPaymentSession(1L, 200L, "Utworzenie targów pracy", BACKEND_HOST_AZURE + "/organizer/payment/organizer/account/success", BACKEND_HOST_AZURE + "/organizer/payment/organizer/account/cancel", "https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R", "Tworzy targi pracy i umożliwia ich przeprowadzenie.");
         paymentCheckout.setUrl(url);
 
         return paymentCheckout;
