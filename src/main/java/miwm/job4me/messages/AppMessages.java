@@ -9,8 +9,8 @@ public class AppMessages {
     public static final String FRONT_BRANCH_HOST_AZURE = "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net";
     public static final String LINKEDIN_HOST = "https://www.linkedin.com";
 
-    public static final String LINKEDIN_ID_PARAM = "${spring.social.linkedin.app-id}";
-    public static final String LINKEDIN_SECRET_PARAM = "${spring.social.linkedin.app-secret}";
+    public static final String LINKEDIN_ID_PARAM = "spring.social.linkedin.app-id";
+    public static final String LINKEDIN_SECRET_PARAM = "spring.social.linkedin.app-secret";
 
     public static final String BASIC_LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization";
     public static final String BASIC_LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
