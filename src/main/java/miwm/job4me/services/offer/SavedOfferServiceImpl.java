@@ -8,8 +8,13 @@ import miwm.job4me.model.users.Employee;
 import miwm.job4me.repositories.offer.SavedOfferRepository;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
+import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.mappers.offer.JobOfferReviewMapper;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.offer.JobOfferReviewDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,19 +28,24 @@ public class SavedOfferServiceImpl implements SavedOfferService {
 
     private final SavedOfferRepository savedOfferRepository;
     private final JobOfferReviewMapper jobOfferReviewMapper;
+
+    private final ListDisplayMapper listDisplayMapper;
     private final EmployeeService employeeService;
     private final JobOfferService jobOfferService;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final String ENTITY_OFFER = "JobOffer";
     private final String ENTITY_EMPLOYEE = "Employee";
     private final String ENTITY_SAVED_OFFER = "SavedOffer";
 
-    public SavedOfferServiceImpl(SavedOfferRepository savedOfferRepository, JobOfferReviewMapper jobOfferReviewMapper, EmployeeService employeeService, JobOfferService jobOfferService, IdValidator idValidator) {
+    public SavedOfferServiceImpl(SavedOfferRepository savedOfferRepository, JobOfferReviewMapper jobOfferReviewMapper, ListDisplayMapper listDisplayMapper, EmployeeService employeeService, JobOfferService jobOfferService, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.savedOfferRepository = savedOfferRepository;
         this.jobOfferReviewMapper = jobOfferReviewMapper;
+        this.listDisplayMapper = listDisplayMapper;
         this.employeeService = employeeService;
         this.jobOfferService = jobOfferService;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
     }
 
     @Override
@@ -83,6 +93,22 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     public List<SavedOffer> getSavedForEmployeeWithId(Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
         return savedOfferRepository.getSavedForEmployee(employeeId);
+    }
+
+    @Override
+    public Page<SavedOffer> getSavedJobOffersForEmployeeWithId(int page, int size, Long employeeId) {
+        idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
+        paginationValidator.validatePagination(size, page);
+
+        return savedOfferRepository.findAllByEmployeeIdOrderByIdDesc(PageRequest.of(page, size), employeeId);
+    }
+
+    @Override
+    public Page<ListDisplayDto> getSavedJobOffersForEmployeeWithIdListDisplay(int page, int size) {
+        Employee employee = employeeService.getAuthEmployee();
+
+        return getSavedJobOffersForEmployeeWithId(page, size, employee.getId())
+                .map(savedOffer -> listDisplayMapper.toDtoFromJobOffer(savedOffer.getOffer()));
     }
 
     @Override
