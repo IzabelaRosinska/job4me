@@ -20,14 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentCheckout payForOrganizerAccount() {
         PaymentCheckout paymentCheckout = new PaymentCheckout();
-        String url = createPaymentSession(1L, 200L, "Organizer account", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel");
+        String url = createPaymentSession(1L, 200L, "Utworzenie targów pracy", BACKEND_HOST_AZURE + "/payment/organizer/account/success", BACKEND_HOST_AZURE + "/payment/organizer/account/cancel", "https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R", "Tworzy targi pracy i umożliwia ich przeprowadzenie.");
         paymentCheckout.setUrl(url);
 
         return paymentCheckout;
     }
 
     @Override
-    public String createPaymentSession(Long quantity, Long price, String itemName, String successUrl, String cancelUrl) {
+    public String createPaymentSession(Long productQuantity, Long productPrice, String productName, String successUrl, String cancelUrl, String productImageUrl, String productDescription) {
         Stripe.apiKey = recommendationApiKey;
 
         try {
@@ -39,14 +39,16 @@ public class PaymentServiceImpl implements PaymentService {
                             .addPaymentMethodType(SessionCreateParams.PaymentMethodType.BLIK)
                             .addLineItem(
                                     SessionCreateParams.LineItem.builder()
-                                            .setQuantity(quantity)
+                                            .setQuantity(productQuantity)
                                             .setPriceData(
                                                     SessionCreateParams.LineItem.PriceData.builder()
                                                             .setCurrency("pln")
-                                                            .setUnitAmount(price)
+                                                            .setUnitAmount(productPrice)
                                                             .setProductData(
                                                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                            .setName(itemName)
+                                                                            .setName(productName)
+                                                                            .setDescription(productDescription)
+                                                                            .addImage(productImageUrl)
                                                                             .build())
                                                             .build())
                                             .build())
