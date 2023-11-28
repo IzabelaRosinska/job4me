@@ -2,7 +2,10 @@ package miwm.job4me.services.users;
 
 import miwm.job4me.model.users.SavedEmployee;
 import miwm.job4me.services.BaseService;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +13,10 @@ public interface SavedEmployeeService extends BaseService<SavedEmployee, Long> {
     boolean checkIfSavedForEmployerWithId(Long employerId, Long employeeId);
 
     List<SavedEmployee> getSavedForEmployerWithId(Long employerId);
+
+    Page<SavedEmployee> getSavedEmployeesForEmployerWithId(int page, int size, Long employerId);
+
+    Page<ListDisplayDto> getSavedEmployeesForEmployerWithIdListDisplay(int page, int size);
 
     Optional<SavedEmployee> findByIds(Long employerId, Long employeeId);
 

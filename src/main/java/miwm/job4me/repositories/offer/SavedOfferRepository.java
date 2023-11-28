@@ -1,6 +1,8 @@
 package miwm.job4me.repositories.offer;
 
 import miwm.job4me.model.offer.SavedOffer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +15,7 @@ public interface SavedOfferRepository extends JpaRepository<SavedOffer, Long> {
 
     @Query(nativeQuery = true, value = "select * from saved_offers where employee_id = ?1")
     List<SavedOffer> getSavedForEmployee(Long employeeId);
+
+    Page<SavedOffer> findAllByEmployeeIdOrderByIdDesc(Pageable pageable, Long employeeId);
+
 }

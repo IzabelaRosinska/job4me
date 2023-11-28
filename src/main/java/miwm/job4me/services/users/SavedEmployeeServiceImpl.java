@@ -8,9 +8,15 @@ import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.SavedEmployee;
 import miwm.job4me.repositories.users.SavedEmployeeRepository;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.pagination.PaginationValidator;
+import miwm.job4me.web.mappers.listDisplay.ListDisplayMapper;
 import miwm.job4me.web.mappers.users.EmployeeReviewMapper;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -22,19 +28,23 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
 
     private final SavedEmployeeRepository savedEmployeeRepository;
     private final EmployeeReviewMapper employeeReviewMapper;
+    private final ListDisplayMapper listDisplayMapper;
     private final EmployeeService employeeService;
     private final EmployerService employerService;
     private final IdValidator idValidator;
+    private final PaginationValidator paginationValidator;
     private final String ENTITY_EMPLOYEE = "Employee";
     private final String ENTITY_EMPLOYER = "Employer";
     private final String ENTITY_SAVED_EMPLOYEE = "SavedEmployee";
 
-    public SavedEmployeeServiceImpl(SavedEmployeeRepository savedEmployeeRepository, EmployeeService employeeService, EmployerService employerService, EmployeeReviewMapper employeeReviewMapper, IdValidator idValidator) {
+    public SavedEmployeeServiceImpl(SavedEmployeeRepository savedEmployeeRepository, EmployeeService employeeService, EmployerService employerService, EmployeeReviewMapper employeeReviewMapper, ListDisplayMapper listDisplayMapper, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.savedEmployeeRepository = savedEmployeeRepository;
         this.employeeService = employeeService;
         this.employerService = employerService;
         this.employeeReviewMapper = employeeReviewMapper;
+        this.listDisplayMapper = listDisplayMapper;
         this.idValidator = idValidator;
+        this.paginationValidator = paginationValidator;
     }
 
     @Override
@@ -93,6 +103,22 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     public List<SavedEmployee> getSavedForEmployerWithId(Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
         return savedEmployeeRepository.getSavedForEmployer(employerId);
+    }
+
+    @Override
+    public Page<SavedEmployee> getSavedEmployeesForEmployerWithId(int page, int size, Long employerId) {
+        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
+        paginationValidator.validatePagination(size, page);
+
+        return savedEmployeeRepository.findAllByEmployerIdOrderByIdDesc(PageRequest.of(page, size), employerId);
+    }
+
+    @Override
+    public Page<ListDisplayDto> getSavedEmployeesForEmployerWithIdListDisplay(int page, int size) {
+        Employer employer = employerService.getAuthEmployer();
+
+        return getSavedEmployeesForEmployerWithId(page, size, employer.getId())
+                .map(savedEmployee -> listDisplayMapper.toDtoFromEmployee(savedEmployee.getEmployee()));
     }
 
     @Override

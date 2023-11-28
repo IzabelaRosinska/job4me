@@ -5,12 +5,15 @@ import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.services.users.SavedEmployeeService;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
 import miwm.job4me.web.model.users.EmployerDto;
 import miwm.job4me.web.model.users.OrganizerDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -69,5 +72,19 @@ public class EmployerController {
     public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
         List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
+    }
+
+    @GetMapping("saved/employees")
+    @Operation(summary = "Gets all saved employees in paginated list display form", description = "Gets all saved employees of logged in employer in paginated list display form")
+    public ResponseEntity<List<ListDisplayDto>> getAllSavedEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<ListDisplayDto> employeeDtoPage = savedEmployeeService.getSavedEmployeesForEmployerWithIdListDisplay(page, size);
+
+        if (employeeDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(employeeDtoPage.getContent(), HttpStatus.OK);
     }
 }
