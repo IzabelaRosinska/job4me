@@ -170,6 +170,16 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Employer"));
     }
 
+    public void unlockOrganizer(Organizer organizer) {
+        if(organizer != null) {
+            Organizer savedOrganizer = organizerRepository.selectOrganizerByUsername(organizer.getEmail());
+            savedOrganizer.setUserRole(new SimpleGrantedAuthority(ROLE_ORGANIZER_ENABLED));
+            savedOrganizer.setLocked(false);
+            organizerRepository.save(savedOrganizer);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument("Organizer"));
+    }
+
     public void createVerificationToken(Person person, String token) {
         if(person != null) {
             VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();

@@ -54,6 +54,7 @@ public class AppMessages {
     public static final String ROLE_EMPLOYEE_ENABLED = "ROLE_EMPLOYEE_ENABLED";
     public static final String ROLE_EMPLOYER = "ROLE_EMPLOYER";
     public static final String ROLE_EMPLOYEE = "ROLE_EMPLOYEE";
+    public static final String ROLE_ORGANIZER = "ROLE_ORGANIZER";
     public static final String ORGANIZER_ENABLED = "ORGANIZER_ENABLED";
     public static final String EMPLOYER_ENABLED = "EMPLOYER_ENABLED";
     public static final String EMPLOYEE_ENABLED = "EMPLOYEE_ENABLED";

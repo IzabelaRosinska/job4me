@@ -90,16 +90,6 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     }
 
     @Override
-    public boolean checkIfSavedForEmployerWithId(Long employerId, Long employeeId) {
-        idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
-        idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
-        Optional<SavedEmployee> savedEmployee = savedEmployeeRepository.findByIds(employerId, employeeId);
-        if(!savedEmployee.isPresent())
-            return false;
-        return true;
-    }
-
-    @Override
     public List<SavedEmployee> getSavedForEmployerWithId(Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
         return savedEmployeeRepository.getSavedForEmployer(employerId);

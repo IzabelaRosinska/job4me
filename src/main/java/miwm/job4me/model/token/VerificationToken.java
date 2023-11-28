@@ -7,14 +7,14 @@ import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Organizer;
 import miwm.job4me.model.users.Person;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
-import static miwm.job4me.messages.AppMessages.ROLE_EMPLOYEE;
-import static miwm.job4me.messages.AppMessages.ROLE_EMPLOYER;
+import static miwm.job4me.messages.AppMessages.*;
 
 @Getter
 @Setter
@@ -31,9 +31,10 @@ public class VerificationToken extends BaseEntity {
         this.token = token;
         if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYEE)) {
             this.employee = (Employee) person;
-        }
-        else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER)) {
+        } else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER)) {
             this.employer = (Employer) person;
+        } else if(person.getUserRole().getAuthority().equals(ROLE_ORGANIZER)) {
+            this.organizer = (Organizer) person;
         }
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
@@ -46,6 +47,9 @@ public class VerificationToken extends BaseEntity {
     @JoinColumn(name = "employer_id")
     private Employer employer;
 
+    @OneToOne(targetEntity = Organizer.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "organizer_id")
+    private Organizer organizer;
 
     private Date expiryDate;
 

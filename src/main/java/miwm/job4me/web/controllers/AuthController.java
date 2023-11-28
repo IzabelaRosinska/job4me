@@ -5,6 +5,7 @@ import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
+import miwm.job4me.model.users.Organizer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.security.OnRegistrationCompleteEvent;
 import miwm.job4me.services.users.UserAuthenticationService;
@@ -50,6 +51,8 @@ public class AuthController {
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employee)person, request.getLocale(), appUrl));
             else if(registerData.getRole().equals(EMPLOYER))
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employer)person, request.getLocale(), appUrl));
+            else if(registerData.getRole().equals(ORGANIZER))
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Organizer)person, request.getLocale(), appUrl));
 
         } catch (UserAlreadyExistException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,6 +69,7 @@ public class AuthController {
         }
         Employee employee = verificationToken.getEmployee();
         Employer employer = verificationToken.getEmployer();
+        Organizer organizer = verificationToken.getOrganizer();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             response.sendRedirect(ERROR_URL);
@@ -74,6 +78,8 @@ public class AuthController {
             userAuthService.unlockEmployee(employee);
         else if(employer != null)
             userAuthService.unlockEmployer(employer);
+        else if(organizer != null)
+            userAuthService.unlockOrganizer(organizer);
 
         response.sendRedirect(FRONT_HOST_AZURE + LOGIN_URL);
     }
