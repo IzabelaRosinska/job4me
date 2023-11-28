@@ -3,6 +3,7 @@ package miwm.job4me.web.mappers.listDisplay;
 import miwm.job4me.model.event.JobFair;
 import miwm.job4me.model.event.JobFairEmployerParticipation;
 import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.web.mappers.offer.JobOfferMapper;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
@@ -45,6 +46,21 @@ public class ListDisplayMapper {
         listDisplayDto.setDisplayDescription("Zgłoszenie firmy #" + companyId + companyName + " do targów pracy #" + jobFairId + jobFairName);
         listDisplayDto.setPhoto(jobFairEmployerParticipation.getEmployer().getPhoto());
 
+        return listDisplayDto;
+    }
+
+    public ListDisplayDto toDtoFromEmployee(Employee employee) {
+        ListDisplayDto listDisplayDto = new ListDisplayDto();
+        listDisplayDto.setId(employee.getId());
+        listDisplayDto.setName(employee.getFirstName() + " " + employee.getLastName());
+
+        if (employee.getTelephone() == null || employee.getTelephone().equals("")) {
+            listDisplayDto.setDisplayDescription(employee.getContactEmail());
+        } else {
+            listDisplayDto.setDisplayDescription(employee.getContactEmail() + "\n" + employee.getTelephone());
+        }
+
+        listDisplayDto.setPhoto("");
         return listDisplayDto;
     }
 
