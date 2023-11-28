@@ -48,6 +48,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/organizer/**").hasRole(ORGANIZER_ENABLED)
                     .antMatchers("/fragments/**").hasAnyRole(EMPLOYEE, EMPLOYEE, ORGANIZER)
                     .antMatchers("/home").permitAll()
+                    .antMatchers("/account/**").permitAll()
                     .antMatchers("/levels").permitAll()
                     .antMatchers("/linkedin/**").permitAll()
                     .antMatchers("/auth/linkedin/callback").permitAll()
