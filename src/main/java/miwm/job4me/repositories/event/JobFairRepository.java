@@ -16,7 +16,7 @@ public interface JobFairRepository extends JpaRepository<JobFair, Long> {
             " WHERE :organizerId IS NULL OR jf.organizer.id = :organizerId" +
             " AND :dateStart IS NULL OR jf.dateStart >= :dateStart" +
             " AND :dateEnd IS NULL OR jf.dateEnd <= :dateEnd" +
-            " AND :localization IS NULL OR LOWER(jf.address) LIKE LOWER(CONCAT('%', :address, '%'))")
+            " AND :address IS NULL OR LOWER(jf.address) LIKE LOWER(CONCAT('%', :address, '%'))")
     Page<JobFair> findAllByFilters(Pageable pageable, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, @Param("address") String address, @Param("organizerId") Long organizerId);
 
 }

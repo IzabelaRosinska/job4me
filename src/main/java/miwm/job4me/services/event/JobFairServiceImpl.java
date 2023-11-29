@@ -96,18 +96,7 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address) {
-        paginationValidator.validatePagination(page, size);
-        LocalDateTime dateStart = null;
-        LocalDateTime dateEnd = null;
-
-        if (showUpcoming) {
-            dateStart = LocalDateTime.now();
-        } else {
-            dateEnd = LocalDateTime.now();
-        }
-
-        return jobFairRepository
-                .findAllByFilters(PageRequest.of(page, size, prepareSort(order)), dateStart, dateEnd, address, null);
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null);
     }
 
     @Override
