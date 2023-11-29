@@ -27,8 +27,11 @@ public class JobFairController {
     @Operation(summary = "Get all job fairs by filters", description = "Gets all job fairs from database by filters")
     public ResponseEntity<Page<ListDisplayDto>> getAllJobFairs(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllByFiltersListDisplay(page, size);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order,
+            @RequestParam(defaultValue = "false") Boolean showUpcoming,
+            @RequestParam(defaultValue = "") String address) {
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllByFiltersListDisplay(page, size, order, showUpcoming, address);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -38,11 +41,32 @@ public class JobFairController {
     }
 
     @GetMapping("organizer/job-fairs")
+    @Operation(summary = "Get all job fairs of signed in organizer by filters", description = "Gets all job fairs of signed in organizer from database by filters")
+    public ResponseEntity<Page<ListDisplayDto>> getAllSignedInOrganizerJobFairs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order,
+            @RequestParam(defaultValue = "false") Boolean showUpcoming,
+            @RequestParam(defaultValue = "") String address) {
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfSignedInOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address);
+
+        if (jobFairDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(jobFairDtoPage, HttpStatus.OK);
+    }
+
+    @GetMapping("job-fairs/organizer/{id}")
     @Operation(summary = "Get all job fairs of organizer by filters", description = "Gets all job fairs of signed in organizer from database by filters")
     public ResponseEntity<Page<ListDisplayDto>> getAllOrganizerJobFairs(
+            @PathVariable Long organizerId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "1") String order,
+            @RequestParam(defaultValue = "false") Boolean showUpcoming,
+            @RequestParam(defaultValue = "") String address) {
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

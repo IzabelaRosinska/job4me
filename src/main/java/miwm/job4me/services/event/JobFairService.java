@@ -7,13 +7,16 @@ import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.data.domain.Page;
 
 public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long> {
-    Page<JobFair> findAllByFilters(int page, int size);
 
-    Page<JobFair> findAllOfOrganizerByFilters(int page, int size);
+    Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address);
 
-    Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size);
+    Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId);
 
-    Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size);
+    Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address);
+
+    Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId);
+
+    Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address);
 
     JobFairDto saveDto(JobFairDto jobFairDto);
 
