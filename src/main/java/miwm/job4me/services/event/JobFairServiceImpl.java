@@ -16,8 +16,11 @@ import miwm.job4me.web.model.event.JobFairDto;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,12 @@ public class JobFairServiceImpl implements JobFairService {
     private final PaginationValidator paginationValidator;
     private final OrganizerService organizerService;
     private final String ENTITY_NAME = "JobFair";
+
+    private final Map<String, Sort> orderMap = Map.of(
+            "1", Sort.unsorted(),
+            "2", Sort.by(Sort.Direction.ASC, "dateStart"),
+            "3", Sort.by(Sort.Direction.DESC, "dateStart")
+    );
 
     public JobFairServiceImpl(JobFairRepository jobFairRepository, JobFairMapper jobFairMapper, ListDisplayMapper listDisplayMapper, JobFairValidator jobFairValidator, IdValidator idValidator, PaginationValidator paginationValidator, OrganizerService organizerService) {
         this.jobFairRepository = jobFairRepository;
@@ -86,32 +95,60 @@ public class JobFairServiceImpl implements JobFairService {
     }
 
     @Override
-    public Page<JobFair> findAllByFilters(int page, int size) {
+    public Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address) {
         paginationValidator.validatePagination(page, size);
+        LocalDateTime dateStart = null;
+        LocalDateTime dateEnd = null;
+
+        if (showUpcoming) {
+            dateStart = LocalDateTime.now();
+        } else {
+            dateEnd = LocalDateTime.now();
+        }
 
         return jobFairRepository
-                .findAllByFilters(PageRequest.of(page, size));
+                .findAllByFilters(PageRequest.of(page, size, prepareSort(order)), dateStart, dateEnd, address, null);
     }
 
     @Override
-    public Page<JobFair> findAllOfOrganizerByFilters(int page, int size) {
-        Organizer organizer = organizerService.getAuthOrganizer();
+    public Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId) {
         paginationValidator.validatePagination(page, size);
+        LocalDateTime dateStart = null;
+        LocalDateTime dateEnd = null;
+
+        if (showUpcoming) {
+            dateStart = LocalDateTime.now();
+        } else {
+            dateEnd = LocalDateTime.now();
+        }
 
         return jobFairRepository
-                .findAllByOrganizerId(PageRequest.of(page, size), organizer.getId());
+                .findAllByFilters(PageRequest.of(page, size, prepareSort(order)), dateStart, dateEnd, address, organizerId);
     }
 
     @Override
-    public Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size) {
-        paginationValidator.validatePagination(page, size);
-        return findAllByFilters(page, size).map(listDisplayMapper::toDtoFromJobFair);
+    public Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address) {
+        return findAllByFilters(page, size, order, showUpcoming, address).map(listDisplayMapper::toDtoFromJobFair);
     }
 
     @Override
-    public Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size) {
-        paginationValidator.validatePagination(page, size);
-        return findAllOfOrganizerByFilters(page, size).map(listDisplayMapper::toDtoFromJobFair);
+    public Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address) {
+        Long organizerId = organizerService.getAuthOrganizer().getId();
+
+        return findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId);
+    }
+
+    @Override
+    public Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId) {
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, organizerId).map(listDisplayMapper::toDtoFromJobFair);
+    }
+
+    private Sort prepareSort(String order) {
+        if (order == null) {
+            return Sort.unsorted();
+        }
+
+        return orderMap.getOrDefault(order, Sort.unsorted());
     }
 
     @Override
