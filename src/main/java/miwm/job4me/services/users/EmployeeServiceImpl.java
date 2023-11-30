@@ -16,6 +16,7 @@ import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
+import miwm.job4me.services.recommendation.RecommendationService;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
@@ -43,18 +44,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ExperienceService experienceService;
     private final ProjectService projectService;
     private final SkillService skillService;
+    private final RecommendationService recommendationService;
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
     private final PasswordEncoder passwordEncoder;
     private final String ENTITY_NAME = "Employee";
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, RecommendationService recommendationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
+        this.recommendationService = recommendationService;
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
@@ -72,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto) {
         Employee employee = getAuthEmployee();
-        if(employeeDto != null) {
+        if (employeeDto != null) {
             employee = employeeMapper.employeeDtotoSavedEmployee(employee, employeeDto);
             save(employee);
             return employeeDto;
@@ -145,7 +148,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> getEmployeeByToken(String token) {
-        if(token != null) {
+        if (token != null) {
             Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
             if (employee.isPresent())
                 return employee;
@@ -157,7 +160,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
-        if(employee != null) {
+        if (employee != null) {
             employee.setPassword(passwordEncoder.encode(password));
             save(employee);
         } else
@@ -168,7 +171,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto findEmployeeById(Long id) {
         idValidator.validateLongId(id, ENTITY_NAME);
         Optional<Employee> employee = employeeRepository.findById(id);
-        if(employee.isPresent())
+        if (employee.isPresent())
             return employeeMapper.toDto(employee.get());
         else
             throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
@@ -177,13 +180,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode) {
-        if(user != null && jsonNode != null) {
+        if (user != null && jsonNode != null) {
             Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
             String username = jsonNode.get("given_name").asText();
             String familyName = jsonNode.get("family_name").asText();
             employee.setFirstName(username);
             employee.setLastName(familyName);
             employeeRepository.save(employee);
+            recommendationService.notifyUpdatedEmployee(employee.getId());
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
@@ -191,6 +195,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Employee save(Employee employee) {
+        if (employee == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+
+        recommendationService.notifyUpdatedEmployee(employee.getId());
         return employeeRepository.save(employee);
     }
 
@@ -198,12 +207,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void delete(Employee employee) {
         strictExistsById(employee.getId());
         employeeRepository.delete(employee);
+        recommendationService.notifyRemovedEmployee(employee.getId());
     }
 
     @Override
     public void deleteById(Long id) {
         strictExistsById(id);
         employeeRepository.deleteById(id);
+        recommendationService.notifyRemovedEmployee(id);
     }
 
     @Override
@@ -246,7 +257,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (employee.getExperience() != null) {
             for (Experience experience : employee.getExperience()) {
-               experience.setEmployee(employee);
+                experience.setEmployee(employee);
                 saveExperience(experience);
             }
         }
@@ -267,12 +278,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setIsEmbeddingCurrent(false);
         Employee result = employeeRepository.save(employee);
+        recommendationService.notifyUpdatedEmployee(result.getId());
 
         return employeeMapper.toDto(result);
     }
 
     @Override
-    public Employee getAuthEmployee(){
+    public Employee getAuthEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
 

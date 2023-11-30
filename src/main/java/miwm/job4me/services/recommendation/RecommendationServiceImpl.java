@@ -89,12 +89,37 @@ public class RecommendationServiceImpl implements RecommendationService {
         return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, size, page, recommendedOffersIds.size());
     }
 
-    public List<Long> createSublist(List<Long> list, int pageSize, int pageNumber) {
+    private List<Long> createSublist(List<Long> list, int pageSize, int pageNumber) {
         int start = pageNumber * pageSize;
         int end = Math.min((start + pageSize), list.size());
         return list.subList(start, end);
     }
 
+    @Override
+    public void notifyUpdatedOffer(Long offerId) {
+        String url = recommendationApiUrl + "/update-offer/" + offerId;
+        notifyRecommendationService(url);
+    }
+
+    @Override
+    public void notifyUpdatedEmployee(Long employeeId) {
+        String url = recommendationApiUrl + "/update-employee/" + employeeId;
+        notifyRecommendationService(url);
+    }
+
+    @Override
+    public void notifyRemovedOffer(Long offerId) {
+        String url = recommendationApiUrl + "/remove-offer/" + offerId;
+        notifyRecommendationService(url);
+    }
+
+    @Override
+    public void notifyRemovedEmployee(Long employeeId) {
+        String url = recommendationApiUrl + "/remove-employee/" + employeeId;
+        notifyRecommendationService(url);
+    }
+
+    @Override
     public void notifyRecommendationService(String url) {
         WebClient webClient = createHttpHeaders(url);
 

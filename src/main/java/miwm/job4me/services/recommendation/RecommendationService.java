@@ -10,4 +10,12 @@ public interface RecommendationService {
     Page<ListDisplaySavedDto> getRecommendedOffersByFilter(int page, int size, JobOfferFilterDto jobOfferFilterDto, Long jobFairId);
 
     void notifyRecommendationService(String url);
+
+    void notifyUpdatedOffer(Long offerId);
+
+    void notifyUpdatedEmployee(Long employeeId);
+
+    void notifyRemovedOffer(Long offerId);
+
+    void notifyRemovedEmployee(Long employeeId);
 }
