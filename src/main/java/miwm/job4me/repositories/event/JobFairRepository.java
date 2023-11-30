@@ -5,12 +5,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 
 @Repository
 public interface JobFairRepository extends JpaRepository<JobFair, Long> {
-    @Query("SELECT jf FROM JobFair jf")
-    Page<JobFair> findAllByFilters(Pageable pageable);
+    @Query("SELECT jf FROM JobFair jf" +
+            " WHERE :organizerId IS NULL OR jf.organizer.id = :organizerId" +
+            " AND :dateStart IS NULL OR jf.dateStart >= :dateStart" +
+            " AND :dateEnd IS NULL OR jf.dateEnd <= :dateEnd" +
+            " AND :localization IS NULL OR LOWER(jf.address) LIKE LOWER(CONCAT('%', :address, '%'))")
+    Page<JobFair> findAllByFilters(Pageable pageable, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, @Param("address") String address, @Param("organizerId") Long organizerId);
 
-    Page<JobFair> findAllByOrganizerId(Pageable pageable, Long organizerId);
 }

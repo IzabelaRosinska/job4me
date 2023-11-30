@@ -9,8 +9,8 @@ public class AppMessages {
     public static final String FRONT_BRANCH_HOST_AZURE = "https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net";
     public static final String LINKEDIN_HOST = "https://www.linkedin.com";
 
-    public static final String LINKEDIN_ID_PARAM = "${spring.social.linkedin.app-id}";
-    public static final String LINKEDIN_SECRET_PARAM = "${spring.social.linkedin.app-secret}";
+    public static final String LINKEDIN_ID_PARAM = "spring.social.linkedin.app-id";
+    public static final String LINKEDIN_SECRET_PARAM = "spring.social.linkedin.app-secret";
 
     public static final String BASIC_LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization";
     public static final String BASIC_LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
@@ -54,6 +54,7 @@ public class AppMessages {
     public static final String ROLE_EMPLOYEE_ENABLED = "ROLE_EMPLOYEE_ENABLED";
     public static final String ROLE_EMPLOYER = "ROLE_EMPLOYER";
     public static final String ROLE_EMPLOYEE = "ROLE_EMPLOYEE";
+    public static final String ROLE_ORGANIZER = "ROLE_ORGANIZER";
     public static final String ORGANIZER_ENABLED = "ORGANIZER_ENABLED";
     public static final String EMPLOYER_ENABLED = "EMPLOYER_ENABLED";
     public static final String EMPLOYEE_ENABLED = "EMPLOYEE_ENABLED";
@@ -72,5 +73,7 @@ public class AppMessages {
     public static final String TEST_USER = "user";
 
     public static final String INCORRECT_CREDENTIALS = "message.badCredentials";
+
+    public static final String STRIPE_HOST = "https://checkout.stripe.com";
 
 }

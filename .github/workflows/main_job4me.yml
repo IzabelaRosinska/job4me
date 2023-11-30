@@ -68,3 +68,4 @@ jobs:
             LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
             RECOMMENDATION_API_URL: ${{ secrets.RECOMMENDATION_API_URL }}
             RECOMMENDATION_API_KEY: ${{ secrets.RECOMMENDATION_API_KEY }}
+            STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}

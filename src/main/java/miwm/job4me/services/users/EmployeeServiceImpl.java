@@ -1,6 +1,7 @@
 package miwm.job4me.services.users;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
@@ -48,7 +49,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final String ENTITY_NAME = "Employee";
 
-
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
@@ -72,18 +72,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDto saveEmployeeDetails(EmployeeDto employeeDto) {
         Employee employee = getAuthEmployee();
-        employee.setFirstName(employeeDto.getFirstName());
-        employee.setLastName(employeeDto.getLastName());
-        employee.setContactEmail(employeeDto.getEmail());
-        employee.setTelephone(employeeDto.getTelephone());
-        employee.setAboutMe(employeeDto.getAboutMe());
-        employee.setInterests(employeeDto.getInterests());
-        employee.setEducation(employeeMapper.stringListToEducationSet(employeeDto.getEducation()));
-        employee.setExperience(employeeMapper.stringListToExperienceSet(employeeDto.getExperience()));
-        employee.setProjects(employeeMapper.stringListToProjectsSet(employeeDto.getProjects()));
-        employee.setSkills(employeeMapper.stringListToSkillsSet(employeeDto.getSkills()));
-        employee.setIsEmbeddingCurrent(false);
-        return employeeDto;
+        if(employeeDto != null) {
+            employee = employeeMapper.employeeDtotoSavedEmployee(employee, employeeDto);
+            save(employee);
+            return employeeDto;
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
@@ -151,21 +145,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> getEmployeeByToken(String token) {
-        Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
-        if(employee.isPresent())
-            return employee;
-        else
-            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        if(token != null) {
+            Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
+            if (employee.isPresent())
+                return employee;
+            else
+                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
-        employee.setPassword(passwordEncoder.encode(password));
-        save(employee);
+        if(employee != null) {
+            employee.setPassword(passwordEncoder.encode(password));
+            save(employee);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     public EmployeeDto findEmployeeById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         Optional<Employee> employee = employeeRepository.findById(id);
         if(employee.isPresent())
             return employeeMapper.toDto(employee.get());
@@ -176,12 +177,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode) {
-        Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
-        String username = jsonNode.get("given_name").asText();
-        String familyName = jsonNode.get("family_name").asText();
-        employee.setFirstName(username);
-        employee.setLastName(familyName);
-        employeeRepository.save(employee);
+        if(user != null && jsonNode != null) {
+            Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
+            String username = jsonNode.get("given_name").asText();
+            String familyName = jsonNode.get("family_name").asText();
+            employee.setFirstName(username);
+            employee.setLastName(familyName);
+            employeeRepository.save(employee);
+        } else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
@@ -271,6 +275,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee getAuthEmployee(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
+
+        if (employee == null) {
+            throw new AuthException(ExceptionMessages.unauthorized(ENTITY_NAME));
+        }
+
         return employee;
     }
 }

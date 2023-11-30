@@ -2,15 +2,24 @@ package miwm.job4me.web.mappers.listDisplay;
 
 import miwm.job4me.model.event.JobFair;
 import miwm.job4me.model.event.JobFairEmployerParticipation;
-import miwm.job4me.model.offer.*;
+import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
+import miwm.job4me.web.mappers.offer.JobOfferMapper;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
+import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class ListDisplayMapper {
+    private JobOfferMapper jobOfferMapper;
+
+    public ListDisplayMapper(JobOfferMapper jobOfferMapper) {
+        this.jobOfferMapper = jobOfferMapper;
+    }
+
     public ListDisplayDto toDtoFromJobFair(JobFair jobFair) {
         ListDisplayDto listDisplayDto = new ListDisplayDto();
         listDisplayDto.setId(jobFair.getId());
@@ -40,6 +49,21 @@ public class ListDisplayMapper {
         return listDisplayDto;
     }
 
+    public ListDisplayDto toDtoFromEmployee(Employee employee) {
+        ListDisplayDto listDisplayDto = new ListDisplayDto();
+        listDisplayDto.setId(employee.getId());
+        listDisplayDto.setName(employee.getFirstName() + " " + employee.getLastName());
+
+        if (employee.getTelephone() == null || employee.getTelephone().equals("")) {
+            listDisplayDto.setDisplayDescription(employee.getContactEmail());
+        } else {
+            listDisplayDto.setDisplayDescription(employee.getContactEmail() + "\n" + employee.getTelephone());
+        }
+
+        listDisplayDto.setPhoto("");
+        return listDisplayDto;
+    }
+
     public ListDisplayDto toDtoFromEmployer(Employer employer) {
         ListDisplayDto listDisplayDto = new ListDisplayDto();
         listDisplayDto.setId(employer.getId());
@@ -59,6 +83,7 @@ public class ListDisplayMapper {
     }
 
     private String createJobOfferDisplay(JobOffer jobOffer) {
+        JobOfferDto jobOfferDto = jobOfferMapper.toDto(jobOffer);
         StringBuilder displayDescription = new StringBuilder(jobOffer.getEmployer().getCompanyName() + "\n");
 
         if (jobOffer.getSalaryTo() == null) {
@@ -67,52 +92,23 @@ public class ListDisplayMapper {
             displayDescription.append(jobOffer.getSalaryFrom()).append(" - ").append(jobOffer.getSalaryTo()).append(" zł\n");
         }
 
-        displayDescription.append(concatLocalizations(jobOffer.getLocalizations())).append("\n");
-        displayDescription.append(concatEmploymentForms(jobOffer.getEmploymentForms())).append("\n");
-        displayDescription.append(concatContractTypes(jobOffer.getContractTypes())).append("\n");
-        displayDescription.append(concatLevels(jobOffer.getLevels())).append("\n");
-        displayDescription.append(jobOffer.getWorkingTime()).append("\n");
+        displayDescription.append(concatListString(jobOfferDto.getLocalizations())).append("\n");
+        displayDescription.append(concatListString(jobOfferDto.getEmploymentForms())).append("\n");
+        displayDescription.append(concatListString(jobOfferDto.getContractTypes())).append("\n");
+        displayDescription.append(concatListString(jobOfferDto.getLevels())).append("\n");
 
         return displayDescription.toString();
     }
 
-    private String concatLocalizations(Set<Localization> localizations) {
+    private String concatListString(List<String> list) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (Localization localization : localizations) {
-            stringBuilder.append(localization.getCity()).append(", ");
+        for (String element : list) {
+            stringBuilder.append(element).append(", ");
         }
 
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
-    }
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
 
-    private String concatEmploymentForms(Set<EmploymentForm> employmentForms) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (EmploymentForm employmentForm : employmentForms) {
-            stringBuilder.append(employmentForm.getName()).append(", ");
-        }
-
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
-    }
-
-    private String concatContractTypes(Set<ContractType> contractTypes) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (ContractType contractType : contractTypes) {
-            stringBuilder.append(contractType.getName()).append(", ");
-        }
-
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
-    }
-
-    private String concatLevels(Set<Level> levels) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (Level level : levels) {
-            stringBuilder.append(level.getName()).append(", ");
-        }
-
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
+        return stringBuilder.toString();
     }
 }

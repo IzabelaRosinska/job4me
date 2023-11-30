@@ -117,7 +117,7 @@
                         <p class="bold resume-title">Kontakt</p>
                     </div>
                     <p>
-                        <span class="contact-name">E-mail:</span> <span th:text="${employee.contactEmail}">email</span>
+                        <span class="contact-name">E-mail:</span> <span th:text="${employee.email}">email</span>
                     </p>
                     <p>
                         <span class="contact-name">Telefon:</span> <span th:text="${employee.telephone}">telefon</span>
@@ -131,7 +131,7 @@
                         <div class="title">
                             <p class="bold resume-title">Umiejętności</p>
                             <ul>
-                                <li th:each="skill : ${employee.skills}" th:text="${skill.description}">Umiejętność</li>
+                                <li th:each="skill : ${employee.skills}" th:text="${skill}">Umiejętność</li>
                             </ul>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                         <div class="title">
                             <p class="bold resume-title resume-dark-title">Doświadczenie</p>
                             <ul>
-                                <li th:each="experience : ${employee.experience}" th:text="${experience.description}">
+                                <li th:each="experience : ${employee.experience}" th:text="${experience}">
                                     Doświadczenie
                                 </li>
                             </ul>
@@ -166,7 +166,7 @@
                         <div class="title">
                             <p class="bold resume-title resume-dark-title">Edukacja</p>
                             <ul>
-                                <li th:each="education : ${employee.education}" th:text="${education.description}">
+                                <li th:each="education : ${employee.education}" th:text="${education}">
                                     Edukacja
                                 </li>
                             </ul>
@@ -181,7 +181,7 @@
                         <div class="title">
                             <p class="bold resume-title resume-dark-title">Projekty</p>
                             <ul>
-                                <li th:each="project : ${employee.projects}" th:text="${project.description}">Projekt
+                                <li th:each="project : ${employee.projects}" th:text="${project}">Projekt
                                 </li>
                             </ul>
                         </div>

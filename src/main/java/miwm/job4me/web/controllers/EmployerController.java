@@ -1,15 +1,15 @@
 package miwm.job4me.web.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.OrganizerService;
 import miwm.job4me.services.users.SavedEmployeeService;
-import miwm.job4me.web.mappers.users.EmployeeReviewMapper;
+import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import miwm.job4me.web.model.users.EmployeeReviewDto;
 import miwm.job4me.web.model.users.EmployerDto;
 import miwm.job4me.web.model.users.OrganizerDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,24 +33,15 @@ public class EmployerController {
     }
 
     @GetMapping("account")
+    @Operation(summary = "Gets employer details", description = "Gets employer account details")
     public ResponseEntity<EmployerDto> getEmployerAccount() {
-        EmployerDto employerDto;
-        try {
-            employerDto = employerService.getEmployerDetails();
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(employerDto, HttpStatus.OK);
+        return new ResponseEntity<>(employerService.getEmployerDetails(), HttpStatus.OK);
     }
 
     @PostMapping("account")
+    @Operation(summary = "Save employer details", description = "Update employer account")
     public ResponseEntity<EmployerDto> updateEmployerAccount(@RequestBody EmployerDto employerDto) {
-        try {
-            employerDto = employerService.saveEmployerDetails(employerDto);
-        } catch (NoSuchElementFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(employerDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(employerService.saveEmployerDetails(employerDto), HttpStatus.CREATED);
     }
 
     @GetMapping("organizer/{id}/account")
@@ -81,5 +72,19 @@ public class EmployerController {
     public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
         List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
+    }
+
+    @GetMapping("saved/employees")
+    @Operation(summary = "Gets all saved employees in paginated list display form", description = "Gets all saved employees of logged in employer in paginated list display form")
+    public ResponseEntity<List<ListDisplayDto>> getAllSavedEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<ListDisplayDto> employeeDtoPage = savedEmployeeService.getSavedEmployeesForEmployerWithIdListDisplay(page, size);
+
+        if (employeeDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(employeeDtoPage.getContent(), HttpStatus.OK);
     }
 }

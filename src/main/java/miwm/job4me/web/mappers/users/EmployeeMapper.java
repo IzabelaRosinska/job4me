@@ -48,6 +48,21 @@ public class EmployeeMapper {
         return employee;
     }
 
+    public Employee employeeDtotoSavedEmployee(Employee employee, EmployeeDto employeeDto) {
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastName(employeeDto.getLastName());
+        employee.setContactEmail(employeeDto.getEmail());
+        employee.setTelephone(employeeDto.getTelephone());
+        employee.setAboutMe(employeeDto.getAboutMe());
+        employee.setInterests(employeeDto.getInterests());
+        employee.setEducation(stringListToEducationSet(employeeDto.getEducation()));
+        employee.setExperience(stringListToExperienceSet(employeeDto.getExperience()));
+        employee.setProjects(stringListToProjectsSet(employeeDto.getProjects()));
+        employee.setSkills(stringListToSkillsSet(employeeDto.getSkills()));
+        employee.setIsEmbeddingCurrent(false);
+        return employee;
+    }
+
     public ArrayList<String> educationSetToStringList(Set<Education> educationSet) {
         ArrayList<String> educationList = new ArrayList<>();
 
