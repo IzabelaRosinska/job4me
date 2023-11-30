@@ -12,9 +12,7 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,6 +21,7 @@ import java.util.List;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
+
     @Value("${recommendation.api.url}")
     private String recommendationApiUrl;
 
@@ -93,44 +92,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         int start = pageNumber * pageSize;
         int end = Math.min((start + pageSize), list.size());
         return list.subList(start, end);
-    }
-
-    @Override
-    public void notifyUpdatedOffer(Long offerId) {
-        String url = recommendationApiUrl + "/update-offer/" + offerId;
-        notifyRecommendationService(url);
-    }
-
-    @Override
-    public void notifyUpdatedEmployee(Long employeeId) {
-        String url = recommendationApiUrl + "/update-employee/" + employeeId;
-        notifyRecommendationService(url);
-    }
-
-    @Override
-    public void notifyRemovedOffer(Long offerId) {
-        String url = recommendationApiUrl + "/remove-offer/" + offerId;
-        notifyRecommendationService(url);
-    }
-
-    @Override
-    public void notifyRemovedEmployee(Long employeeId) {
-        String url = recommendationApiUrl + "/remove-employee/" + employeeId;
-        notifyRecommendationService(url);
-    }
-
-    @Override
-    public void notifyRecommendationService(String url) {
-        WebClient webClient = createHttpHeaders(url);
-
-        ResponseEntity<String> responseEntity = webClient.get()
-                .retrieve()
-                .toEntity(String.class)
-                .block();
-
-        if (responseEntity == null || responseEntity.getStatusCode() != HttpStatus.OK) {
-            throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
-        }
     }
 
     private WebClient createHttpHeaders(String url) {

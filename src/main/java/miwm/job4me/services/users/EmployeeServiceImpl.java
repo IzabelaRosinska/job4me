@@ -16,7 +16,7 @@ import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
-import miwm.job4me.services.recommendation.RecommendationService;
+import miwm.job4me.services.recommendation.RecommendationNotifierService;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
@@ -44,20 +44,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final ExperienceService experienceService;
     private final ProjectService projectService;
     private final SkillService skillService;
-    private final RecommendationService recommendationService;
+    private final RecommendationNotifierService recommendationNotifierService;
     private final IdValidator idValidator;
     private final EmployeeValidator employeeValidator;
     private final EmployeeMapper employeeMapper;
     private final PasswordEncoder passwordEncoder;
     private final String ENTITY_NAME = "Employee";
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, RecommendationService recommendationService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EducationService educationService, ExperienceService experienceService, ProjectService projectService, SkillService skillService, RecommendationNotifierService recommendationNotifierService, IdValidator idValidator, EmployeeValidator employeeValidator, EmployeeMapper employeeMapper, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.educationService = educationService;
         this.experienceService = experienceService;
         this.projectService = projectService;
         this.skillService = skillService;
-        this.recommendationService = recommendationService;
+        this.recommendationNotifierService = recommendationNotifierService;
         this.idValidator = idValidator;
         this.employeeValidator = employeeValidator;
         this.employeeMapper = employeeMapper;
@@ -187,7 +187,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setFirstName(username);
             employee.setLastName(familyName);
             employeeRepository.save(employee);
-            recommendationService.notifyUpdatedEmployee(employee.getId());
+            recommendationNotifierService.notifyUpdatedEmployee(employee.getId());
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
@@ -199,7 +199,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        recommendationService.notifyUpdatedEmployee(employee.getId());
+        recommendationNotifierService.notifyUpdatedEmployee(employee.getId());
         return employeeRepository.save(employee);
     }
 
@@ -207,14 +207,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void delete(Employee employee) {
         strictExistsById(employee.getId());
         employeeRepository.delete(employee);
-        recommendationService.notifyRemovedEmployee(employee.getId());
+        recommendationNotifierService.notifyRemovedEmployee(employee.getId());
     }
 
     @Override
     public void deleteById(Long id) {
         strictExistsById(id);
         employeeRepository.deleteById(id);
-        recommendationService.notifyRemovedEmployee(id);
+        recommendationNotifierService.notifyRemovedEmployee(id);
     }
 
     @Override
@@ -278,7 +278,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setIsEmbeddingCurrent(false);
         Employee result = employeeRepository.save(employee);
-        recommendationService.notifyUpdatedEmployee(result.getId());
+        recommendationNotifierService.notifyUpdatedEmployee(result.getId());
 
         return employeeMapper.toDto(result);
     }

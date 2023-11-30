@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.JobOfferRepository;
 import miwm.job4me.services.offer.description.ExtraSkillService;
 import miwm.job4me.services.offer.description.RequirementService;
 import miwm.job4me.services.offer.parameters.*;
-import miwm.job4me.services.recommendation.RecommendationService;
+import miwm.job4me.services.recommendation.RecommendationNotifierService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
@@ -44,7 +44,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final RequirementService requirementService;
     private final ExtraSkillService extraSkillService;
     private final EmployerService employerService;
-    private final RecommendationService recommendationService;
+    private final RecommendationNotifierService recommendationNotifierService;
 
     private final String ENTITY_NAME = "JobOffer";
 
@@ -56,7 +56,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             "5", Sort.by(Sort.Direction.DESC, "offerName")
     );
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, PaginationValidator paginationValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService, RecommendationService recommendationService) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, PaginationValidator paginationValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService, RecommendationNotifierService recommendationNotifierService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
@@ -70,7 +70,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         this.requirementService = requirementService;
         this.extraSkillService = extraSkillService;
         this.employerService = employerService;
-        this.recommendationService = recommendationService;
+        this.recommendationNotifierService = recommendationNotifierService;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         jobOffer.setIsEmbeddingCurrent(false);
 
         JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
-        recommendationService.notifyUpdatedOffer(savedOfferDto.getId());
+        recommendationNotifierService.notifyUpdatedOffer(savedOfferDto.getId());
 
         return savedOfferDto;
     }
@@ -115,14 +115,14 @@ public class JobOfferServiceImpl implements JobOfferService {
     public void delete(JobOffer jobOffer) {
         strictExistsById(jobOffer.getId());
         jobOfferRepository.delete(jobOffer);
-        recommendationService.notifyRemovedOffer(jobOffer.getId());
+        recommendationNotifierService.notifyRemovedOffer(jobOffer.getId());
     }
 
     @Override
     public void deleteById(Long id) {
         strictExistsById(id);
         jobOfferRepository.deleteById(id);
-        recommendationService.notifyRemovedOffer(id);
+        recommendationNotifierService.notifyRemovedOffer(id);
     }
 
     @Override
@@ -275,7 +275,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         JobOfferDto savedJobOffer = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
-        recommendationService.notifyUpdatedOffer(savedJobOffer.getId());
+        recommendationNotifierService.notifyUpdatedOffer(savedJobOffer.getId());
 
         return savedJobOffer;
     }
@@ -322,7 +322,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(true);
-        recommendationService.notifyUpdatedOffer(id);
+        recommendationNotifierService.notifyUpdatedOffer(id);
 
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }
@@ -336,7 +336,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(false);
-        recommendationService.notifyRemovedOffer(id);
+        recommendationNotifierService.notifyRemovedOffer(id);
 
         return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
     }

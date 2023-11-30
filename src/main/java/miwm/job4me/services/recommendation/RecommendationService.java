@@ -5,17 +5,9 @@ import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.springframework.data.domain.Page;
 
 public interface RecommendationService {
+
     Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, Long jobFairId);
 
     Page<ListDisplaySavedDto> getRecommendedOffersByFilter(int page, int size, JobOfferFilterDto jobOfferFilterDto, Long jobFairId);
 
-    void notifyRecommendationService(String url);
-
-    void notifyUpdatedOffer(Long offerId);
-
-    void notifyUpdatedEmployee(Long employeeId);
-
-    void notifyRemovedOffer(Long offerId);
-
-    void notifyRemovedEmployee(Long employeeId);
 }
