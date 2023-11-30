@@ -108,7 +108,7 @@ public class AuthController {
 
     @PostMapping("/update-password")
     @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
-    public ResponseEntity<?> updatePassword(HttpServletResponse response, @RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) throws IOException {
+    public ResponseEntity<?> updatePassword(@RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) {
         if(token != null && !userAuthService.isValidPasswordResetToken(token))
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
