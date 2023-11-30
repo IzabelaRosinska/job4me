@@ -11,18 +11,15 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class PasswordDto {
 
-    @Schema(description = "Optional token for reset not authenticated user", example = "password")
-    private  String token;
-
     @NotNull
     @NotEmpty
     @Length(min = 5, max = 15)
     @Schema(description = "User password to change", example = "password")
-    private String oldPassword;
+    private String password;
 
     @NotNull
     @NotEmpty
     @Length(min = 5, max = 15)
     @Schema(description = "New user password", example = "password")
-    private String newPassword;
+    private String matchingPassword;
 }
