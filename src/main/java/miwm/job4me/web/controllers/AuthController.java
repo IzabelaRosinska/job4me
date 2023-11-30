@@ -98,7 +98,7 @@ public class AuthController {
     @GetMapping("/change-password")
     @Operation(summary = "Enable changing password", description = "Display password to reset password if token valid")
     public void showChangePasswordPage(HttpServletResponse response, @RequestParam(value = "token", required = false) String token) throws IOException {
-        if(!userAuthService.isValidPasswordResetToken(token))
+        if(token != null && !userAuthService.isValidPasswordResetToken(token))
             response.sendRedirect(ERROR_URL);
         else if(token != null)
             response.sendRedirect(FRONT_HOST + UPDATE_PASSWORD_URL + token);
