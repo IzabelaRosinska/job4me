@@ -10,6 +10,6 @@ public interface OrganizerRepository extends JpaRepository<Organizer, Long> {
     @Query(nativeQuery = true, value = "select * from organizers where email = ?1")
     Organizer selectOrganizerByUsername(String username);
 
-    @Query(nativeQuery = true, value = "select * from password_reset_token p INNER JOIN organizers o ON p.organizer_id=o.id where p.token = ?1")
+    @Query(nativeQuery = true, value = "select * from password_reset_token p INNER JOIN organizers o ON p.organizer_id=o.id where p.token LIKE ?1")
     Optional<Organizer> getOrganizerByToken(String token);
 }

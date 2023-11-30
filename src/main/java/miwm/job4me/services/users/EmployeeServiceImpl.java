@@ -155,8 +155,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
         if(employee != null) {
-            employee.setPassword(passwordEncoder.encode(password));
-            save(employee);
+            Employee updatedEmployee = employeeRepository.selectEmployeeByUsername(employee.getEmail());
+            updatedEmployee.setPassword(passwordEncoder.encode(password));
+            save(updatedEmployee);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }

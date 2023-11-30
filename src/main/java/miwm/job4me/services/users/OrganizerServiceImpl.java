@@ -4,6 +4,7 @@ import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.validators.fields.IdValidator;
@@ -145,8 +146,9 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Transactional
     public void updatePassword(Organizer organizer, @Length(min = 5, max = 15) String password) {
         if(organizer != null) {
-            organizer.setPassword(passwordEncoder.encode(password));
-            save(organizer);
+            Organizer updatedOrganizer = organizerRepository.selectOrganizerByUsername(organizer.getEmail());
+            updatedOrganizer.setPassword(passwordEncoder.encode(password));
+            save(updatedOrganizer);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
