@@ -108,9 +108,9 @@ public class AuthController {
 
     @PostMapping("/update-password")
     @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
-    public void updatePassword(HttpServletResponse response, @RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) throws IOException {
+    public ResponseEntity<?> updatePassword(HttpServletResponse response, @RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) throws IOException {
         if(token != null && !userAuthService.isValidPasswordResetToken(token))
-            response.sendRedirect(ERROR_URL);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
         Person user;
         if(token != null)
@@ -120,9 +120,9 @@ public class AuthController {
 
         if(user != null && passwordDto.getPassword().equals(passwordDto.getMatchingPassword())) {
             userAuthService.changeUserPassword(user, passwordDto.getPassword());
-            response.sendRedirect(FRONT_HOST + LOGIN_URL);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         } else
-            response.sendRedirect(ERROR_URL);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /*
