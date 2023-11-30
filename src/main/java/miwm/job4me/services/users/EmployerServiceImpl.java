@@ -72,10 +72,8 @@ public class EmployerServiceImpl implements EmployerService {
     public Optional<Employer> getEmployerByToken(String token) {
         if(token != null) {
             Optional<Employer> employer = employerRepository.getEmployerByToken(token);
-            if (employer.isPresent())
-                return employer;
-            else
-                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+            return employer;
+
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }

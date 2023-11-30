@@ -147,10 +147,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> getEmployeeByToken(String token) {
         if(token != null) {
             Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
-            if (employee.isPresent())
-                return employee;
-            else
-                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+            return employee;
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }

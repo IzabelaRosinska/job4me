@@ -10,6 +10,6 @@ public interface EmployerRepository extends JpaRepository<Employer, Long> {
     @Query(nativeQuery = true, value = "select * from employers where email = ?1")
     Employer selectEmployerByUsername(String username);
 
-    @Query(nativeQuery = true, value = "select employer from password_reset_token p INNER JOIN employer e ON p.employer_id=e.id where p.token = ?1")
+    @Query(nativeQuery = true, value = "select * from password_reset_token p INNER JOIN employers e ON p.employer_id=e.id where p.token = ?1")
     Optional<Employer> getEmployerByToken(String token);
 }

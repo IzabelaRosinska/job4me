@@ -136,10 +136,7 @@ public class OrganizerServiceImpl implements OrganizerService {
     public Optional<Organizer> getOrganizerByToken(String token) {
         if(token != null) {
             Optional<Organizer> organizer = organizerRepository.getOrganizerByToken(token);
-            if (organizer.isPresent())
-                return organizer;
-            else
-                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+            return organizer;
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Token"));
     }
