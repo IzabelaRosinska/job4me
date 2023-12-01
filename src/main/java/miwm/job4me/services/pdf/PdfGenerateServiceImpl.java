@@ -5,6 +5,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.web.model.pdf.PdfDto;
+import org.apache.http.util.ByteArrayBuffer;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -23,7 +24,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
     }
 
     @Override
-    public PdfDto generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
+    public byte[] generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
         Context context = new Context();
         context.setVariables(data);
 
@@ -55,7 +56,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             PdfDto pdfDto = new PdfDto();
             pdfDto.setSerializedPdf(bytes);
 
-            return pdfDto;
+            return bytes;
         } catch (DocumentException e) {
             throw new InvalidArgumentException("Document exception");
         } catch (IOException e) {

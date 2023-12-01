@@ -7,5 +7,5 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface CvPdfGenerateService {
 
-    PdfDto downloadCvFile(HttpServletRequest request, HttpServletResponse response);
+    byte[] downloadCvFile(HttpServletRequest request, HttpServletResponse response);
 }
