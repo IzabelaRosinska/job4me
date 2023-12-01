@@ -10,13 +10,11 @@ import miwm.job4me.web.model.offer.JobOfferReviewDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.EmployerReviewDto;
 import miwm.job4me.web.model.users.OrganizerDto;
+import miwm.job4me.web.model.users.QRDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 @RestController
@@ -113,7 +111,6 @@ public class EmployeeController {
         return new ResponseEntity<>(offers, HttpStatus.CREATED);
     }
 
-
     @GetMapping("saved/employers")
     @Operation(summary = "Gets all saved employers in paginated list display form", description = "Gets all saved employers of logged in employee in paginated list display form database")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployers(
@@ -142,8 +139,8 @@ public class EmployeeController {
         return new ResponseEntity<>(offerDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/code", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> getQRCode() throws Exception {
-        return new ResponseEntity<>(employeeService.generateQRCodeImage(), HttpStatus.CREATED);
+    @GetMapping(value = "/code")
+    public ResponseEntity<QRDto> getQRCode() throws Exception {
+        return new ResponseEntity<>(employeeService.generateQRCodeImage(), HttpStatus.OK);
     }
 }
