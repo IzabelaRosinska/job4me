@@ -30,6 +30,8 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
 
         String htmlContent = templateEngine.process(templateName, context);
 
+        System.out.println("HTML: " + htmlContent);
+
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
             ITextRenderer renderer = new ITextRenderer();
@@ -50,11 +52,10 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.createPDF(target, false);
             renderer.finishPDF();
 
-            byte[] pdfBytes = target.toByteArray();
-            String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
-
+            byte[] bytes = target.toByteArray();
+            String encodedString = Base64.getEncoder().encodeToString(bytes);
             PdfDto pdfDto = new PdfDto();
-            pdfDto.setEncodedPdf(pdfBase64String);
+            pdfDto.setSerializedPdf(encodedString);
 
             return pdfDto;
         } catch (DocumentException e) {
