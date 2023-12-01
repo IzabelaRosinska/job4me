@@ -12,10 +12,10 @@ public class CorsConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(FRONT_BRANCH_HOST_AZURE, FRONT_HOST_AZURE, FRONT_HOST, LINKEDIN_HOST, STRIPE_HOST)
-                .allowedMethods(CORS_ALLOW_ANY)
-                .allowedHeaders("Content-Type", "Accept", "X-Requested-With", "Authorization", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers")
-                .allowCredentials(CORS_ALLOW_CREDENTIALS)
-                .maxAge(CORS_MAX_AGE);
+                .allowedOrigins("https://mango-moss-0c13e2b03-32.westeurope.3.azurestaticapps.net", "https://mango-moss-0c13e2b03.3.azurestaticapps.net", "http://localhost:4200", "https://www.linkedin.com")
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 }

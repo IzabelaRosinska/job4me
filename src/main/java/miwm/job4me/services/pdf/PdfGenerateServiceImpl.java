@@ -56,9 +56,9 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             byte[] bytes = target.toByteArray();
 
             HttpHeaders header = new HttpHeaders();
-            //header.add("Content-Type", "application/pdf");
-            header.setContentType(MediaType.APPLICATION_PDF);
-            header.setAccept(new ArrayList<>(Arrays.asList(MediaType.APPLICATION_PDF)));
+            header.add("Content-Type", "application/pdf");
+            //header.setContentType(MediaType.APPLICATION_PDF);
+            //header.setAccept(new ArrayList<>(Arrays.asList(MediaType.APPLICATION_PDF)));
 
             return ResponseEntity.ok()
                     .headers(header)
