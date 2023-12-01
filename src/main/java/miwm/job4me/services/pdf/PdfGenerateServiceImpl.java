@@ -12,6 +12,7 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
     }
 
     @Override
-    public byte[] generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
+    public PdfDto generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
         Context context = new Context();
         context.setVariables(data);
 
@@ -56,7 +57,9 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             PdfDto pdfDto = new PdfDto();
             pdfDto.setSerializedPdf(bytes);
 
-            return bytes;
+            System.out.println("PDF: " + Arrays.toString(pdfDto.getSerializedPdf()));
+
+            return pdfDto;
         } catch (DocumentException e) {
             throw new InvalidArgumentException("Document exception");
         } catch (IOException e) {

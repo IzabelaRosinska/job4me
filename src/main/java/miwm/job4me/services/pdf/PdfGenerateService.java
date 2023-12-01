@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface PdfGenerateService {
 
-    byte[] generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts);
+    PdfDto generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts);
 
 }
