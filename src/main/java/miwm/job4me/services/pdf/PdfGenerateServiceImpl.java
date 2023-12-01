@@ -5,14 +5,12 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.web.model.pdf.PdfDto;
-import org.apache.http.util.ByteArrayBuffer;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +29,6 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
         context.setVariables(data);
 
         String htmlContent = templateEngine.process(templateName, context);
-
-        System.out.println("HTML: " + htmlContent);
 
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
@@ -54,18 +50,11 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.createPDF(target, false);
             renderer.finishPDF();
 
-            byte[] bytes = target.toByteArray();
-
-            //convert bytes to string base64
-            String base64String = Base64.getEncoder().encodeToString(bytes);
+            byte[] pdfBytes = target.toByteArray();
+            String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
 
             PdfDto pdfDto = new PdfDto();
-            pdfDto.setSerializedPdf(base64String);
-
-
-            System.out.println("PDF: " + base64String.toString());
-
-//            System.out.println("PDF: " + Arrays.toString());
+            pdfDto.setEncodedPdf(pdfBase64String);
 
             return pdfDto;
         } catch (DocumentException e) {
