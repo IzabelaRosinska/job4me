@@ -11,7 +11,6 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -53,9 +52,8 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.finishPDF();
 
             byte[] bytes = target.toByteArray();
-            String encodedString = Base64.getEncoder().encodeToString(bytes);
             PdfDto pdfDto = new PdfDto();
-            pdfDto.setSerializedPdf(encodedString);
+            pdfDto.setSerializedPdf(bytes);
 
             return pdfDto;
         } catch (DocumentException e) {
