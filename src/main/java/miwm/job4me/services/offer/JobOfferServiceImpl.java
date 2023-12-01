@@ -322,9 +322,10 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(true);
+        JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
         recommendationNotifierService.notifyUpdatedOffer(id);
 
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        return savedOfferDto;
     }
 
     @Override
@@ -336,9 +337,10 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(false);
+        JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
         recommendationNotifierService.notifyRemovedOffer(id);
 
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        return savedOfferDto;
     }
 
 }
