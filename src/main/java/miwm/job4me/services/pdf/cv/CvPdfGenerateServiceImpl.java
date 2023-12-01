@@ -25,7 +25,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
     }
 
     @Override
-    public PdfDto downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
+    public byte[] downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
         EmployeeDto employee = employeeService.findCurrentEmployee();
         Map<String, Object> data = new HashMap<>();
 
