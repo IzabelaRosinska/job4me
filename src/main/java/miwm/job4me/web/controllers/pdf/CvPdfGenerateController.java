@@ -22,7 +22,7 @@ public class CvPdfGenerateController {
 
     @GetMapping("employee/cv/pdf")
     @Operation(summary = "Download cv pdf file", description = "Downloads cv pdf file of signed in employee")
-    public ResponseEntity<byte[]> downloadEJournalFile(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<PdfDto> downloadEJournalFile(HttpServletRequest request, HttpServletResponse response) {
         return new ResponseEntity<>(cvPdfGenerateService.downloadCvFile(request, response), HttpStatus.OK);
     }
 
