@@ -18,4 +18,5 @@ public class CorsConfig extends WebMvcConfigurerAdapter {
                 .allowCredentials(CORS_ALLOW_CREDENTIALS)
                 .maxAge(CORS_MAX_AGE);
     }
+
 }

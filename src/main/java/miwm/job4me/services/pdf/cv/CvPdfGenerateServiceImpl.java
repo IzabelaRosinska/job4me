@@ -2,8 +2,8 @@ package miwm.job4me.services.pdf.cv;
 
 import miwm.job4me.services.pdf.PdfGenerateService;
 import miwm.job4me.services.users.EmployeeService;
+import miwm.job4me.web.model.pdf.PdfDto;
 import miwm.job4me.web.model.users.EmployeeDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
     }
 
     @Override
-    public ResponseEntity<byte[]> downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
+    public PdfDto downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
         EmployeeDto employee = employeeService.findCurrentEmployee();
         Map<String, Object> data = new HashMap<>();
 

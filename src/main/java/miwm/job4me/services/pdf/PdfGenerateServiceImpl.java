@@ -4,15 +4,14 @@ import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import miwm.job4me.exceptions.InvalidArgumentException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import miwm.job4me.web.model.pdf.PdfDto;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
     }
 
     @Override
-    public ResponseEntity<byte[]> generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
+    public PdfDto generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
         Context context = new Context();
         context.setVariables(data);
 
@@ -38,7 +37,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
                 renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             }
 
-            fonts.stream().forEach(font -> {
+            fonts.forEach(font -> {
                 try {
                     renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 } catch (DocumentException | IOException e) {
@@ -51,16 +50,13 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.createPDF(target, false);
             renderer.finishPDF();
 
-            byte[] bytes = target.toByteArray();
+            byte[] pdfBytes = target.toByteArray();
+            String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
 
-            HttpHeaders header = new HttpHeaders();
-            header.add("Content-Type", "application/pdf");
+            PdfDto pdfDto = new PdfDto();
+            pdfDto.setEncodedPdf(pdfBase64String);
 
-            return ResponseEntity.ok()
-                    .headers(header)
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(bytes);
-
+            return pdfDto;
         } catch (DocumentException e) {
             throw new InvalidArgumentException("Document exception");
         } catch (IOException e) {
