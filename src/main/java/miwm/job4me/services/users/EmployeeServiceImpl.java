@@ -44,8 +44,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static miwm.job4me.messages.AppMessages.BACKEND_HOST;
-import static miwm.job4me.messages.AppMessages.BACKEND_HOST_AZURE;
+import static miwm.job4me.messages.AppMessages.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -308,7 +307,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public QRDto generateQRCodeImage() throws Exception {
-        String barcodeText = BACKEND_HOST + "/employer/employee/" + getAuthEmployee().getId() + "/account";
+        String barcodeText = FRONT_HOST_AZURE + "/employer/employee/" + getAuthEmployee().getId() + "/account";
         URL url = new URL(barcodeText);
         ByteArrayOutputStream stream = QRCode
                 .from(String.valueOf(url))
@@ -319,7 +318,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String base64String = Base64.getEncoder().encodeToString(stream.toByteArray());
 
         QRDto qrDto = new QRDto();
-        qrDto.setSerializedQR(base64String);
+        qrDto.setEncodedQr(base64String);
         return qrDto;
     }
 }
