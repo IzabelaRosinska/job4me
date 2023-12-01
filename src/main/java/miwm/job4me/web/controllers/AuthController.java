@@ -101,9 +101,9 @@ public class AuthController {
         if(token != null && !userAuthService.isValidPasswordResetToken(token))
             response.sendRedirect(ERROR_URL);
         else if(token != null)
-            response.sendRedirect(FRONT_HOST + UPDATE_PASSWORD_URL + token);
+            response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL + token);
         else
-            response.sendRedirect(FRONT_HOST + UPDATE_PASSWORD_URL);
+            response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL);
     }
 
     @PostMapping("/update-password")
@@ -124,19 +124,4 @@ public class AuthController {
         } else
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    /*
-    @PostMapping("/save-password")
-    @Operation(summary = "Update password for authenticated user", description = "Update user password")
-    public void savePassword(HttpServletResponse response, @Valid @RequestBody PasswordDto passwordDto) throws IOException {
-        Person user = userAuthService.getAuthenticatedUser();
-        if(user != null && passwordDto.getPassword().equals(passwordDto.getMatchingPassword())) {
-            userAuthService.changeUserPassword(user, passwordDto.getPassword());
-            response.sendRedirect(FRONT_HOST + LOGIN_URL);
-        } else
-            response.sendRedirect(ERROR_URL);
-    }
-
- */
-
 }
