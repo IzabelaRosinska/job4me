@@ -56,13 +56,13 @@ public class JobOfferController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("employer/job-offers/{id}/activate")
+    @PutMapping("employer/job-offers/{id}/activate")
     @Operation(summary = "Activate job offer", description = "Activates job offer in database")
     public ResponseEntity<JobOfferDto> activateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.activateOffer(id), HttpStatus.OK);
     }
 
-    @GetMapping("employer/job-offers/{id}/deactivate")
+    @PutMapping("employer/job-offers/{id}/deactivate")
     @Operation(summary = "Deactivate job offer", description = "Deactivates job offer in database")
     public ResponseEntity<JobOfferDto> deactivateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.deactivateOffer(id), HttpStatus.OK);

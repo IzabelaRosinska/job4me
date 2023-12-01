@@ -1,5 +1,6 @@
 package miwm.job4me.web.controllers.pdf;
 
+import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.pdf.cv.CvPdfGenerateService;
 import miwm.job4me.services.pdf.cv.CvPdfGenerateServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class CvPdfGenerateController {
     }
 
     @GetMapping("employee/cv/pdf")
+    @Operation(summary = "Download cv pdf file", description = "Downloads cv pdf file of signed in employee")
     public ResponseEntity<byte[]> downloadEJournalFile(HttpServletRequest request, HttpServletResponse response) {
         return cvPdfGenerateService.downloadCvFile(request, response);
     }
