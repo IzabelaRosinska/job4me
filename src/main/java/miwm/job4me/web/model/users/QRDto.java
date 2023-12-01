@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class QRDto {
     @Schema(description = "QR file in base64 format", example = "xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    private String serializedQR;
+    private String encodedQr;
 
 }
