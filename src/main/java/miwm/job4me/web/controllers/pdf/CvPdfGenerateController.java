@@ -18,7 +18,7 @@ public class CvPdfGenerateController {
         this.cvPdfGenerateService = cvPdfGenerateService;
     }
 
-    @GetMapping(path="employee/cv/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping("employee/cv/pdf")
     public ResponseEntity<byte[]> downloadEJournalFile(HttpServletRequest request, HttpServletResponse response) {
         return cvPdfGenerateService.downloadCvFile(request, response);
     }
