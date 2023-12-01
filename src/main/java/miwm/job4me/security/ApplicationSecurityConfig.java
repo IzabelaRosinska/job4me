@@ -12,10 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
 import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
-
 import static miwm.job4me.messages.AppMessages.*;
 
 
