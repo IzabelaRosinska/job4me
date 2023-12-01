@@ -13,6 +13,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -54,10 +55,17 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.finishPDF();
 
             byte[] bytes = target.toByteArray();
-            PdfDto pdfDto = new PdfDto();
-            pdfDto.setSerializedPdf(bytes);
 
-            System.out.println("PDF: " + Arrays.toString(pdfDto.getSerializedPdf()));
+            //convert bytes to string base64
+            String base64String = Base64.getEncoder().encodeToString(bytes);
+
+            PdfDto pdfDto = new PdfDto();
+            pdfDto.setSerializedPdf(base64String);
+
+
+            System.out.println("PDF: " + base64String.toString());
+
+//            System.out.println("PDF: " + Arrays.toString());
 
             return pdfDto;
         } catch (DocumentException e) {
