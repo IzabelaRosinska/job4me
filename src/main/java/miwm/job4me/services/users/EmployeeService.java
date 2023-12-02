@@ -13,6 +13,9 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import miwm.job4me.web.model.users.QRDto;
+import org.springframework.stereotype.Service;
+import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 public interface EmployeeService extends BaseService<Employee, Long> {
@@ -45,4 +48,6 @@ public interface EmployeeService extends BaseService<Employee, Long> {
     Optional<Employee> getEmployeeByToken(String token);
 
     void updatePassword(Employee employee, String password);
+
+    QRDto generateQRCodeImage() throws Exception;
 }

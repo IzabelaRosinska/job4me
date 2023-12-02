@@ -25,16 +25,27 @@ import miwm.job4me.web.model.cv.ExperienceDto;
 import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import miwm.job4me.web.model.users.QRDto;
+import net.glxn.qrgen.javase.QRCode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import static miwm.job4me.messages.AppMessages.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -291,5 +302,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return employee;
+    }
+
+    @Override
+    public QRDto generateQRCodeImage() {
+        String barcodeText = FRONT_HOST_AZURE + "/employer/employee/" + getAuthEmployee().getId() + "/account";
+
+        try {
+            URL url = new URL(barcodeText);
+            ByteArrayOutputStream stream = QRCode
+                    .from(String.valueOf(url))
+                    .withSize(250, 250)
+                    .stream();
+
+            String base64String = Base64.getEncoder().encodeToString(stream.toByteArray());
+
+            QRDto qrDto = new QRDto();
+            qrDto.setEncodedQr(base64String);
+            return qrDto;
+        } catch (MalformedURLException e) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument("URL"));
+        }
+
     }
 }
