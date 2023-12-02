@@ -1,11 +1,9 @@
 package miwm.job4me.services.pdf.cv;
 
-import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import miwm.job4me.web.model.pdf.PdfDto;
 
 public interface CvPdfGenerateService {
 
-    ResponseEntity<byte[]> downloadCvFile(HttpServletRequest request, HttpServletResponse response);
+    PdfDto downloadCvFile();
+
 }

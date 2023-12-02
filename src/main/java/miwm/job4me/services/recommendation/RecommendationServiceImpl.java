@@ -11,18 +11,17 @@ import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
+
     @Value("${recommendation.api.url}")
     private String recommendationApiUrl;
 
@@ -52,13 +51,14 @@ public class RecommendationServiceImpl implements RecommendationService {
         paginationValidator.validatePagination(size, page);
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
+        recommendedOffersIds = createSublist(recommendedOffersIds, size, page);
 
         List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
                 .stream()
                 .map(jobOfferListDisplayService::findByOfferId)
                 .toList();
 
-        return listDisplaySavedPageServiceImpl.createPage(recommendedOffers, size, page);
+        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, size, page, recommendedOffersIds.size());
     }
 
     @Override
@@ -73,51 +73,60 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .toList();
 
         for (Long id : filteredOffersIds) {
-            if (recommendedOffersIds != null && !recommendedOffersIds.contains(id)) {
+            if (!recommendedOffersIds.contains(id)) {
                 recommendedOffersIds.remove(id);
             }
         }
 
-        if (recommendedOffersIds == null) {
-            recommendedOffersIds = recommendedOffersIds.subList(0, 10);
-        }
+        recommendedOffersIds = createSublist(recommendedOffersIds, size, page);
 
         List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
                 .stream()
                 .map(jobOfferListDisplayService::findByOfferId)
                 .toList();
 
-        return listDisplaySavedPageServiceImpl.createPage(recommendedOffers, size, page);
+        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, size, page, recommendedOffersIds.size());
+    }
+
+    private List<Long> createSublist(List<Long> list, int pageSize, int pageNumber) {
+        int start = pageNumber * pageSize;
+        int end = Math.min((start + pageSize), list.size());
+        return list.subList(start, end);
+    }
+
+    private WebClient createHttpHeaders(String url) {
+        return WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader("api-key", recommendationApiKey)
+                .build();
     }
 
     private List<Long> getRecommendedOffersIds(Long employeeId, Long jobFairId) {
         String url = recommendationApiUrl + "/recommend/" + jobFairId + "/" + employeeId;
 
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .header("API-Key", recommendationApiKey)
-                    .build();
+        WebClient webClient = createHttpHeaders(url);
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String response = webClient.get()
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
 
-            if (response.statusCode() == 200) {
-                JSONArray jsonArray = new JSONArray(response.body());
-                List<Long> recommendedOffersIds = new ArrayList<>();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    recommendedOffersIds.add(jsonArray.getLong(i));
-                }
-
-                return recommendedOffersIds;
-            } else {
-                throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
-            }
-        } catch (IOException | InterruptedException e) {
+        if (response == null || response.equals("")) {
             throw new RecommendationException(RECOMMENDATION_EXCEPTION_MESSAGE);
+        } else {
+            JSONArray jsonArray = new JSONArray(response);
+            List<Long> recommendedOffersIds = new ArrayList<>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                recommendedOffersIds.add(jsonArray.getLong(i));
+            }
+
+            System.out.println("recommendedOffersIds: " + recommendedOffersIds);
+
+            return recommendedOffersIds;
         }
     }
+
 }

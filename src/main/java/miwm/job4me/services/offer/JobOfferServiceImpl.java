@@ -8,6 +8,7 @@ import miwm.job4me.repositories.offer.JobOfferRepository;
 import miwm.job4me.services.offer.description.ExtraSkillService;
 import miwm.job4me.services.offer.description.RequirementService;
 import miwm.job4me.services.offer.parameters.*;
+import miwm.job4me.services.recommendation.RecommendationNotifierService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.validators.entity.offer.JobOfferValidator;
 import miwm.job4me.validators.fields.IdValidator;
@@ -43,6 +44,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final RequirementService requirementService;
     private final ExtraSkillService extraSkillService;
     private final EmployerService employerService;
+    private final RecommendationNotifierService recommendationNotifierService;
 
     private final String ENTITY_NAME = "JobOffer";
 
@@ -54,7 +56,7 @@ public class JobOfferServiceImpl implements JobOfferService {
             "5", Sort.by(Sort.Direction.DESC, "offerName")
     );
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, PaginationValidator paginationValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService) {
+    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, JobOfferValidator jobOfferValidator, IdValidator idValidator, PaginationValidator paginationValidator, ContractTypeService contractTypeService, EmploymentFormService employmentFormService, IndustryService industryService, LevelService levelService, LocalizationService localizationService, RequirementService requirementService, ExtraSkillService extraSkillService, EmployerService employerService, RecommendationNotifierService recommendationNotifierService) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.jobOfferValidator = jobOfferValidator;
@@ -68,6 +70,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         this.requirementService = requirementService;
         this.extraSkillService = extraSkillService;
         this.employerService = employerService;
+        this.recommendationNotifierService = recommendationNotifierService;
     }
 
     @Override
@@ -102,19 +105,24 @@ public class JobOfferServiceImpl implements JobOfferService {
 
         jobOffer.setIsEmbeddingCurrent(false);
 
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        recommendationNotifierService.notifyUpdatedOffer(savedOfferDto.getId());
+
+        return savedOfferDto;
     }
 
     @Override
     public void delete(JobOffer jobOffer) {
         strictExistsById(jobOffer.getId());
         jobOfferRepository.delete(jobOffer);
+        recommendationNotifierService.notifyRemovedOffer(jobOffer.getId());
     }
 
     @Override
     public void deleteById(Long id) {
         strictExistsById(id);
         jobOfferRepository.deleteById(id);
+        recommendationNotifierService.notifyRemovedOffer(id);
     }
 
     @Override
@@ -266,7 +274,10 @@ public class JobOfferServiceImpl implements JobOfferService {
             jobOffer.setIsActive(true);
         }
 
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        JobOfferDto savedJobOffer = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        recommendationNotifierService.notifyUpdatedOffer(savedJobOffer.getId());
+
+        return savedJobOffer;
     }
 
     @Override
@@ -311,7 +322,11 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(true);
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+
+        recommendationNotifierService.notifyUpdatedOffer(id);
+
+        return savedOfferDto;
     }
 
     @Override
@@ -323,7 +338,11 @@ public class JobOfferServiceImpl implements JobOfferService {
         }
 
         jobOffer.setIsActive(false);
-        return jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+        JobOfferDto savedOfferDto = jobOfferMapper.toDto(jobOfferRepository.save(jobOffer));
+
+        recommendationNotifierService.notifyRemovedOffer(id);
+
+        return savedOfferDto;
     }
 
 }

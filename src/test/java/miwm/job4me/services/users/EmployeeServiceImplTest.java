@@ -13,6 +13,7 @@ import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
 import miwm.job4me.services.cv.ProjectService;
 import miwm.job4me.services.cv.SkillService;
+import miwm.job4me.services.recommendation.RecommendationNotifierService;
 import miwm.job4me.validators.entity.users.EmployeeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployeeMapper;
@@ -50,6 +51,8 @@ class EmployeeServiceImplTest {
     private ProjectService projectService;
     @Mock
     private SkillService skillService;
+    @Mock
+    private RecommendationNotifierService recommendationNotifierService;
     @Mock
     private IdValidator idValidator;
     @Mock
@@ -494,6 +497,7 @@ class EmployeeServiceImplTest {
         Mockito.doNothing().when(skillService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
         Mockito.when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
+        Mockito.doNothing().when(recommendationNotifierService).notifyUpdatedEmployee(employee.getId());
 
         EmployeeDto result = employeeService.updateCV(employeeDto);
 
@@ -534,6 +538,7 @@ class EmployeeServiceImplTest {
         Mockito.doNothing().when(skillService).deleteAllByEmployeeId(employee.getId());
         Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
         Mockito.when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
+        Mockito.doNothing().when(recommendationNotifierService).notifyUpdatedEmployee(employee.getId());
 
         EmployeeDto result = employeeService.updateCV(employeeDto);
 
