@@ -9,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Controller
 public class CvPdfGenerateController {
     private final CvPdfGenerateService cvPdfGenerateService;
@@ -22,8 +19,8 @@ public class CvPdfGenerateController {
 
     @GetMapping("employee/cv/pdf")
     @Operation(summary = "Download cv pdf file", description = "Downloads cv pdf file of signed in employee")
-    public ResponseEntity<PdfDto> downloadEJournalFile(HttpServletRequest request, HttpServletResponse response) {
-        return new ResponseEntity<>(cvPdfGenerateService.downloadCvFile(request, response), HttpStatus.OK);
+    public ResponseEntity<PdfDto> downloadCV() {
+        return new ResponseEntity<>(cvPdfGenerateService.downloadCvFile(), HttpStatus.OK);
     }
 
 }

@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class PdfDto {
     @Schema(description = "Pdf file in base64 format", example = "xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    private String serializedPdf;
+    private String encodedPdf;
 
 }

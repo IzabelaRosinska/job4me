@@ -6,8 +6,6 @@ import miwm.job4me.web.model.pdf.PdfDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +23,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
     }
 
     @Override
-    public PdfDto downloadCvFile(HttpServletRequest request, HttpServletResponse response) {
+    public PdfDto downloadCvFile() {
         EmployeeDto employee = employeeService.findCurrentEmployee();
         Map<String, Object> data = new HashMap<>();
 
