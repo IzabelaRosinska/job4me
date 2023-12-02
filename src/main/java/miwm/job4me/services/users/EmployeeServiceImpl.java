@@ -38,6 +38,7 @@ import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.HashSet;
@@ -304,18 +305,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public QRDto generateQRCodeImage() throws Exception {
+    public QRDto generateQRCodeImage() {
         String barcodeText = FRONT_HOST_AZURE + "/employer/employee/" + getAuthEmployee().getId() + "/account";
-        URL url = new URL(barcodeText);
-        ByteArrayOutputStream stream = QRCode
-                .from(String.valueOf(url))
-                .withSize(250, 250)
-                .stream();
 
-        String base64String = Base64.getEncoder().encodeToString(stream.toByteArray());
+        try {
+            URL url = new URL(barcodeText);
+            ByteArrayOutputStream stream = QRCode
+                    .from(String.valueOf(url))
+                    .withSize(250, 250)
+                    .stream();
 
-        QRDto qrDto = new QRDto();
-        qrDto.setEncodedQr(base64String);
-        return qrDto;
+            String base64String = Base64.getEncoder().encodeToString(stream.toByteArray());
+
+            QRDto qrDto = new QRDto();
+            qrDto.setEncodedQr(base64String);
+            return qrDto;
+        } catch (MalformedURLException e) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument("URL"));
+        }
+
     }
 }
