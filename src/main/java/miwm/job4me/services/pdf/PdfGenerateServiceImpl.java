@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 public class PdfGenerateServiceImpl implements PdfGenerateService {
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
 
     public PdfGenerateServiceImpl(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
@@ -45,11 +45,11 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.createPDF(target, false);
             renderer.finishPDF();
 
-            byte[] bytes = target.toByteArray();
-            String base64String = Base64.getEncoder().encodeToString(bytes);
+            byte[] pdfBytes = target.toByteArray();
+            String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
 
             PdfDto pdfDto = new PdfDto();
-            pdfDto.setEncodedPdf(base64String);
+            pdfDto.setEncodedPdf(pdfBase64String);
 
             return pdfDto;
         } catch (DocumentException e) {

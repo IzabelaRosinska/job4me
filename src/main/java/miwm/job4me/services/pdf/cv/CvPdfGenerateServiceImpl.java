@@ -4,6 +4,7 @@ import miwm.job4me.services.pdf.PdfGenerateService;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.web.model.pdf.PdfDto;
 import miwm.job4me.web.model.users.EmployeeDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
     private final EmployeeService employeeService;
     private final PdfGenerateService pdfGenerateService;
     private final String CV_TEMPLATE_NAME = "cv";
+
+    @Value("${cv.font}")
+    private String font;
 
     public CvPdfGenerateServiceImpl(EmployeeService employeeService, PdfGenerateService pdfGenerateService) {
         this.employeeService = employeeService;
@@ -30,7 +34,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
         data.put("employee", employee);
 
         List<String> fonts = new ArrayList<>();
-        fonts.add("https://cdn.discordapp.com/attachments/798305808394878986/1180563056875548692/Roboto-Regular.ttf");
+        fonts.add(font);
 
         return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data, fonts);
     }
