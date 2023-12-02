@@ -56,6 +56,8 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             PdfDto pdfDto = new PdfDto();
             pdfDto.setEncodedPdf(pdfBase64String);
 
+            System.out.println("PDF: " + pdfDto.getEncodedPdf());
+
             return pdfDto;
         } catch (DocumentException e) {
             throw new InvalidArgumentException("Document exception");
