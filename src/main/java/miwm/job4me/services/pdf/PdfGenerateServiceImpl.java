@@ -37,8 +37,11 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
             ITextRenderer renderer = new ITextRenderer();
-            for (String font : fonts) {
-                renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+            if (fonts != null) {
+                for (String font : fonts) {
+                    renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                }
             }
 
             fonts.forEach(font -> {
