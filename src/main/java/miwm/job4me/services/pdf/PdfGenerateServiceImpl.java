@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 public class PdfGenerateServiceImpl implements PdfGenerateService {
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
 
     public PdfGenerateServiceImpl(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
@@ -33,17 +33,12 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
             ITextRenderer renderer = new ITextRenderer();
-            for (String font : fonts) {
-                renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            }
 
-            fonts.forEach(font -> {
-                try {
+            if (fonts != null) {
+                for (String font : fonts) {
                     renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                } catch (DocumentException | IOException e) {
-                    e.printStackTrace();
                 }
-            });
+            }
 
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
