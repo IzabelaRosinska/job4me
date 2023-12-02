@@ -42,15 +42,15 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
                 for (String font : fonts) {
                     renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 }
-            }
 
-            fonts.forEach(font -> {
-                try {
-                    renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                } catch (DocumentException | IOException e) {
-                    e.printStackTrace();
-                }
-            });
+                fonts.forEach(font -> {
+                    try {
+                        renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    } catch (DocumentException | IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
 
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
@@ -65,9 +65,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             PdfDto pdfDto = new PdfDto();
             pdfDto.setSerializedPdf(base64String);
 
-
             System.out.println("PDF: " + base64String.toString());
-
 //            System.out.println("PDF: " + Arrays.toString());
 
             return pdfDto;

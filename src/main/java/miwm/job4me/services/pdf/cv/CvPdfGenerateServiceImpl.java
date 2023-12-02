@@ -32,11 +32,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
         data.put("employee", employee);
 
         List<String> fonts = new ArrayList<>();
-//        fonts.add("src/main/resources/static/fonts/Roboto-Bold.ttf");
-//        fonts.add("src/main/resources/static/fonts/Roboto-Regular.ttf");
-//        fonts.add("src/main/resources/static/fonts/Roboto-Light.ttf");
-//        fonts.add("src/main/resources/static/fonts/Roboto-Medium.ttf");
-//        fonts.add("src/main/resources/static/fonts/Roboto-Thin.ttf");
+        fonts.add("https://cdn.discordapp.com/attachments/798305808394878986/1180563056875548692/Roboto-Regular.ttf");
 
         return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data, fonts);
     }
