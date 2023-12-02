@@ -160,19 +160,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> getEmployeeByToken(String token) {
         if (token != null) {
             Optional<Employee> employee = employeeRepository.getEmployeeByToken(token);
-            if (employee.isPresent())
-                return employee;
-            else
-                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+            return employee;
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
 
     @Override
     public void updatePassword(Employee employee, @Length(min = 5, max = 15) String password) {
-        if (employee != null) {
-            employee.setPassword(passwordEncoder.encode(password));
-            save(employee);
+        if(employee != null) {
+            Employee updatedEmployee = employeeRepository.selectEmployeeByUsername(employee.getEmail());
+            updatedEmployee.setPassword(passwordEncoder.encode(password));
+            save(updatedEmployee);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }

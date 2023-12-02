@@ -97,35 +97,31 @@ public class AuthController {
 
     @GetMapping("/change-password")
     @Operation(summary = "Enable changing password", description = "Display password to reset password if token valid")
-    public void showChangePasswordPage(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
-        if(!userAuthService.isValidPasswordResetToken(token))
+    public void showChangePasswordPage(HttpServletResponse response, @RequestParam(value = "token", required = false) String token) throws IOException {
+        if(token != null && !userAuthService.isValidPasswordResetToken(token))
             response.sendRedirect(ERROR_URL);
-        else
+        else if(token != null)
             response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL + token);
-    }
-
-    @PostMapping("/save-password")
-    @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
-    public void savePassword(HttpServletResponse response, @Valid PasswordDto passwordDto) throws IOException {
-        if(!userAuthService.isValidPasswordResetToken(passwordDto.getToken()))
-            response.sendRedirect(ERROR_URL);
-
-        Person user = userAuthService.getUserByPasswordResetToken(passwordDto.getToken());
-        if(user != null) {
-            userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
-            response.sendRedirect(FRONT_HOST_AZURE + LOGIN_URL);
-        } else
-            response.sendRedirect(ERROR_URL);
+        else
+            response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL);
     }
 
     @PostMapping("/update-password")
-    @Operation(summary = "Update password for authenticated user", description = "Update user password")
-    public ResponseEntity<?> updatePassword(@Valid PasswordDto passwordDto) {
-        Person user = userAuthService.getAuthenticatedUser();
-        if(user != null) {
-            userAuthService.changeUserPassword(user, passwordDto.getNewPassword());
+    @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
+    public ResponseEntity<?> updatePassword(@RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) {
+        if(token != null && !userAuthService.isValidPasswordResetToken(token))
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Person user;
+        if(token != null)
+            user = userAuthService.getUserByPasswordResetToken(token);
+        else
+            user = userAuthService.getAuthenticatedUser();
+
+        if(user != null && passwordDto.getPassword().equals(passwordDto.getMatchingPassword())) {
+            userAuthService.changeUserPassword(user, passwordDto.getPassword());
             return new ResponseEntity<>(null, HttpStatus.OK);
         } else
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
