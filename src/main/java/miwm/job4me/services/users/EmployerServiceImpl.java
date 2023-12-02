@@ -5,6 +5,7 @@ import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
+import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployerRepository;
@@ -72,10 +73,8 @@ public class EmployerServiceImpl implements EmployerService {
     public Optional<Employer> getEmployerByToken(String token) {
         if(token != null) {
             Optional<Employer> employer = employerRepository.getEmployerByToken(token);
-            if (employer.isPresent())
-                return employer;
-            else
-                throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, "token", token));
+            return employer;
+
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }
@@ -83,8 +82,9 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public void updatePassword(Employer employer, @Length(min = 5, max = 15) String password) {
         if(employer != null) {
-            employer.setPassword(passwordEncoder.encode(password));
-            save(employer);
+            Employer updatedEmployer = employerRepository.selectEmployerByUsername(employer.getEmail());
+            updatedEmployer.setPassword(passwordEncoder.encode(password));
+            save(updatedEmployer);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
     }

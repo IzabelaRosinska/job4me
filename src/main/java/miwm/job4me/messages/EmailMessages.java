@@ -54,6 +54,6 @@ public class EmailMessages {
     }
 
     public static String confirmRegistrationEmailSubject() {
-        return String.format("Potwierdzenie rejestracji konta w Job4Me");
+        return "Potwierdzenie rejestracji konta w Job4Me";
     }
 }

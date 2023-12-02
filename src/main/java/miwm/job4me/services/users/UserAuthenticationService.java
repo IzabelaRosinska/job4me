@@ -95,12 +95,17 @@ public class UserAuthenticationService implements UserDetailsService {
     public Person getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
+        Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
+        Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
 
-        if (employee == null) {
-            throw new AuthException(ExceptionMessages.unauthorized("User"));
-        }
-
-        return employee;
+        if (employee != null)
+            return employee;
+        else if (employer != null)
+            return employer;
+        else if (organizer != null)
+            return organizer;
+        else
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument("username"));
     }
 
     public VerificationToken getVerificationToken(String verificationToken) {
