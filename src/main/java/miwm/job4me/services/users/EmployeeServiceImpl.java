@@ -312,7 +312,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .withSize(250, 250)
                 .stream();
 
-        //ByteArrayInputStream bis = new ByteArrayInputStream(stream.toByteArray());
         String base64String = Base64.getEncoder().encodeToString(stream.toByteArray());
 
         QRDto qrDto = new QRDto();
