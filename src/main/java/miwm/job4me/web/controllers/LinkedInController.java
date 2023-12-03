@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miwm.job4me.model.users.LinkedinCheckout;
 import miwm.job4me.model.users.Person;
-import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.LinkedinService;
@@ -17,10 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static miwm.job4me.messages.AppMessages.*;
@@ -95,7 +92,7 @@ public class LinkedInController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal().equals("anonymousUser")) {
             token = authService.loginLinkedinUser(email);
-            response.sendRedirect("https://mango-moss-0c13e2b03-59.westeurope.3.azurestaticapps.net" + "/user?role=" + user.getUserRole().toString() + "&token=" + token);
+            response.sendRedirect(FRONT_HOST_AZURE + "/user?role=" + user.getUserRole().toString() + "&token=" + token);
         }
     }
 }
