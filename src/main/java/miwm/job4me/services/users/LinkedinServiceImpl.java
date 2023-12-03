@@ -17,7 +17,7 @@ public class LinkedinServiceImpl implements LinkedinService {
     @Override
     public LinkedinCheckout loginLinkedinAccount() {
         String client = LINKEDIN_CLIENT_ID + environment.getProperty(LINKEDIN_ID_PARAM);
-        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + AZURE_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
+        String URL = BASIC_LINKEDIN_AUTH_URL + "?" + LINKEDIN_RESPONSE_TYPE + "&" + client + "&" + NEW_LINKEDIN_REDIRECT_URI + "&" + LINKEDIN_STATE + "&" + LINKEDIN_SCOPE;
         LinkedinCheckout checkout = new LinkedinCheckout();
         checkout.setUrl(createLinkedinSession(URL));
         return checkout;
