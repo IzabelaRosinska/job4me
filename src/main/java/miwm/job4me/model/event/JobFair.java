@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
+import miwm.job4me.model.payment.Payment;
 import miwm.job4me.model.users.Organizer;
 import miwm.job4me.validators.fields.ValidDateRange;
 
@@ -23,7 +24,7 @@ import java.util.Set;
 @Table(name = "job_fairs")
 public class JobFair extends BaseEntity {
     @Builder
-    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo, Boolean isPaymentSuccessful, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
+    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo, Payment payment, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
         super(id);
         this.name = name;
         this.organizer = organizer;
@@ -33,7 +34,7 @@ public class JobFair extends BaseEntity {
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
-        this.isPaymentSuccessful = isPaymentSuccessful;
+        this.payment = payment;
         this.jobFairEmployerParticipation = jobFairEmployerParticipation;
     }
 
@@ -74,14 +75,8 @@ public class JobFair extends BaseEntity {
     @Column(name = "photo", length = 13000)
     private String photo;
 
-    @Column(name = "is_payment_successful")
-    private Boolean isPaymentSuccessful;
-
-    @Column(name = "session_id")
-    private String sessionId;
-
-    @Column(name = "payment_token")
-    private String paymentToken;
+    @OneToOne(mappedBy = "jobFair", cascade = CascadeType.ALL)
+    private Payment payment;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobFair")
     private Set<JobFairEmployerParticipation> jobFairEmployerParticipation;

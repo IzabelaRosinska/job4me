@@ -57,8 +57,8 @@ public class JobFairController {
         return new ResponseEntity<>(jobFairDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("job-fairs/organizer/{id}")
-    @Operation(summary = "Get all job fairs of organizer by filters", description = "Gets all job fairs of signed in organizer from database by filters")
+    @GetMapping("job-fairs/organizer/{organizerId}")
+    @Operation(summary = "Get all job fairs of organizer by filters", description = "Gets all job fairs of organizer from database by filters")
     public ResponseEntity<Page<ListDisplayDto>> getAllOrganizerJobFairs(
             @PathVariable Long organizerId,
             @RequestParam(defaultValue = "0") int page,

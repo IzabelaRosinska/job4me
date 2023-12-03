@@ -23,6 +23,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${stripe.api.key}")
     private String recommendationApiKey;
 
+    @Value("${stripe.webhook.secret}")
+    private String webhookSecret;
+
     private final OrganizerService organizerService;
     private final JobFairService jobFairService;
 
