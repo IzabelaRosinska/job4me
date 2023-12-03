@@ -92,22 +92,14 @@ public class LinkedInController {
         if(user == null)
             user = authService.registerLinkedinUser(jsonNode);
 
+        String token = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal().equals("anonymousUser")) {
-            String token = authService.loginLinkedinUser(email);
+            token = authService.loginLinkedinUser(email);
             response.getWriter().write(user.getUserRole().toString() + ';' + token);
             response.setHeader("Authorization", "Token " + token);
+            response.sendRedirect(FRONT_HOST + "/user?role=" + user.getUserRole().toString() + "&token=" + token);
         }
-/*
-        if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
-            employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-            response.sendRedirect(FRONT_HOST + "/employee/account");
-        } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
-            employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-            response.sendRedirect(FRONT_HOST + "/employer/account");
-        }
-        
- */
     }
 
     private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) throws IOException {
