@@ -29,4 +29,7 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
     String getContactEmail(Long id);
 
     JobFair getJobFairById(Long id);
+
+    JobFairDto addPaymentForJobFair(Long jobFairId, String paymentId, Boolean isSuccessful);
+
 }

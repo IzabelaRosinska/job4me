@@ -186,4 +186,15 @@ public class JobFairServiceImpl implements JobFairService {
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
+
+    @Override
+    public JobFairDto addPaymentForJobFair(Long jobFairId, String paymentId, Boolean isSuccessful) {
+        JobFair jobFair = getJobFairById(jobFairId);
+        jobFair.setPaymentId(paymentId);
+        jobFair.setIsPaymentSuccessful(isSuccessful);
+        JobFair savedJobFair = jobFairRepository.save(jobFair);
+
+        return jobFairMapper.toDto(savedJobFair);
+    }
+
 }

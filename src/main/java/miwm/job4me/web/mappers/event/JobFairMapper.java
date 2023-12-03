@@ -32,6 +32,8 @@ public class JobFairMapper {
         jobFair.setDescription(jobFairDto.getDescription());
         jobFair.setDisplayDescription(jobFairDto.getDisplayDescription());
         jobFair.setPhoto(jobFairDto.getPhoto());
+        jobFair.setIsPaymentSuccessful(jobFairDto.getIsPaymentSuccessful());
         return jobFair;
     }
+
 }

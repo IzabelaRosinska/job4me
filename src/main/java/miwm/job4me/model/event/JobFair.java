@@ -23,7 +23,7 @@ import java.util.Set;
 @Table(name = "job_fairs")
 public class JobFair extends BaseEntity {
     @Builder
-    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
+    public JobFair(Long id, String name, Organizer organizer, LocalDateTime dateStart, LocalDateTime dateEnd, String address, String description, String displayDescription, String photo, Boolean isPaymentSuccessful, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
         super(id);
         this.name = name;
         this.organizer = organizer;
@@ -33,6 +33,7 @@ public class JobFair extends BaseEntity {
         this.description = description;
         this.displayDescription = displayDescription;
         this.photo = photo;
+        this.isPaymentSuccessful = isPaymentSuccessful;
         this.jobFairEmployerParticipation = jobFairEmployerParticipation;
     }
 
@@ -73,6 +74,13 @@ public class JobFair extends BaseEntity {
     @Column(name = "photo", length = 13000)
     private String photo;
 
+    @Column(name = "is_payment_successful")
+    private Boolean isPaymentSuccessful;
+
+    @Column(name = "payment_id")
+    private String paymentId;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobFair")
     private Set<JobFairEmployerParticipation> jobFairEmployerParticipation;
+
 }

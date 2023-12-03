@@ -27,7 +27,7 @@ public class PaymentController {
 
     @GetMapping("/payment")
     public ResponseEntity<PaymentCheckout> payForOrganizerAccount() {
-        PaymentCheckout paymentCheckout = paymentService.payForOrganizerAccount();
+        PaymentCheckout paymentCheckout = paymentService.payForJobFair();
 
         return new ResponseEntity<>(paymentCheckout, HttpStatus.OK);
     }
