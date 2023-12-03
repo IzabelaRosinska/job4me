@@ -29,6 +29,12 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationService.findById(requestId), HttpStatus.OK);
     }
 
+    @GetMapping("employer/job-fairs/{jobFairId}/employer-participation/status")
+    @Operation(summary = "Get job fair employer participation request status", description = "Gets job fair employer participation request status from database by job fair id")
+    public ResponseEntity<Boolean> getJobFairEmployerParticipationRequestStatusForEmployer(@PathVariable Long jobFairId) {
+        return new ResponseEntity<>(jobFairEmployerParticipationService.getParticipationStatus(jobFairId), HttpStatus.OK);
+    }
+
     @DeleteMapping("employer/employer-participation/{requestId}")
     @Operation(summary = "Delete job fair employer participation", description = "Deletes job fair employer participation in database")
     public ResponseEntity<Void> deleteJobFairEmployerParticipationForEmployer(@PathVariable Long requestId) {
