@@ -30,6 +30,4 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
 
     JobFair getJobFairById(Long id);
 
-    JobFairDto addPaymentForJobFair(String paymentRedirectToken, String paymentId, Boolean isSuccessful);
-
 }
