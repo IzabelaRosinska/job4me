@@ -74,6 +74,7 @@ public class JobFairServiceImpl implements JobFairService {
         idValidator.validateNoIdForCreate(jobFair.getId(), ENTITY_NAME);
         Organizer organizer = organizerService.getAuthOrganizer();
         jobFair.setOrganizer(organizer);
+        jobFair.setIsPaymentSuccessful(false);
         jobFairValidator.validate(jobFair);
         return jobFairMapper.toDto(jobFairRepository.save(jobFair));
     }
@@ -145,6 +146,7 @@ public class JobFairServiceImpl implements JobFairService {
         idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
         Organizer organizer = organizerService.getAuthOrganizer();
         jobFairDto.setOrganizerId(organizer.getId());
+        jobFairDto.setIsPaymentSuccessful(false);
         jobFairValidator.validateDto(jobFairDto);
         return jobFairMapper.toDto(jobFairRepository.save(jobFairMapper.toEntity(jobFairDto)));
     }
