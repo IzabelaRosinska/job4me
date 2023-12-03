@@ -77,8 +77,11 @@ public class JobFair extends BaseEntity {
     @Column(name = "is_payment_successful")
     private Boolean isPaymentSuccessful;
 
-    @Column(name = "payment_id")
-    private String paymentId;
+    @Column(name = "session_id")
+    private String sessionId;
+
+    @Column(name = "payment_token")
+    private String paymentToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobFair")
     private Set<JobFairEmployerParticipation> jobFairEmployerParticipation;

@@ -32,22 +32,33 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public void handleJobFairPaymentSuccess(String paymentRedirectToken) {
+        jobFairService.addPaymentForJobFair(paymentRedirectToken, "", true);
+    }
+
+    @Override
+    public void handleJobFairPaymentCancel(String paymentRedirectToken) {
+
+    }
+
+    @Override
     public PaymentCheckout coordinateJobFairPayment(JobFairDto jobFairDto) {
         JobFairDto jobFair = jobFairService.saveDto(jobFairDto);
         String paymentRedirectToken = UUID.randomUUID().toString();
         String redirectPathSuffix = jobFair.getId() + "/" + paymentRedirectToken;
 
-        PaymentCheckout paymentCheckout = createJobFairPayment(redirectPathSuffix);
-        jobFairService.addPaymentForJobFair(jobFair.getId(), paymentRedirectToken, false);
+        Session session = createJobFairPayment(redirectPathSuffix);
+        PaymentCheckout paymentCheckout = new PaymentCheckout();
+        paymentCheckout.setUrl(session.getUrl());
+        jobFairService.addPaymentForJobFair(redirectPathSuffix, paymentRedirectToken, false);
 
         return paymentCheckout;
     }
 
     @Override
-    public PaymentCheckout createJobFairPayment(String redirectData) {
+    public Session createJobFairPayment(String redirectData) {
         Organizer organizer = organizerService.getAuthOrganizer();
 
-        PaymentCheckout paymentCheckout = new PaymentCheckout();
         Long productQuantity = 1L;
         Long productPrice = 200L;
         String productName = "Utworzenie targów pracy";
@@ -56,14 +67,12 @@ public class PaymentServiceImpl implements PaymentService {
         String productImageUrl = "https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R";
         String productDescription = "Tworzy targi pracy i umożliwia ich przeprowadzenie.";
         String customerEmail = organizer.getEmail();
-        String url = createPaymentSession(productQuantity, productPrice, productName, successUrl, cancelUrl, productImageUrl, productDescription, customerEmail);
-        paymentCheckout.setUrl(url);
 
-        return paymentCheckout;
+        return createPaymentSession(productQuantity, productPrice, productName, successUrl, cancelUrl, productImageUrl, productDescription, customerEmail);
     }
 
     @Override
-    public String createPaymentSession(Long productQuantity, Long productPrice, String productName, String successUrl, String cancelUrl, String productImageUrl, String productDescription, String customerEmail) {
+    public Session createPaymentSession(Long productQuantity, Long productPrice, String productName, String successUrl, String cancelUrl, String productImageUrl, String productDescription, String customerEmail) {
         Stripe.apiKey = recommendationApiKey;
 
         try {
@@ -95,7 +104,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             Session session = Session.create(params);
 
-            return session.getUrl();
+            return session;
         } catch (StripeException e) {
             System.out.println(e.getMessage());
             throw new PaymentException(e.getMessage(), e);

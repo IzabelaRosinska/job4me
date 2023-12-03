@@ -1,5 +1,6 @@
 package miwm.job4me.services.event;
 
+import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
@@ -190,13 +191,22 @@ public class JobFairServiceImpl implements JobFairService {
     }
 
     @Override
-    public JobFairDto addPaymentForJobFair(Long jobFairId, String paymentId, Boolean isSuccessful) {
-        JobFair jobFair = getJobFairById(jobFairId);
-        jobFair.setPaymentId(paymentId);
-        jobFair.setIsPaymentSuccessful(isSuccessful);
-        JobFair savedJobFair = jobFairRepository.save(jobFair);
+    public JobFairDto addPaymentForJobFair(String paymentRedirectToken, String paymentId, Boolean isSuccessful) {
+        String[] paymentRedirectTokenParts = paymentRedirectToken.split("/");
+        Long jobFairId = Long.parseLong(paymentRedirectTokenParts[0]);
+        String paymentToken = paymentRedirectTokenParts[1];
 
-        return jobFairMapper.toDto(savedJobFair);
+        JobFair jobFair = getJobFairById(jobFairId);
+
+        if (jobFair.getPaymentToken().equals(paymentToken)) {
+            jobFair.setSessionId(paymentId);
+            jobFair.setIsPaymentSuccessful(isSuccessful);
+            JobFair savedJobFair = jobFairRepository.save(jobFair);
+
+            return jobFairMapper.toDto(savedJobFair);
+        } else {
+            throw new AuthException("Payment token is invalid");
+        }
     }
 
 }
