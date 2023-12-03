@@ -95,8 +95,6 @@ public class LinkedInController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal().equals("anonymousUser")) {
             token = authService.loginLinkedinUser(email);
-            response.getWriter().write(user.getUserRole().toString() + ';' + token);
-            response.setHeader("Authorization", "Token " + token);
             response.sendRedirect(FRONT_HOST_AZURE + "/user?role=" + user.getUserRole().toString() + "&token=" + token);
         }
     }
