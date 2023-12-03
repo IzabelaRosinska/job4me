@@ -35,6 +35,8 @@ public interface JobFairEmployerParticipationService extends BaseDtoService<JobF
 
     boolean existsByJobFairIdAndEmployerId(Long jobFairId, Long employerId);
 
+    Boolean getParticipationStatus(Long jobFairId);
+
     JobFairEmployerParticipationDto update(Long id, JobFairEmployerParticipationDto jobFairEmployerParticipation);
 
     JobFairEmployerParticipationDto createParticipationRequestByEmployer(Long jobFairId);

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -219,6 +220,15 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     @Override
     public boolean existsByJobFairIdAndEmployerId(Long jobFairId, Long employerId) {
         return jobFairEmployerParticipationRepository.existsByJobFair_IdAndEmployer_Id(jobFairId, employerId);
+    }
+
+    @Override
+    public Boolean getParticipationStatus(Long jobFairId) {
+        Employer employer = employerService.getAuthEmployer();
+
+        Optional<JobFairEmployerParticipation> jobFairEmployerParticipation = jobFairEmployerParticipationRepository.findByJobFair_IdAndEmployer_Id(jobFairId, employer.getId());
+
+        return jobFairEmployerParticipation.map(JobFairEmployerParticipation::getIsAccepted).orElse(null);
     }
 
     @Override
