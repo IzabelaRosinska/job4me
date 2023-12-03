@@ -223,12 +223,13 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     }
 
     @Override
-    public Boolean getParticipationStatus(Long jobFairId) {
+    public JobFairEmployerParticipationDto findForEmployerByJobFair(Long jobFairId) {
         Employer employer = employerService.getAuthEmployer();
+        idValidator.validateLongId(jobFairId, ENTITY_NAME);
 
         Optional<JobFairEmployerParticipation> jobFairEmployerParticipation = jobFairEmployerParticipationRepository.findByJobFair_IdAndEmployer_Id(jobFairId, employer.getId());
 
-        return jobFairEmployerParticipation.map(JobFairEmployerParticipation::getIsAccepted).orElse(null);
+        return jobFairEmployerParticipation.map(jobFairEmployerParticipationMapper::toDto).orElse(null);
     }
 
     @Override
