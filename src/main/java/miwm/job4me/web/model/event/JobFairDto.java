@@ -36,7 +36,4 @@ public class JobFairDto {
     @Schema(description = "Job fair photo advertising event", example = "https://picsum.photos/100/100")
     private String photo;
 
-    @Schema(description = "Job fair is paid", example = "true")
-    private Boolean isPaymentSuccessful;
-
 }

@@ -75,7 +75,8 @@ public class JobFair extends BaseEntity {
     @Column(name = "photo", length = 13000)
     private String photo;
 
-    @OneToOne(mappedBy = "jobFair", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobFair")

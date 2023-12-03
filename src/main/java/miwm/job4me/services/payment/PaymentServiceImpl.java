@@ -8,7 +8,6 @@ import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
-import miwm.job4me.emails.EMailService;
 import miwm.job4me.exceptions.PaymentException;
 import miwm.job4me.model.payment.Payment;
 import miwm.job4me.model.users.Organizer;
@@ -21,6 +20,8 @@ import miwm.job4me.web.model.event.JobFairDto;
 import miwm.job4me.web.model.payment.PaymentCheckout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 import static miwm.job4me.messages.AppMessages.FRONT_HOST_AZURE;
 
@@ -39,15 +40,12 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrganizerService organizerService;
     private final JobFairService jobFairService;
 
-    private final EMailService eMailService;
-
-    public PaymentServiceImpl(PaymentRepository paymentRepository, PaymentValidator paymentValidator, IdValidator idValidator, OrganizerService organizerService, JobFairService jobFairService, EMailService eMailService) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, PaymentValidator paymentValidator, IdValidator idValidator, OrganizerService organizerService, JobFairService jobFairService) {
         this.paymentRepository = paymentRepository;
         this.paymentValidator = paymentValidator;
         this.idValidator = idValidator;
         this.organizerService = organizerService;
         this.jobFairService = jobFairService;
-        this.eMailService = eMailService;
     }
 
     @Override
@@ -58,20 +56,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void updatePaymentStatus(String sessionId) {
-        ;
         Payment payment = getPaymentBySessionId(sessionId);
         payment.setIsPaid(true);
         paymentRepository.save(payment);
-        notifyOrganizerAboutPayment(payment);
-    }
-
-    @Override
-    public void notifyOrganizerAboutPayment(Payment payment) {
-        Organizer organizer = organizerService.getAuthOrganizer();
-        String subject = "Potwierdzenie płatności";
-        String text = "Dziękujemy za dokonanie płatności za utworzenie targów pracy. " +
-                "W razie jakichkolwiek pytań prosimy o kontakt na adres: " + organizer.getEmail();
-        eMailService.sendSimpleMessage(organizer.getEmail(), subject, text);
     }
 
     @Override
@@ -83,14 +70,13 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentCheckout coordinateJobFairPayment(JobFairDto jobFairDto) {
         JobFairDto jobFair = jobFairService.saveDto(jobFairDto);
-        String redirectPathSuffix = "/" + jobFair.getId().toString();
-
-        Session session = createJobFairPayment(redirectPathSuffix);
+        Session session = createJobFairPayment();
 
         Payment payment = Payment.builder()
                 .isPaid(false)
                 .jobFair(jobFairService.getJobFairById(jobFair.getId()))
                 .sessionId(session.getId())
+                .creationTimestamp(LocalDateTime.now())
                 .build();
 
         save(payment);
@@ -122,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
                     break;
                 }
                 default:
-                    System.out.println("Unhandled event type: " + event.getType());
+                    break;
             }
 
         } catch (SignatureVerificationException e) {
@@ -132,14 +118,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Session createJobFairPayment(String redirectData) {
+    public Session createJobFairPayment() {
         Organizer organizer = organizerService.getAuthOrganizer();
 
         Long productQuantity = 1L;
         Long productPrice = 200L;
         String productName = "Utworzenie targów pracy";
-        String successUrl = FRONT_HOST_AZURE + "/organizer/account";
-        String cancelUrl = FRONT_HOST_AZURE + "/organizer/account";
+        String successUrl = FRONT_HOST_AZURE + "/organizer/payment/success";
+        String cancelUrl = FRONT_HOST_AZURE + "/organizer/payment/cancel";
         String productImageUrl = "https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R";
         String productDescription = "Tworzy targi pracy i umożliwia ich przeprowadzenie.";
         String customerEmail = organizer.getEmail();

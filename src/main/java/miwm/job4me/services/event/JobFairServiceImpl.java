@@ -142,10 +142,9 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public JobFairDto saveDto(JobFairDto jobFairDto) {
-        idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
+//        idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
         Organizer organizer = organizerService.getAuthOrganizer();
         jobFairDto.setOrganizerId(organizer.getId());
-        jobFairDto.setIsPaymentSuccessful(false);
         jobFairValidator.validateDto(jobFairDto);
         return jobFairMapper.toDto(jobFairRepository.save(jobFairMapper.toEntity(jobFairDto)));
     }

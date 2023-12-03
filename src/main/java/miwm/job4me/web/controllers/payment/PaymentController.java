@@ -28,7 +28,7 @@ public class PaymentController {
         return new ResponseEntity<>("Webhook received successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/job-fairs/payment")
+    @PostMapping("organizer/job-fairs/payment")
     @Operation(summary = "Create JobFair and payment session", description = "Create JobFair and payment session")
     public ResponseEntity<PaymentCheckout> payForOrganizerAccount(@RequestBody JobFairDto jobFairDto) {
         PaymentCheckout paymentCheckout = paymentService.coordinateJobFairPayment(jobFairDto);

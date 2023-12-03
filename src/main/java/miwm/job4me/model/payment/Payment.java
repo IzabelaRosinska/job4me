@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "payment")
+@Table(name = "payments")
 public class Payment extends BaseEntity {
 
     @Builder
@@ -42,7 +42,6 @@ public class Payment extends BaseEntity {
     @Column(name = "creation_timestamp")
     private LocalDateTime creationTimestamp;
 
-    @NotNull(message = "Payment job fair cannot be null")
     @OneToOne(mappedBy = "payment")
     private JobFair jobFair;
 

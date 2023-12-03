@@ -18,6 +18,18 @@ public class PaymentValidator {
         if (payment.getSessionId() == null || payment.getSessionId().isEmpty()) {
             throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "sessionId"));
         }
+
+        if (payment.getIsPaid() == null) {
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "isPaid"));
+        }
+
+        if (payment.getCreationTimestamp() == null) {
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "creationTimestamp"));
+        }
+
+        if (payment.getJobFair() == null) {
+            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "jobFair"));
+        }
     }
 
 }
