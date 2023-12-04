@@ -34,4 +34,5 @@ public class JobFairMapper {
         jobFair.setPhoto(jobFairDto.getPhoto());
         return jobFair;
     }
+
 }

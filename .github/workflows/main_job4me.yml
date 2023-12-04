@@ -69,3 +69,5 @@ jobs:
             RECOMMENDATION_API_URL: ${{ secrets.RECOMMENDATION_API_URL }}
             RECOMMENDATION_API_KEY: ${{ secrets.RECOMMENDATION_API_KEY }}
             STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+            CV_FONT: ${{ secrets.CV_FONT }}
+            STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}

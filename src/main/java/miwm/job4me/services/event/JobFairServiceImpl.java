@@ -142,7 +142,7 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public JobFairDto saveDto(JobFairDto jobFairDto) {
-        idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
+//        idValidator.validateNoIdForCreate(jobFairDto.getId(), ENTITY_NAME);
         Organizer organizer = organizerService.getAuthOrganizer();
         jobFairDto.setOrganizerId(organizer.getId());
         jobFairValidator.validateDto(jobFairDto);
@@ -186,4 +186,5 @@ public class JobFairServiceImpl implements JobFairService {
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
     }
+
 }
