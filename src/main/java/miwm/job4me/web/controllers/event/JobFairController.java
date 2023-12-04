@@ -67,7 +67,7 @@ public class JobFairController {
             @RequestParam(defaultValue = "1") String order,
             @RequestParam(defaultValue = "false") Boolean showUpcoming,
             @RequestParam(defaultValue = "") String address) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId, true);
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId, Boolean.TRUE);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -96,7 +96,7 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address) {
-        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null, true);
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null, Boolean.TRUE);
     }
 
     @Override
@@ -185,6 +185,17 @@ public class JobFairServiceImpl implements JobFairService {
         return jobFairRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id)));
+    }
+
+    @Override
+    public JobFair getOnlyPaidJobFairById(Long id) {
+        JobFair jobFair = getJobFairById(id);
+
+        if (!jobFair.getPayment().getIsPaid()) {
+            throw new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, id));
+        }
+
+        return jobFair;
     }
 
 }

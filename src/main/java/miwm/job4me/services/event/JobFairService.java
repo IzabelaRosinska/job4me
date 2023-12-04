@@ -30,4 +30,6 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
 
     JobFair getJobFairById(Long id);
 
+    JobFair getOnlyPaidJobFairById(Long id);
+
 }

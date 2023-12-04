@@ -246,7 +246,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     @Override
     public JobFairEmployerParticipationDto createParticipationRequestByEmployer(Long jobFairId) {
         Employer employer = employerService.getAuthEmployer();
-        JobFair jobFair = jobFairService.getJobFairById(jobFairId);
+        JobFair jobFair = jobFairService.getOnlyPaidJobFairById(jobFairId);
 
         JobFairEmployerParticipation jobFairEmployerParticipation = new JobFairEmployerParticipation();
         jobFairEmployerParticipation.setJobFair(jobFair);
