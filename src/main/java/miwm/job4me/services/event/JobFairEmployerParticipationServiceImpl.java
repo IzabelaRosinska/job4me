@@ -21,6 +21,7 @@ import miwm.job4me.web.model.event.JobFairEmployerParticipationDto;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -131,8 +132,10 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
             employerService.strictExistsById(employerId);
         }
 
+        Sort sortAlphabetically = Sort.by(Sort.Direction.ASC, "employerCompanyName");
+
         return jobFairEmployerParticipationRepository
-                .findAllByFilters(PageRequest.of(page, size), status, null, jobFairId, employerId, jobFairName, employerCompanyName);
+                .findAllByFilters(PageRequest.of(page, size, sortAlphabetically), status, null, jobFairId, employerId, jobFairName, employerCompanyName);
     }
 
     @Override

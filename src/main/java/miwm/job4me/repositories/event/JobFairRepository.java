@@ -12,11 +12,13 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface JobFairRepository extends JpaRepository<JobFair, Long> {
+
     @Query("SELECT jf FROM JobFair jf" +
             " WHERE ((:organizerId IS NULL OR jf.organizer.id = :organizerId)" +
+            " AND (:isPaid IS NULL OR jf.payment.isPaid = :isPaid)" +
             " AND (:dateStart IS NULL OR jf.dateStart >= :dateStart)" +
             " AND (:dateEnd IS NULL OR jf.dateEnd <= :dateEnd)" +
             " AND (:address IS NULL OR LOWER(jf.address) LIKE LOWER(CONCAT('%', :address, '%'))))")
-    Page<JobFair> findAllByFilters(Pageable pageable, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, @Param("address") String address, @Param("organizerId") Long organizerId);
+    Page<JobFair> findAllByFilters(Pageable pageable, @Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, @Param("address") String address, @Param("organizerId") Long organizerId, @Param("isPaid") Boolean isPaid);
 
 }

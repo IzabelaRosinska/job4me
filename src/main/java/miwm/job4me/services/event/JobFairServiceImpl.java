@@ -96,11 +96,11 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address) {
-        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null);
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null, true);
     }
 
     @Override
-    public Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId) {
+    public Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId, Boolean isPaid) {
         paginationValidator.validatePagination(page, size);
         LocalDateTime dateStart = null;
         LocalDateTime dateEnd = null;
@@ -112,7 +112,7 @@ public class JobFairServiceImpl implements JobFairService {
         }
 
         return jobFairRepository
-                .findAllByFilters(PageRequest.of(page, size, prepareSort(order)), dateStart, dateEnd, address, organizerId);
+                .findAllByFilters(PageRequest.of(page, size, prepareSort(order)), dateStart, dateEnd, address, organizerId, isPaid);
     }
 
     @Override
@@ -121,15 +121,15 @@ public class JobFairServiceImpl implements JobFairService {
     }
 
     @Override
-    public Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address) {
+    public Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Boolean isPaid) {
         Long organizerId = organizerService.getAuthOrganizer().getId();
 
-        return findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId);
+        return findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId, isPaid);
     }
 
     @Override
-    public Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId) {
-        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, organizerId).map(listDisplayMapper::toDtoFromJobFair);
+    public Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId, Boolean isPaid) {
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, organizerId, isPaid).map(listDisplayMapper::toDtoFromJobFair);
     }
 
     private Sort prepareSort(String order) {

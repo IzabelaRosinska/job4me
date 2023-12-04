@@ -10,13 +10,13 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
 
     Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address);
 
-    Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId);
+    Page<JobFair> findAllOfOrganizerByFilters(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId, Boolean isPaid);
 
     Page<ListDisplayDto> findAllByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address);
 
-    Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId);
+    Page<ListDisplayDto> findAllOfOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Long organizerId, Boolean isPaid);
 
-    Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address);
+    Page<ListDisplayDto> findAllOfSignedInOrganizerByFiltersListDisplay(int page, int size, String order, Boolean showUpcoming, String address, Boolean isPaid);
 
     JobFairDto saveDto(JobFairDto jobFairDto);
 

@@ -47,8 +47,9 @@ public class JobFairController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "1") String order,
             @RequestParam(defaultValue = "false") Boolean showUpcoming,
-            @RequestParam(defaultValue = "") String address) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfSignedInOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address);
+            @RequestParam(defaultValue = "") String address,
+            @RequestParam(required = false) Boolean isPaid) {
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfSignedInOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, isPaid);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -66,7 +67,7 @@ public class JobFairController {
             @RequestParam(defaultValue = "1") String order,
             @RequestParam(defaultValue = "false") Boolean showUpcoming,
             @RequestParam(defaultValue = "") String address) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId);
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId, true);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
