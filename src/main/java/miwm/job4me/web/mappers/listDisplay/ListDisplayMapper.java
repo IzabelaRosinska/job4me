@@ -103,11 +103,13 @@ public class ListDisplayMapper {
     private String concatListString(List<String> list) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (String element : list) {
-            stringBuilder.append(element).append(", ");
-        }
+        if (list != null && !list.isEmpty()) {
+            for (String element : list) {
+                stringBuilder.append(element).append(", ");
+            }
 
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        }
 
         return stringBuilder.toString();
     }
