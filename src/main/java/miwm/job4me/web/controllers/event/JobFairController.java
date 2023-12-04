@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.event.JobFairService;
 import miwm.job4me.web.model.event.JobFairDto;
 import miwm.job4me.web.model.listDisplay.ListDisplayDto;
+import miwm.job4me.web.model.payment.PaymentCheckout;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,6 @@ public class JobFairController {
         this.jobFairService = jobFairService;
     }
 
-    @PostMapping("organizer/job-fairs")
-    @Operation(summary = "Create job fair", description = "Creates new job fair in database")
-    public ResponseEntity<JobFairDto> createJobFair(@RequestBody JobFairDto jobFairDto) {
-        return new ResponseEntity<>(jobFairService.saveDto(jobFairDto), HttpStatus.CREATED);
-    }
 
     @GetMapping("job-fairs")
     @Operation(summary = "Get all job fairs by filters", description = "Gets all job fairs from database by filters")
@@ -46,9 +42,10 @@ public class JobFairController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "1") String order,
-            @RequestParam(defaultValue = "false") Boolean showUpcoming,
-            @RequestParam(defaultValue = "") String address) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfSignedInOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address);
+            @RequestParam(required = false) Boolean showUpcoming,
+            @RequestParam(defaultValue = "") String address,
+            @RequestParam(required = false) Boolean isPaid) {
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfSignedInOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, isPaid);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -66,7 +63,7 @@ public class JobFairController {
             @RequestParam(defaultValue = "1") String order,
             @RequestParam(defaultValue = "false") Boolean showUpcoming,
             @RequestParam(defaultValue = "") String address) {
-        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId);
+        Page<ListDisplayDto> jobFairDtoPage = jobFairService.findAllOfOrganizerByFiltersListDisplay(page, size, order, showUpcoming, address, organizerId, Boolean.TRUE);
 
         if (jobFairDtoPage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -93,4 +90,13 @@ public class JobFairController {
         jobFairService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("organizer/job-fairs/payment")
+    @Operation(summary = "Create JobFair and payment session", description = "Create JobFair and payment session")
+    public ResponseEntity<PaymentCheckout> payForOrganizerAccount(@RequestBody JobFairDto jobFairDto) {
+        PaymentCheckout paymentCheckout = jobFairService.coordinateJobFairPayment(jobFairDto);
+
+        return new ResponseEntity<>(paymentCheckout, HttpStatus.OK);
+    }
+
 }
