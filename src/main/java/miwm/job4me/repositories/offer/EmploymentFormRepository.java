@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmploymentFormRepository extends JpaRepository<EmploymentForm, Long> {
-    @Query("SELECT e FROM EmploymentForm e WHERE :name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    @Query("SELECT e FROM EmploymentForm e WHERE (:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%')))")
     Page<EmploymentForm> findByNameContaining(Pageable pageable, String name);
 
     boolean existsByName(String name);

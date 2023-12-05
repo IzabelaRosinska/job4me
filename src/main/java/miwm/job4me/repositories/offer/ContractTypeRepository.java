@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContractTypeRepository extends JpaRepository<ContractType, Long> {
-    @Query("SELECT c FROM ContractType c WHERE :name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    @Query("SELECT c FROM ContractType c WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))")
     Page<ContractType> findByNameContaining(Pageable pageable, @Param("name") String name);
 
     ContractType findByName(String name);

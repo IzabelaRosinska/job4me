@@ -7,6 +7,7 @@ import miwm.job4me.web.model.listDisplay.ListDisplayDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,8 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationService.createParticipationRequestByEmployer(jobFairId), HttpStatus.CREATED);
     }
 
+    //    use jobFairEmployerParticipationService.canEmployerHaveAccessToJobFairEmployerParticipation to preauthorize
+    @PreAuthorize("@jobFairEmployerParticipationService.canEmployerHaveAccessToJobFairEmployerParticipation(#requestId)")
     @GetMapping("employer/employer-participation/{requestId}")
     @Operation(summary = "Get job fair employer participation request", description = "Gets job fair employer participation from database by job fair id")
     public ResponseEntity<JobFairEmployerParticipationDto> getJobFairEmployerParticipationRequestForEmployer(@PathVariable Long requestId) {
@@ -35,6 +38,7 @@ public class JobFairEmployerParticipationController {
         return new ResponseEntity<>(jobFairEmployerParticipationService.findForEmployerByJobFair(jobFairId), HttpStatus.OK);
     }
 
+    @PreAuthorize("@jobFairEmployerParticipationService.canEmployerHaveAccessToJobFairEmployerParticipation(#requestId)")
     @DeleteMapping("employer/employer-participation/{requestId}")
     @Operation(summary = "Delete job fair employer participation", description = "Deletes job fair employer participation in database")
     public ResponseEntity<Void> deleteJobFairEmployerParticipationForEmployer(@PathVariable Long requestId) {
