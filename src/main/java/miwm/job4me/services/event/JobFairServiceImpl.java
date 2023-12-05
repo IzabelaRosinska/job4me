@@ -103,7 +103,7 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public Page<JobFair> findAllByFilters(int page, int size, String order, Boolean showUpcoming, String address) {
-        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null, Boolean.TRUE);
+        return findAllOfOrganizerByFilters(page, size, order, showUpcoming, address, null, true);
     }
 
     @Override
