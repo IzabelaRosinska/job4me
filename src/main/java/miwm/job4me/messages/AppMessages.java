@@ -61,6 +61,7 @@ public class AppMessages {
     public static final String ORGANIZER = "ORGANIZER";
     public static final String EMPLOYER = "EMPLOYER";
     public static final String EMPLOYEE = "EMPLOYEE";
+    public static final String ADMIN = "ADMIN";
 
     public static final String ERROR_URL = "/";
     public static final String SUCCESS_URL = "/";
