@@ -105,9 +105,9 @@ public class JobFairServiceImpl implements JobFairService {
         LocalDateTime dateStart = null;
         LocalDateTime dateEnd = null;
 
-        if (showUpcoming) {
+        if (showUpcoming != null && showUpcoming) {
             dateStart = LocalDateTime.now();
-        } else {
+        } else if (showUpcoming != null) {
             dateEnd = LocalDateTime.now();
         }
 

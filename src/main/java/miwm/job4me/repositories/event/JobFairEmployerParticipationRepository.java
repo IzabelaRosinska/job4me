@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -30,5 +31,7 @@ public interface JobFairEmployerParticipationRepository extends JpaRepository<Jo
                                                         @Param("employerCompanyName") String employerCompanyName);
 
     boolean existsByJobFair_IdAndEmployer_Id(Long id, Long id1);
+
+    Optional<JobFairEmployerParticipation> findByJobFair_IdAndEmployer_Id(Long jobFairId, Long employerId);
 
 }
