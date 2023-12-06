@@ -5,6 +5,7 @@ import miwm.job4me.jwt.JwtTokenVerifier;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import miwm.job4me.messages.AppMessages;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +19,7 @@ import javax.servlet.http.Cookie;
 
 import static miwm.job4me.messages.AppMessages.*;
 
-
+@Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
