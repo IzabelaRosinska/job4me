@@ -60,10 +60,8 @@ class EmployeeControllerTest {
     @MockBean
     JwtConfig jwtConfig;
 
-
     private Employee employee;
     private EmployeeDto employeeDto;
-
 
     @BeforeEach
     public void setUp() {
@@ -100,8 +98,8 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void getEmployeeAccount() throws Exception {
-
+    void getEmployeeAccountTest() throws Exception {
+        // given
         when(employeeService.getEmployeeDetails()).thenReturn(employeeDto);
         ObjectMapper mapper = new ObjectMapper();
         // when
@@ -111,5 +109,19 @@ class EmployeeControllerTest {
 
         // then
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void updateEmployeeDetailsTest() throws Exception {
+        // given
+        when(employeeService.saveEmployeeDetails(employeeDto)).thenReturn(employeeDto);
+        ObjectMapper mapper = new ObjectMapper();
+        // when
+        val resultActions = mockMvc.perform(post("/employee/account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(employeeDto)));
+
+        // then
+        resultActions.andExpect(status().isCreated());
     }
 }
