@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Optional;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -151,48 +150,6 @@ class EmployerServiceImplTest {
             //then
             assertEquals(message, e.getMessage());
         }
-    }
-
-    @Test
-    void getEmployerDetails() {
-    }
-
-    @Test
-    void saveEmployerDetails() {
-    }
-
-    @Test
-    void saveEmployerDataFromLinkedin() {
-    }
-
-    @Test
-    void getEmployerByToken() {
-    }
-
-    @Test
-    void updatePassword() {
-    }
-
-    @Test
-    void findById() {
-    }
-
-    @Test
-    void save() {
-    }
-
-    @Test
-    void delete() {
-    }
-
-    @Test
-    void deleteById() {
-    }
-
-
-
-    @Test
-    void getAuthEmployer() {
     }
 
 }

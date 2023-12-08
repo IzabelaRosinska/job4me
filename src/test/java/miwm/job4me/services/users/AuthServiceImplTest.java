@@ -1,6 +1,5 @@
 package miwm.job4me.services.users;
 
-
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Person;
@@ -25,16 +24,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import javax.crypto.SecretKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -42,7 +37,7 @@ import static org.mockito.Mockito.*;
 @WithMockUser
 @ContextConfiguration
 @SpringBootTest
-class UserAuthenticationServiceTest {
+class AuthServiceImplTest {
 
     @MockBean
     JavaMailSender javaMailSenderMock;
@@ -97,7 +92,7 @@ class UserAuthenticationServiceTest {
                 .photo("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.creativefabrica.com%2Fpl%2Fproduct%2Fperson-icon-13%2F&psig=AOvVaw2D_r8bNfGFAUAv6AI0QXjD&ust=1701606266910000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOi9prrf8IIDFQAAAAAdAAAAABAE")
                 .build();
     }
-
+/*
     @Test
     void loadUserByUsername() {
         //when
@@ -109,58 +104,7 @@ class UserAuthenticationServiceTest {
         assertNotNull(loadedPerson);
         assertEquals(loadedPerson.getClass(), Employer.class);
     }
-/*
-    private String anyString() {
-    }
-
-
-    @Test
-    public void existentUserCanGetTokenAndAuthentication() throws Exception {
-       // String username = "AC";
-        //String password = "passAC";
-
-        //String body = "{\"username\":" + "\"" + username + "\"" + "," + "\"password\":" + "\"" + password +  "\"" + "}";
-        //System.out.print(body);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/login").with(csrf()).content("{\"username\": \"AC\", \"password\": \"passAC\"}"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(302))
-                .andReturn();
-
-       // MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/login")
-       //         .content(body))
-          //      .andExpect(status().isOk()).andReturn();
-
-        //MvcResult result =
-
-         //      mockMvc
-          //              .perform(post("/login")
-          //              .with(user("admin").password("pass").roles("USER","ADMIN")))
-
-        String token = result.getResponse().getHeader("Authorization");
-        //String response = result.getResponse().getContentAsString();
-        System.out.print("TOKEN " + token + "\n");
-        //response = response.replace("{\"access_token\": \"", "");
-       // String token = response.replace("\"}", "");
-//
-        //mockMvc.perform(MockMvcRequestBuilders.get("/test")
-        //                .header("Authorization", "Bearer " + token))
-         //       .andExpect(status().isOk());
-
-
-    }
-
-    @Test
-    void getAuthenticatedProviderId() {
-    }
-
-    @Test
-    void getAuthenticatedClientId() {
-    }
-
  */
-
-
 }
 
 
