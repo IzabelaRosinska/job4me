@@ -111,9 +111,13 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .stream()
                 .toList();
 
-        return jobOfferService
-                .findAllOffersOfEmployers(page, size, order, employersIds, true, null)
-                .map(listDisplayMapper::toDtoFromJobOffer);
+        if (employersIds.size() == 0) {
+            return Page.empty();
+        } else {
+            return jobOfferService
+                    .findAllOffersOfEmployers(page, size, order, employersIds, true, null)
+                    .map(listDisplayMapper::toDtoFromJobOffer);
+        }
     }
 
     @Override
@@ -126,9 +130,13 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
                 .stream()
                 .toList();
 
-        return jobOfferService
-                .findByFilters(page, size, order, jobOfferFilterDto, employersIds, true, null)
-                .map(listDisplayMapper::toDtoFromJobOffer);
+        if (employersIds.size() == 0) {
+            return Page.empty();
+        } else {
+            return jobOfferService
+                    .findByFilters(page, size, order, jobOfferFilterDto, employersIds, true, null)
+                    .map(listDisplayMapper::toDtoFromJobOffer);
+        }
     }
 
     private ListDisplaySavedDto setSavedTrue(ListDisplaySavedDto listDisplaySaved) {

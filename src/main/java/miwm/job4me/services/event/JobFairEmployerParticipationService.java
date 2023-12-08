@@ -51,4 +51,8 @@ public interface JobFairEmployerParticipationService extends BaseDtoService<JobF
 
     JobFairEmployerParticipation getJobFairEmployerParticipationById(Long jobFairParticipationId);
 
+    boolean canEmployerHaveAccessToJobFairEmployerParticipation(Long jobFairEmployerParticipationId);
+
+    boolean canOrganizerHaveAccessToJobFairEmployerParticipation(Long jobFairEmployerParticipationId);
+
 }

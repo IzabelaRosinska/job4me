@@ -5,7 +5,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.ContractType;
 import miwm.job4me.repositories.offer.ContractTypeRepository;
-import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.ContractTypeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
@@ -25,16 +24,14 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     private final ContractTypeValidator contractTypeValidator;
     private final IdValidator idValidator;
     private final PaginationValidator paginationValidator;
-    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "ContractType";
 
-    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
+    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.contractTypeRepository = contractTypeRepository;
         this.contractTypeMapper = contractTypeMapper;
         this.contractTypeValidator = contractTypeValidator;
         this.idValidator = idValidator;
         this.paginationValidator = paginationValidator;
-        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -99,7 +96,6 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     @Override
     public Page<ContractTypeDto> findByNameContaining(int page, int size, String name) {
         paginationValidator.validatePagination(page, size);
-        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return contractTypeRepository
                 .findByNameContaining(PageRequest.of(page, size), name)

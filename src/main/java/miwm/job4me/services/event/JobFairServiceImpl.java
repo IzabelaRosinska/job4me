@@ -226,4 +226,12 @@ public class JobFairServiceImpl implements JobFairService {
         return paymentCheckout;
     }
 
+    @Override
+    public boolean isJobFairCreatedByJobFairId(Long jobFairId) {
+        Organizer organizer = organizerService.getAuthOrganizer();
+        JobFair jobFair = getJobFairById(jobFairId);
+
+        return jobFair.getOrganizer().getId().equals(organizer.getId());
+    }
+
 }

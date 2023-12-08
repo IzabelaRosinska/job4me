@@ -36,4 +36,6 @@ public interface JobFairService extends BaseDtoService<JobFair, JobFairDto, Long
 
     PaymentCheckout coordinateJobFairPayment(JobFairDto jobFairDto);
 
+    boolean isJobFairCreatedByJobFairId(Long jobFairId);
+
 }

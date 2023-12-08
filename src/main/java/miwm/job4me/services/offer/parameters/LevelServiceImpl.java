@@ -5,7 +5,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.Level;
 import miwm.job4me.repositories.offer.LevelRepository;
-import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.LevelValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
@@ -25,16 +24,14 @@ public class LevelServiceImpl implements LevelService {
     private final LevelValidator levelValidator;
     private final IdValidator idValidator;
     private final PaginationValidator paginationValidator;
-    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "Level";
 
-    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
+    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.levelRepository = levelRepository;
         this.levelMapper = levelMapper;
         this.levelValidator = levelValidator;
         this.idValidator = idValidator;
         this.paginationValidator = paginationValidator;
-        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -70,7 +67,6 @@ public class LevelServiceImpl implements LevelService {
     @Override
     public Page<LevelDto> findByNameContaining(int page, int size, String name) {
         paginationValidator.validatePagination(page, size);
-        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return levelRepository
                 .findByNameContaining(PageRequest.of(page, size), name)
