@@ -1,12 +1,10 @@
 package miwm.job4me.web.controllers;
 
-import antlr.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.security.ApplicationSecurityConfig;
 import miwm.job4me.services.offer.SavedOfferService;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.OrganizerService;
@@ -15,31 +13,21 @@ import miwm.job4me.web.model.users.EmployeeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
 import javax.crypto.SecretKey;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = EmployeeController.class,
         excludeFilters =
@@ -47,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 type = FilterType.ASSIGNABLE_TYPE,
                 classes = JwtUsernameAndPasswordAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 class EmployeeControllerTest {
@@ -67,7 +54,12 @@ class EmployeeControllerTest {
     @MockBean
     SavedEmployerService savedEmployerService;
 
-  
+    @MockBean
+    SecretKey secretKey;
+
+    @MockBean
+    JwtConfig jwtConfig;
+
 
     private Employee employee;
     private EmployeeDto employeeDto;
