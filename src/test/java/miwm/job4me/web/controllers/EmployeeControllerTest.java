@@ -1,13 +1,10 @@
 package miwm.job4me.web.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import miwm.job4me.config.Utils;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.model.users.Employer;
-import miwm.job4me.model.users.SavedEmployer;
 import miwm.job4me.services.offer.SavedOfferService;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.OrganizerService;
@@ -33,9 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = EmployeeController.class,
         excludeFilters =
@@ -115,11 +109,10 @@ class EmployeeControllerTest {
     void getEmployeeAccountTest() throws Exception {
         // given
         when(employeeService.getEmployeeDetails()).thenReturn(employeeDto);
-        ObjectMapper mapper = new ObjectMapper();
         // when
         val resultActions = mockMvc.perform(get("/employee/account")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(employeeDto)));
+                .content(Utils.objectToJsonString(employeeDto)));
         // then
         resultActions.andExpect(status().isOk());
     }
@@ -128,11 +121,10 @@ class EmployeeControllerTest {
     void updateEmployeeDetailsTest() throws Exception {
         // given
         when(employeeService.saveEmployeeDetails(employeeDto)).thenReturn(employeeDto);
-        ObjectMapper mapper = new ObjectMapper();
         // when
         val resultActions = mockMvc.perform(post("/employee/account")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(employeeDto)));
+                .content(Utils.objectToJsonString(employeeDto)));
         // then
         resultActions.andExpect(status().isCreated());
     }
@@ -143,7 +135,6 @@ class EmployeeControllerTest {
         when(savedEmployerService.findEmployerWithIdByUser(savedEmployer.getId())).thenReturn(savedEmployer);
         // when
         String url = "/employee/employer/" + savedEmployer.getId() + "/account";
-        System.out.print(url);
         val resultActions = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON));
         // then
