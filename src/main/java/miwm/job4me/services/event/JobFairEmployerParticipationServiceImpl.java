@@ -354,7 +354,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     public boolean canEmployerHaveAccessToJobFairEmployerParticipation(Long jobFairEmployerParticipationId) {
         Employer employer = employerService.getAuthEmployer();
         JobFairEmployerParticipationDto jobFairEmployerParticipation = findById(jobFairEmployerParticipationId);
-        System.out.println("TESTOWANIE" + jobFairEmployerParticipation.getEmployerId() + " " + employer.getId());
+
         return jobFairEmployerParticipation.getEmployerId().equals(employer.getId());
     }
 

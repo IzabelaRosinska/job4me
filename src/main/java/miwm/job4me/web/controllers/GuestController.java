@@ -8,7 +8,7 @@ import miwm.job4me.web.model.users.OrganizerDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,15 +22,15 @@ public class GuestController {
         this.organizerService = organizerService;
     }
 
-    @GetMapping("/account/employer")
+    @GetMapping("/account/employer/{id}")
     @Operation(summary = "Gets employer with given id", description = "Gets employer with given id for not logged user")
-    public ResponseEntity<EmployerDto> getEmployer(@RequestParam Long id) {
+    public ResponseEntity<EmployerDto> getEmployer(@PathVariable Long id) {
         return new ResponseEntity<>(employerService.findEmployerById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/account/organizer")
+    @GetMapping("/account/organizer/{id}")
     @Operation(summary = "Gets organizer with given id", description = "Gets organizer with given id for not logged user")
-    public ResponseEntity<OrganizerDto> getOrganizer(@RequestParam Long id) {
+    public ResponseEntity<OrganizerDto> getOrganizer(@PathVariable Long id) {
         return new ResponseEntity<>(organizerService.findOrganizerById(id), HttpStatus.OK);
     }
 }

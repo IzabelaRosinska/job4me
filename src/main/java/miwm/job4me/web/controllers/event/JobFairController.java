@@ -99,4 +99,10 @@ public class JobFairController {
         return new ResponseEntity<>(paymentCheckout, HttpStatus.OK);
     }
 
+    @GetMapping("organizer/job-fairs/{jobFairId}/access")
+    @Operation(summary = "Check if job fair is created by organizer", description = "Check if job fair is created by organizer")
+    public ResponseEntity<Boolean> isJobFairCreatedByJobFairId(@PathVariable Long jobFairId) {
+        return new ResponseEntity<>(jobFairService.isJobFairCreatedByJobFairId(jobFairId), HttpStatus.OK);
+    }
+
 }
