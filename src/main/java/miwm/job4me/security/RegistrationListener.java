@@ -6,6 +6,7 @@ import miwm.job4me.services.users.UserAuthenticationService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+
 import java.util.UUID;
 
 import static miwm.job4me.messages.AppMessages.BACKEND_HOST_AZURE;
@@ -41,6 +42,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String confirmationUrl = event.getAppUrl() + REGISTRATION_URL + token;
         String text = confirmRegistrationEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
 
-        emailService.sendSimpleMessage(recipientAddress, subject, text);
+        emailService.sendHtmlMessageWithTemplate(recipientAddress, subject, text);
     }
 }

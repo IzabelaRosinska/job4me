@@ -297,7 +297,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String subject = EmailMessages.employerJobFairParticipationRequestEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.employerJobFairParticipationRequestEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
-        eMailService.sendSimpleMessage(recipient, subject, text);
+        eMailService.sendHtmlMessageWithTemplate(recipient, subject, text);
     }
 
     private void sendAcceptEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
@@ -305,7 +305,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String subject = EmailMessages.employerJobFairParticipationAcceptEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.employerJobFairParticipationAcceptEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
-        eMailService.sendSimpleMessage(recipient, subject, text);
+        eMailService.sendHtmlMessageWithTemplate(recipient, subject, text);
     }
 
     private void sendRejectEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
@@ -313,7 +313,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String subject = EmailMessages.employerJobFairParticipationRejectEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.employerJobFairParticipationRejectEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
-        eMailService.sendSimpleMessage(recipient, subject, text);
+        eMailService.sendHtmlMessageWithTemplate(recipient, subject, text);
     }
 
     private void sendDeleteEmailToEmployer(Employer employer, Long jobFairId, String jobFairName) {
@@ -321,7 +321,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String subject = EmailMessages.employerJobFairParticipationDeleteEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.employerJobFairParticipationDeleteEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
-        eMailService.sendSimpleMessage(recipient, subject, text);
+        eMailService.sendHtmlMessageWithTemplate(recipient, subject, text);
     }
 
     private void sendDeleteEmailToOrganizer(Employer employer, Long jobFairId, String jobFairName) {
@@ -329,7 +329,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
         String subject = EmailMessages.organizerJobFairParticipationDeleteEmailSubject(employer.getCompanyName(), jobFairName);
         String text = EmailMessages.organizerJobFairParticipationDeleteEmailText(employer.getCompanyName(), jobFairId, jobFairName);
 
-        eMailService.sendSimpleMessage(recipient, subject, text);
+        eMailService.sendHtmlMessageWithTemplate(recipient, subject, text);
     }
 
     private String getEmployerContactEmail(Employer employer) {

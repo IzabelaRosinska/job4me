@@ -212,7 +212,7 @@ public class UserAuthenticationService implements UserDetailsService {
             String confirmationUrl = contextPath + CHANGE_PASSWORD_URL + token;
             String text = resetPasswordEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
 
-            emailService.sendSimpleMessage(recipientAddress, subject, text);
+            emailService.sendHtmlMessageWithTemplate(recipientAddress, subject, text);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Person"));
 
