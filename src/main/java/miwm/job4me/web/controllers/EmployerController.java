@@ -76,7 +76,7 @@ public class EmployerController {
 
     @GetMapping("saved/employees")
     @Operation(summary = "Gets all saved employees in paginated list display form", description = "Gets all saved employees of logged in employer in paginated list display form")
-    public ResponseEntity<List<ListDisplayDto>> getAllSavedEmployees(
+    public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployees(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<ListDisplayDto> employeeDtoPage = savedEmployeeService.getSavedEmployeesForEmployerWithIdListDisplay(page, size);
@@ -85,6 +85,6 @@ public class EmployerController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(employeeDtoPage.getContent(), HttpStatus.OK);
+        return new ResponseEntity<>(employeeDtoPage, HttpStatus.OK);
     }
 }

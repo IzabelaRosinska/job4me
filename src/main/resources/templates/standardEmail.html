@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Email</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,900&amp;subset=latin-ext" rel="stylesheet">
+    <style>
+        body {
+            width: 100%;
+            font-family: "Roboto", sans-serif;
+            font-size: 22px;
+            color: #000000;
+            line-height: 20px;
+            margin: 0 auto;
+        }
+
+        .main {
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content {
+            margin-left: auto;
+            margin-right: auto;
+            width: 60%;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .logo {
+            width: 20%;
+            text-align: right;
+        }
+
+        .email-text {
+            text-align: justify;
+            min-height: 100px;
+            padding: 20px;
+            font-size: 18px;
+        }
+
+
+        .footer {
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 30px;
+            background-color: #3b6871;
+            padding: 10px;
+            height: 40px;
+        }
+
+        .header {
+            padding: 20px;
+            height: 40px;
+            font-weight: 700;
+            font-size: 22px;
+            background-color: #fafafa;
+            color: #3b6871;
+        }
+
+        .website-name {
+            color: #fafafa;
+            text-decoration: none;
+            line-height: 30px;
+            font-weight: 700;
+        }
+
+        .email-content {
+            background-color: #fafafa;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main">
+    <div class="content">
+        <table class="content">
+            <tr>
+                <td colspan="2" class="header">
+                    <div>
+                        <p th:text="${subject}">
+                            Temat maila
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr class="email-content">
+                <td class="email-text">
+                    <div>
+                        <p th:text="${emailText}">
+                            Tekst maila
+                        </p>
+                    </div>
+                </td>
+                <td class="logo">
+                    <a class="site-link" href="https://mango-moss-0c13e2b03.3.azurestaticapps.net"><img
+                            src="https://files.stripe.com/links/MDB8YWNjdF8xTzlaYWRJb1RMYU5hVEFqfGZsX2xpdmVfMXpMRkZueXpwc0VQaFdjOXNiU2p3a1Zp00kFAIQX0R"
+                            alt="job4me" width="200px" height="auto">
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="footer">
+                    <div>
+                        <p>Pozdrawiamy,
+                            <br>
+                            zespół <span class="website-name">job4me</span>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
