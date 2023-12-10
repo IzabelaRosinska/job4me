@@ -227,7 +227,7 @@ public class JobFairServiceImpl implements JobFairService {
     }
 
     @Override
-    public boolean isJobFairCreatedByJobFairId(Long jobFairId) {
+    public boolean isJobFairCreatedByOrganizer(Long jobFairId) {
         Organizer organizer = organizerService.getAuthOrganizer();
         JobFair jobFair = getJobFairById(jobFairId);
 

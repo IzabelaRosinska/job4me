@@ -8,6 +8,7 @@ import miwm.job4me.web.model.payment.PaymentCheckout;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -78,12 +79,14 @@ public class JobFairController {
         return new ResponseEntity<>(jobFairService.findById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("@jobFairController.canOrganizerHaveAccessToJobFair(#id)")
     @PutMapping("organizer/job-fairs/{id}")
     @Operation(summary = "Update job fair", description = "Updates job fair in database")
     public ResponseEntity<JobFairDto> updateJobFair(@PathVariable Long id, @RequestBody JobFairDto jobFairDto) {
         return new ResponseEntity<>(jobFairService.update(id, jobFairDto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@jobFairController.canOrganizerHaveAccessToJobFair(#id)")
     @DeleteMapping("organizer/job-fairs/{id}")
     @Operation(summary = "Delete job fair", description = "Deletes job fair from database")
     public ResponseEntity<Void> deleteJobFair(@PathVariable Long id) {
@@ -102,7 +105,11 @@ public class JobFairController {
     @GetMapping("organizer/job-fairs/{jobFairId}/access")
     @Operation(summary = "Check if job fair is created by organizer", description = "Check if job fair is created by organizer")
     public ResponseEntity<Boolean> isJobFairCreatedByJobFairId(@PathVariable Long jobFairId) {
-        return new ResponseEntity<>(jobFairService.isJobFairCreatedByJobFairId(jobFairId), HttpStatus.OK);
+        return new ResponseEntity<>(jobFairService.isJobFairCreatedByOrganizer(jobFairId), HttpStatus.OK);
+    }
+
+    public boolean canOrganizerHaveAccessToJobFair(Long jobFairId) {
+        return jobFairService.isJobFairCreatedByOrganizer(jobFairId);
     }
 
 }

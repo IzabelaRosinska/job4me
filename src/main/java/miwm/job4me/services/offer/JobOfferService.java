@@ -32,4 +32,6 @@ public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, L
     JobOfferDto activateOffer(Long id);
 
     JobOfferDto deactivateOffer(Long id);
+
+    boolean canEmployerHaveAccessToJobOffer(Long jobOfferId);
 }
