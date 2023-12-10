@@ -365,4 +365,9 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
         return jobFairEmployerParticipation.getJobFair().getOrganizer().getId().equals(organizerId);
     }
+
+    @Override
+    public boolean canOrganizerHaveAccessToJobFair(Long jobFairId) {
+        return jobFairService.isJobFairCreatedByOrganizer(jobFairId);
+    }
 }
