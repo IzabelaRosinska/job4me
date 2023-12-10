@@ -1,7 +1,7 @@
 package miwm.job4me.web.controllers;
 
 import lombok.val;
-import miwm.job4me.config.Utils;
+import miwm.job4me.utils.JsonMappingUtils;
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import miwm.job4me.model.users.Employee;
@@ -112,7 +112,7 @@ class EmployeeControllerTest {
         // when
         val resultActions = mockMvc.perform(get("/employee/account")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.objectToJsonString(employeeDto)));
+                .content(JsonMappingUtils.objectToJsonString(employeeDto)));
         // then
         resultActions.andExpect(status().isOk());
     }
@@ -124,7 +124,7 @@ class EmployeeControllerTest {
         // when
         val resultActions = mockMvc.perform(post("/employee/account")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.objectToJsonString(employeeDto)));
+                .content(JsonMappingUtils.objectToJsonString(employeeDto)));
         // then
         resultActions.andExpect(status().isCreated());
     }
@@ -140,7 +140,7 @@ class EmployeeControllerTest {
         // then
         resultActions.andExpect(status().isOk());
         String contentAsString = resultActions.andReturn().getResponse().getContentAsString();
-        val result = (EmployerReviewDto) Utils.jsonStringToObject(contentAsString, EmployerReviewDto.class);
+        val result = (EmployerReviewDto) JsonMappingUtils.jsonStringToObject(contentAsString, EmployerReviewDto.class);
         assertThat(result.getId()).isEqualTo(1L);
     }
 }
