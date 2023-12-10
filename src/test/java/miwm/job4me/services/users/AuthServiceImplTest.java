@@ -92,19 +92,6 @@ class AuthServiceImplTest {
                 .photo("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.creativefabrica.com%2Fpl%2Fproduct%2Fperson-icon-13%2F&psig=AOvVaw2D_r8bNfGFAUAv6AI0QXjD&ust=1701606266910000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOi9prrf8IIDFQAAAAAdAAAAABAE")
                 .build();
     }
-/*
-    @Test
-    void loadUserByUsername() {
-        //when
-        when(employerRepository.selectEmployerByUsername(any())).thenReturn(employer);
-        when(employeeRepository.selectEmployeeByUsername(any())).thenReturn(null);
-        when(organizerRepository.selectOrganizerByUsername(any())).thenReturn(null);
-        Person loadedPerson = userAuthenticationService.loadUserByUsername("itds.polska@wp.pl");
-        //then
-        assertNotNull(loadedPerson);
-        assertEquals(loadedPerson.getClass(), Employer.class);
-    }
- */
 }
 
 

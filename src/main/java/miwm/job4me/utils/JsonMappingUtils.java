@@ -1,9 +1,9 @@
-package miwm.job4me.config;
+package miwm.job4me.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class Utils {
+public class JsonMappingUtils {
 
     public static <T> T jsonStringToObject(final String jsonString, Class<T> classa) {
         try {
