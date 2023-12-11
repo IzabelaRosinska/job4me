@@ -16,14 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExperienceServiceImplTest {
@@ -88,7 +87,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test existsById - return true when Experience object exists")
     public void testExistsByIdExists() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         assertTrue(experienceService.existsById(experience1.getId()));
     }
@@ -97,7 +96,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test existsById - return false when Experience object does not exist")
     public void testExistsByIdDoesNotExist() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         assertFalse(experienceService.existsById(experience1.getId()));
     }
@@ -106,7 +105,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test strictExistsById - do nothing when Experience object exists")
     public void testStrictExistsByIdExists() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         assertDoesNotThrow(() -> experienceService.strictExistsById(experience1.getId()));
     }
@@ -115,7 +114,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test strictExistsById - throw NoSuchElementFoundException when Experience object does not exist")
     public void testStrictExistsByIdDoesNotExist() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         try {
             experienceService.strictExistsById(experience1.getId());
@@ -128,7 +127,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test strictExistsById - throw InvalidArgumentException when id is null")
     public void testStrictExistsByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             experienceService.strictExistsById(null);
@@ -189,7 +188,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test findById - throw InvalidArgumentException when id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             experienceService.findById(null);
@@ -204,7 +203,7 @@ class ExperienceServiceImplTest {
     public void testSaveValid() {
         when(experienceRepository.save(experience1)).thenReturn(experience1);
         when(experienceMapper.toDto(experience1)).thenReturn(experienceDto1);
-        Mockito.doNothing().when(experienceValidator).validate(experience1);
+        doNothing().when(experienceValidator).validate(experience1);
 
         ExperienceDto result = experienceService.save(experience1);
 
@@ -214,7 +213,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Experience object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(experienceValidator).validate(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(experienceValidator).validate(null);
 
         try {
             experienceService.save(null);
@@ -228,7 +227,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test save - throw InvalidArgumentException when ExperienceValidator fails")
     public void testSaveThrowExceptionExperienceValidatorFails() {
         experience1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(experienceValidator).validate(experience1);
+        doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(experienceValidator).validate(experience1);
 
         try {
             experienceService.save(experience1);
@@ -242,8 +241,8 @@ class ExperienceServiceImplTest {
     @DisplayName("Test delete - Experience object exists")
     public void testDeleteExperienceExists() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(experienceRepository).delete(experience1);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(experienceRepository).delete(experience1);
 
         assertDoesNotThrow(() -> experienceService.delete(experience1));
     }
@@ -252,7 +251,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test delete - Experience object does not exist")
     public void testDeleteExperienceDoesNotExist() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         try {
             experienceService.delete(experience1);
@@ -276,7 +275,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test delete - Experience id is null")
     public void testDeleteExperienceIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
         experience1.setId(null);
 
         try {
@@ -291,8 +290,8 @@ class ExperienceServiceImplTest {
     @DisplayName("Test delete by id - Experience object exists")
     public void testDeleteByIdExperienceExists() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(experienceRepository).deleteById(experience1.getId());
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(experienceRepository).deleteById(experience1.getId());
 
         assertDoesNotThrow(() -> experienceService.deleteById(experience1.getId()));
     }
@@ -301,7 +300,7 @@ class ExperienceServiceImplTest {
     @DisplayName("Test delete by id - Experience object does not exist")
     public void testDeleteByIdDoesNotExist() {
         when(experienceRepository.existsById(experience1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         try {
             experienceService.deleteById(experience1.getId());
@@ -314,7 +313,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             experienceService.deleteById(null);
@@ -327,9 +326,9 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test update - update and return ExperienceDto object when it is valid")
     public void testUpdateExperienceExists() {
-        Mockito.doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
         when(experienceRepository.existsById(experience1.getId())).thenReturn(true);
-        Mockito.doNothing().when(experienceValidator).validateDto(experienceDto1);
+        doNothing().when(experienceValidator).validateDto(experienceDto1);
         when(experienceMapper.toEntity(experienceDto1)).thenReturn(experience1);
         when(experienceRepository.save(experience1)).thenReturn(experience1);
         when(experienceMapper.toDto(experience1)).thenReturn(experienceDto1);
@@ -342,7 +341,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test update - throw NoSuchElementFoundException when IdValidator fails")
     public void testUpdateExperienceDoesNotExist() {
-        Mockito.doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, experience1.getId()))).when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
+        doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, experience1.getId()))).when(idValidator).validateLongId(experience1.getId(), ENTITY_NAME);
 
         try {
             experienceService.update(experienceDto1);
@@ -355,7 +354,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test update - throw InvalidArgumentException when ExperienceDto object is null and ExperienceValidator fails")
     public void testUpdateExperienceDtoNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(experienceValidator).validateDto(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(experienceValidator).validateDto(null);
 
         try {
             experienceService.update(null);
@@ -392,7 +391,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test findAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testFindAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             experienceService.findAllByEmployeeId(null);
@@ -405,8 +404,8 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - delete all Experience objects for given employee")
     public void testDeleteAllByEmployeeId() {
-        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(experienceRepository).deleteAllByEmployeeId(employee.getId());
+        doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
+        doNothing().when(experienceRepository).deleteAllByEmployeeId(employee.getId());
 
         assertDoesNotThrow(() -> experienceService.deleteAllByEmployeeId(employee.getId()));
     }
@@ -414,7 +413,7 @@ class ExperienceServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testDeleteAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             experienceService.deleteAllByEmployeeId(null);

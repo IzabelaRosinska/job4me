@@ -12,10 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class EducationValidatorTest {
@@ -47,7 +48,7 @@ class EducationValidatorTest {
     @Test
     @DisplayName("Validate dto - pass validation when dto is valid")
     void validateDtoValidDto() {
-        Mockito.doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         assertDoesNotThrow(() -> educationValidator.validateDto(educationDto));
     }
@@ -68,7 +69,7 @@ class EducationValidatorTest {
     void validateDtoDescriptionValidatorFails() {
         educationDto.setDescription(null);
 
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(educationDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         try {
             educationValidator.validateDto(educationDto);

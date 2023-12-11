@@ -16,14 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SkillServiceImplTest {
@@ -87,7 +86,7 @@ class SkillServiceImplTest {
     @DisplayName("Test existsById - return true when Skill object exists")
     public void testExistsByIdExists() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         assertTrue(skillService.existsById(skill1.getId()));
     }
@@ -96,7 +95,7 @@ class SkillServiceImplTest {
     @DisplayName("Test existsById - return false when Skill object does not exist")
     public void testExistsByIdDoesNotExist() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         assertFalse(skillService.existsById(skill1.getId()));
     }
@@ -105,7 +104,7 @@ class SkillServiceImplTest {
     @DisplayName("Test strictExistsById - do nothing when Skill object exists")
     public void testStrictExistsByIdExists() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         assertDoesNotThrow(() -> skillService.strictExistsById(skill1.getId()));
     }
@@ -114,7 +113,7 @@ class SkillServiceImplTest {
     @DisplayName("Test strictExistsById - throw NoSuchElementFoundException when Skill object does not exist")
     public void testStrictExistsByIdDoesNotExist() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
             skillService.strictExistsById(skill1.getId());
@@ -127,7 +126,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test strictExistsById - throw InvalidArgumentException when id is null")
     public void testStrictExistsByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillService.strictExistsById(null);
@@ -188,7 +187,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test findById - throw InvalidArgumentException when id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillService.findById(null);
@@ -203,7 +202,7 @@ class SkillServiceImplTest {
     public void testSaveValid() {
         when(skillRepository.save(skill1)).thenReturn(skill1);
         when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
-        Mockito.doNothing().when(skillValidator).validate(skill1);
+        doNothing().when(skillValidator).validate(skill1);
 
         SkillDto result = skillService.save(skill1);
 
@@ -213,7 +212,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Skill object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validate(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validate(null);
 
         try {
             skillService.save(null);
@@ -227,7 +226,7 @@ class SkillServiceImplTest {
     @DisplayName("Test save - throw InvalidArgumentException when SkillValidator fails")
     public void testSaveThrowExceptionSkillValidatorFails() {
         skill1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(skillValidator).validate(skill1);
+        doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(skillValidator).validate(skill1);
 
         try {
             skillService.save(skill1);
@@ -241,8 +240,8 @@ class SkillServiceImplTest {
     @DisplayName("Test delete - Skill object exists")
     public void testDeleteSkillExists() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(skillRepository).delete(skill1);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(skillRepository).delete(skill1);
 
         assertDoesNotThrow(() -> skillService.delete(skill1));
     }
@@ -251,7 +250,7 @@ class SkillServiceImplTest {
     @DisplayName("Test delete - Skill object does not exist")
     public void testDeleteSkillDoesNotExist() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
             skillService.delete(skill1);
@@ -275,7 +274,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test delete - Skill id is null")
     public void testDeleteSkillIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
         skill1.setId(null);
 
         try {
@@ -290,8 +289,8 @@ class SkillServiceImplTest {
     @DisplayName("Test delete by id - Skill object exists")
     public void testDeleteByIdSkillExists() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(skillRepository).deleteById(skill1.getId());
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(skillRepository).deleteById(skill1.getId());
 
         assertDoesNotThrow(() -> skillService.deleteById(skill1.getId()));
     }
@@ -300,7 +299,7 @@ class SkillServiceImplTest {
     @DisplayName("Test delete by id - Skill object does not exist")
     public void testDeleteByIdDoesNotExist() {
         when(skillRepository.existsById(skill1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
             skillService.deleteById(skill1.getId());
@@ -313,7 +312,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillService.deleteById(null);
@@ -326,9 +325,9 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test update - update and return SkillDto object when it is valid")
     public void testUpdateSkillExists() {
-        Mockito.doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
         when(skillRepository.existsById(skill1.getId())).thenReturn(true);
-        Mockito.doNothing().when(skillValidator).validateDto(skillDto1);
+        doNothing().when(skillValidator).validateDto(skillDto1);
         when(skillMapper.toEntity(skillDto1)).thenReturn(skill1);
         when(skillRepository.save(skill1)).thenReturn(skill1);
         when(skillMapper.toDto(skill1)).thenReturn(skillDto1);
@@ -341,7 +340,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test update - throw NoSuchElementFoundException when IdValidator fails")
     public void testUpdateSkillDoesNotExist() {
-        Mockito.doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()))).when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
+        doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, skill1.getId()))).when(idValidator).validateLongId(skill1.getId(), ENTITY_NAME);
 
         try {
             skillService.update(skillDto1);
@@ -354,7 +353,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test update - throw InvalidArgumentException when SkillDto object is null and SkillValidator fails")
     public void testUpdateSkillDtoNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validateDto(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(skillValidator).validateDto(null);
 
         try {
             skillService.update(null);
@@ -391,7 +390,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test findAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testFindAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillService.findAllByEmployeeId(null);
@@ -404,8 +403,8 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - delete all Skill objects for given employee")
     public void testDeleteAllByEmployeeId() {
-        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(skillRepository).deleteAllByEmployeeId(employee.getId());
+        doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
+        doNothing().when(skillRepository).deleteAllByEmployeeId(employee.getId());
 
         assertDoesNotThrow(() -> skillService.deleteAllByEmployeeId(employee.getId()));
     }
@@ -413,7 +412,7 @@ class SkillServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testDeleteAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             skillService.deleteAllByEmployeeId(null);
