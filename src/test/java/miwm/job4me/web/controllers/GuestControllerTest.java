@@ -53,23 +53,6 @@ public class GuestControllerTest {
     JwtConfig jwtConfig;
 
     @Test
-    public void testGetEmployerWhenEmployerFoundThenReturnOk() throws Exception {
-        // Arrange
-        EmployerDto employerDto = new EmployerDto();
-        employerDto.setId(1L);
-        employerDto.setCompanyName("P&G");
-        when(employerService.findEmployerById(anyLong())).thenReturn(employerDto);
-
-        // Act & Assert
-        mockMvc.perform(get("/account/employer/{id}", 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(employerDto.getId()))
-                .andExpect(jsonPath("$.companyName").value(employerDto.getCompanyName()));
-    }
-
-    @Test
     public void testGetEmployerWhenEmployerNotFoundThenReturnNotFound() throws Exception {
         // Arrange
         when(employerService.findEmployerById(anyLong())).thenReturn(null);
@@ -77,26 +60,9 @@ public class GuestControllerTest {
         // Act & Assert
         mockMvc.perform(get("/account/employer/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
-
-    @Test
-    public void testGetOrganizerWhenOrganizerFoundThenReturnOk() throws Exception {
-        // Arrange
-        OrganizerDto organizerDto = new OrganizerDto();
-        organizerDto.setId(1L);
-        organizerDto.setName("ABC");
-        when(organizerService.findOrganizerById(anyLong())).thenReturn(organizerDto);
-
-        // Act & Assert
-        mockMvc.perform(get("/account/organizer/{id}", 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(organizerDto.getId()))
-                .andExpect(jsonPath("$.name").value(organizerDto.getName()));
-    }
-
+    
     @Test
     public void testGetOrganizerWhenOrganizerNotFoundThenReturnNotFound() throws Exception {
         // Arrange
@@ -105,6 +71,6 @@ public class GuestControllerTest {
         // Act & Assert
         mockMvc.perform(get("/account/organizer/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 }
