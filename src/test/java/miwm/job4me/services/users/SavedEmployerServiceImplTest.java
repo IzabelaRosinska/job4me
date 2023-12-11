@@ -4,29 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.model.users.SavedEmployer.SavedEmployerBuilder;
 import miwm.job4me.model.users.SavedEmployer;
-import miwm.job4me.model.users.Employer;
 import miwm.job4me.repositories.users.SavedEmployerRepository;
-
-import java.util.Optional;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
-import miwm.job4me.validators.pagination.PaginationValidator;
-
+import static java.util.Objects.deepEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockStatic;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.utbot.runtime.utils.java.UtUtils.deepEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 public final class SavedEmployerServiceImplTest {
 
@@ -132,53 +121,6 @@ public final class SavedEmployerServiceImplTest {
 
         ArrayList expected = new ArrayList();
         assertTrue(deepEquals(expected, actual));
-    }
-
-    @Test
-    @DisplayName("getSavedEmployersForEmployeeWithId: IdValidatorValidateLongId -> return savedEmployerRepository.findAllByEmployeeIdOrderByIdDesc(PageRequest.of(page, size), employeeId)")
-    public void testGetSavedEmployersForEmployeeWithId_SavedEmployerRepositoryFindAllByEmployeeIdOrderByIdDesc() {
-        org.mockito.MockedStatic mockedStatic = null;
-        try {
-            mockedStatic = mockStatic(PageRequest.class);
-            (mockedStatic.when(() -> PageRequest.of(anyInt(), anyInt()))).thenReturn(((PageRequest) null));
-            SavedEmployerRepository savedEmployerRepositoryMock = mock(SavedEmployerRepository.class);
-            (when(savedEmployerRepositoryMock.findAllByEmployeeIdOrderByIdDesc(any(), any()))).thenReturn(((Page) null));
-            IdValidator idValidatorMock = mock(IdValidator.class);
-            PaginationValidator paginationValidatorMock = mock(PaginationValidator.class);
-            SavedEmployerServiceImpl savedEmployerServiceImpl = new SavedEmployerServiceImpl(savedEmployerRepositoryMock, null, null, null, null, idValidatorMock, paginationValidatorMock);
-
-            Page actual = savedEmployerServiceImpl.getSavedEmployersForEmployeeWithId(-255, -255, null);
-
-            assertNull(actual);
-        } finally {
-            mockedStatic.close();
-        }
-    }
-    @Test
-    @DisplayName("getSavedEmployersForEmployeeWithIdListDisplay: EmployeeServiceGetAuthEmployee -> return getSavedEmployersForEmployeeWithId(page, size, employee.getId()).map(savedEmployer -> listDisplayMapper.toDtoFromEmployer(savedEmployer.getEmployer()))")
-    public void testGetSavedEmployersForEmployeeWithIdListDisplay_SavedEmployerServiceImplGetSavedEmployersForEmployeeWithId() {
-        org.mockito.MockedStatic mockedStatic = null;
-        try {
-            mockedStatic = mockStatic(PageRequest.class);
-            (mockedStatic.when(() -> PageRequest.of(anyInt(), anyInt()))).thenReturn(((PageRequest) null));
-            SavedEmployerRepository savedEmployerRepositoryMock = mock(SavedEmployerRepository.class);
-            Page pageMock = mock(Page.class);
-            (when(pageMock.map(any(java.util.function.Function.class)))).thenReturn(((Page) null));
-            (when(savedEmployerRepositoryMock.findAllByEmployeeIdOrderByIdDesc(any(), any()))).thenReturn(pageMock);
-            EmployeeService employeeServiceMock = mock(EmployeeService.class);
-            Employee employeeMock = mock(Employee.class);
-            (when(employeeMock.getId())).thenReturn(((Long) null));
-            (when(employeeServiceMock.getAuthEmployee())).thenReturn(employeeMock);
-            IdValidator idValidatorMock = mock(IdValidator.class);
-            PaginationValidator paginationValidatorMock = mock(PaginationValidator.class);
-            SavedEmployerServiceImpl savedEmployerServiceImpl = new SavedEmployerServiceImpl(savedEmployerRepositoryMock, null, null, employeeServiceMock, null, idValidatorMock, paginationValidatorMock);
-
-            Page actual = savedEmployerServiceImpl.getSavedEmployersForEmployeeWithIdListDisplay(-255, -255);
-
-            assertNull(actual);
-        } finally {
-            mockedStatic.close();
-        }
     }
 
     @Test

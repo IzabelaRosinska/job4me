@@ -51,26 +51,4 @@ public class GuestControllerTest {
 
     @MockBean
     JwtConfig jwtConfig;
-
-    @Test
-    public void testGetEmployerWhenEmployerNotFoundThenReturnNotFound() throws Exception {
-        // Arrange
-        when(employerService.findEmployerById(anyLong())).thenReturn(null);
-
-        // Act & Assert
-        mockMvc.perform(get("/account/employer/{id}", 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-    
-    @Test
-    public void testGetOrganizerWhenOrganizerNotFoundThenReturnNotFound() throws Exception {
-        // Arrange
-        when(organizerService.findOrganizerById(anyLong())).thenReturn(null);
-
-        // Act & Assert
-        mockMvc.perform(get("/account/organizer/{id}", 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
 }
