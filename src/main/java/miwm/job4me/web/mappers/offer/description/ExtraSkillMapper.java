@@ -1,6 +1,6 @@
-package miwm.job4me.web.mappers.offer;
+package miwm.job4me.web.mappers.offer.description;
 
-import miwm.job4me.model.offer.ExtraSkill;
+import miwm.job4me.model.offer.description.ExtraSkill;
 import miwm.job4me.web.model.offer.ExtraSkillDto;
 import org.springframework.stereotype.Component;
 

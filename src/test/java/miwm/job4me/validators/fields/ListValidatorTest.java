@@ -39,10 +39,8 @@ public class ListValidatorTest {
     @Test
     @DisplayName("validateListSizeAndElemLength - pass validation when list is null")
     public void validateListSizeAndElemLengthValidNullList() {
-        ArrayList<String> list = null;
-
         try {
-            listValidator.validateListSizeAndElemLength(list, TEST_FIELD, TEST_ENTITY, MAX_LIST_SIZE, MAX_ELEM_LENGTH);
+            listValidator.validateListSizeAndElemLength(null, TEST_FIELD, TEST_ENTITY, MAX_LIST_SIZE, MAX_ELEM_LENGTH);
         } catch (InvalidArgumentException e) {
             fail();
         }
@@ -121,16 +119,15 @@ public class ListValidatorTest {
     @DisplayName("validateRequiredListMinMaxSize - fail validation when list is null or empty")
     public void validateRequiredListMinMaxSizeInvalidNullList() {
         String expectedMessage = ExceptionMessages.notNullNotEmpty(TEST_ENTITY, TEST_FIELD);
-        ArrayList<String> list = null;
 
         try {
-            listValidator.validateRequiredListMinMaxSize(list, TEST_FIELD, TEST_ENTITY, MIN_LIST_SIZE, MAX_LIST_SIZE, MAX_ELEM_LENGTH);
+            listValidator.validateRequiredListMinMaxSize(null, TEST_FIELD, TEST_ENTITY, MIN_LIST_SIZE, MAX_LIST_SIZE, MAX_ELEM_LENGTH);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(expectedMessage, e.getMessage());
         }
 
-        list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<String>();
         try {
             listValidator.validateRequiredListMinMaxSize(list, TEST_FIELD, TEST_ENTITY, MIN_LIST_SIZE, MAX_LIST_SIZE, MAX_ELEM_LENGTH);
             fail();

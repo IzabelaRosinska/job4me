@@ -1,6 +1,6 @@
 package miwm.job4me.repositories.offer;
 
-import miwm.job4me.model.offer.Industry;
+import miwm.job4me.model.offer.parameters.Industry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

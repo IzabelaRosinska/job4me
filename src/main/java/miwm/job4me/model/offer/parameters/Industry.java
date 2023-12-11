@@ -1,10 +1,11 @@
-package miwm.job4me.model.offer;
+package miwm.job4me.model.offer.parameters;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
+import miwm.job4me.model.offer.JobOffer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

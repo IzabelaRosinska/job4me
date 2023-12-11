@@ -16,14 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EducationServiceImplTest {
@@ -87,7 +86,7 @@ class EducationServiceImplTest {
     @DisplayName("Test existsById - return true when Education object exists")
     public void testExistsByIdExists() {
         when(educationRepository.existsById(education1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         assertTrue(educationServiceImpl.existsById(education1.getId()));
     }
@@ -96,7 +95,7 @@ class EducationServiceImplTest {
     @DisplayName("Test existsById - return false when Education object does not exist")
     public void testExistsByIdDoesNotExist() {
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         assertFalse(educationServiceImpl.existsById(education1.getId()));
     }
@@ -105,7 +104,7 @@ class EducationServiceImplTest {
     @DisplayName("Test strictExistsById - do nothing when Education object exists")
     public void testStrictExistsByIdExists() {
         when(educationRepository.existsById(education1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         assertDoesNotThrow(() -> educationServiceImpl.strictExistsById(education1.getId()));
     }
@@ -114,7 +113,7 @@ class EducationServiceImplTest {
     @DisplayName("Test strictExistsById - throw NoSuchElementFoundException when Education object does not exist")
     public void testStrictExistsByIdDoesNotExist() {
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         try {
             educationServiceImpl.strictExistsById(education1.getId());
@@ -127,7 +126,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test strictExistsById - throw InvalidArgumentException when id is null")
     public void testStrictExistsByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.strictExistsById(null);
@@ -188,7 +187,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test findById - throw InvalidArgumentException when id is null")
     public void testFindByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.findById(null);
@@ -203,7 +202,7 @@ class EducationServiceImplTest {
     public void testSaveValid() {
         when(educationRepository.save(education1)).thenReturn(education1);
         when(educationMapper.toDto(education1)).thenReturn(educationDto1);
-        Mockito.doNothing().when(educationValidator).validate(education1);
+        doNothing().when(educationValidator).validate(education1);
 
         EducationDto result = educationServiceImpl.save(education1);
 
@@ -213,7 +212,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Education object is null")
     public void testSaveThrowExceptionNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validate(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validate(null);
 
         try {
             educationServiceImpl.save(null);
@@ -227,7 +226,7 @@ class EducationServiceImplTest {
     @DisplayName("Test save - throw InvalidArgumentException when EducationValidator fails")
     public void testSaveThrowExceptionEducationValidatorFails() {
         education1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(educationValidator).validate(education1);
+        doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(educationValidator).validate(education1);
 
         try {
             educationServiceImpl.save(education1);
@@ -241,8 +240,8 @@ class EducationServiceImplTest {
     @DisplayName("Test delete - Education object exists")
     public void testDeleteEducationExists() {
         when(educationRepository.existsById(education1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(educationRepository).delete(education1);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(educationRepository).delete(education1);
 
         assertDoesNotThrow(() -> educationServiceImpl.delete(education1));
     }
@@ -251,7 +250,7 @@ class EducationServiceImplTest {
     @DisplayName("Test delete - Education object does not exist")
     public void testDeleteEducationDoesNotExist() {
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         try {
             educationServiceImpl.delete(education1);
@@ -275,7 +274,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test delete - Education id is null")
     public void testDeleteEducationIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
         education1.setId(null);
 
         try {
@@ -290,8 +289,8 @@ class EducationServiceImplTest {
     @DisplayName("Test delete by id - Education object exists")
     public void testDeleteByIdEducationExists() {
         when(educationRepository.existsById(education1.getId())).thenReturn(true);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(educationRepository).deleteById(education1.getId());
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(educationRepository).deleteById(education1.getId());
 
         assertDoesNotThrow(() -> educationServiceImpl.deleteById(education1.getId()));
     }
@@ -300,7 +299,7 @@ class EducationServiceImplTest {
     @DisplayName("Test delete by id - Education object does not exist")
     public void testDeleteByIdDoesNotExist() {
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         try {
             educationServiceImpl.deleteById(education1.getId());
@@ -313,7 +312,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.deleteById(null);
@@ -326,9 +325,9 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test update - update and return EducationDto object when it is valid")
     public void testUpdateEducationExists() {
-        Mockito.doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
         when(educationRepository.existsById(education1.getId())).thenReturn(true);
-        Mockito.doNothing().when(educationValidator).validateDto(educationDto1);
+        doNothing().when(educationValidator).validateDto(educationDto1);
         when(educationMapper.toEntity(educationDto1)).thenReturn(education1);
         when(educationRepository.save(education1)).thenReturn(education1);
         when(educationMapper.toDto(education1)).thenReturn(educationDto1);
@@ -341,7 +340,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test update - throw NoSuchElementFoundException when IdValidator fails")
     public void testUpdateEducationDoesNotExist() {
-        Mockito.doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()))).when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
+        doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()))).when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         try {
             educationServiceImpl.update(educationDto1);
@@ -354,7 +353,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test update - throw InvalidArgumentException when EducationDto object is null and EducationValidator fails")
     public void testUpdateEducationDtoNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validateDto(null);
+        doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validateDto(null);
 
         try {
             educationServiceImpl.update(null);
@@ -391,7 +390,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test findAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testFindAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.findAllByEmployeeId(null);
@@ -404,8 +403,8 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - delete all Education objects for given employee")
     public void testDeleteAllByEmployeeId() {
-        Mockito.doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
-        Mockito.doNothing().when(educationRepository).deleteAllByEmployeeId(employee.getId());
+        doNothing().when(idValidator).validateLongId(employee.getId(), ENTITY_NAME);
+        doNothing().when(educationRepository).deleteAllByEmployeeId(employee.getId());
 
         assertDoesNotThrow(() -> educationServiceImpl.deleteAllByEmployeeId(employee.getId()));
     }
@@ -413,7 +412,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testDeleteAllByEmployeeIdNull() {
-        Mockito.doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
+        doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.deleteAllByEmployeeId(null);

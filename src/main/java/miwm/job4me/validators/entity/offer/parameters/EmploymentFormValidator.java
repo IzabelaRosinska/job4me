@@ -1,8 +1,8 @@
-package miwm.job4me.validators.entity.offer;
+package miwm.job4me.validators.entity.offer.parameters;
 
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.model.offer.EmploymentForm;
+import miwm.job4me.model.offer.parameters.EmploymentForm;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
 import org.springframework.stereotype.Component;

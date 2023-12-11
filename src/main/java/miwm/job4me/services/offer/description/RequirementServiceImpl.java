@@ -3,11 +3,11 @@ package miwm.job4me.services.offer.description;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.model.offer.Requirement;
+import miwm.job4me.model.offer.description.Requirement;
 import miwm.job4me.repositories.offer.RequirementRepository;
-import miwm.job4me.validators.entity.offer.RequirementValidator;
+import miwm.job4me.validators.entity.offer.description.RequirementValidator;
 import miwm.job4me.validators.fields.IdValidator;
-import miwm.job4me.web.mappers.offer.RequirementMapper;
+import miwm.job4me.web.mappers.offer.description.RequirementMapper;
 import miwm.job4me.web.model.offer.RequirementDto;
 import org.springframework.stereotype.Service;
 
