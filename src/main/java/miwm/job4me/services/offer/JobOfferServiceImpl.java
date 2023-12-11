@@ -345,4 +345,12 @@ public class JobOfferServiceImpl implements JobOfferService {
         return savedOfferDto;
     }
 
+    @Override
+    public boolean canEmployerHaveAccessToJobOffer(Long jobOfferId) {
+        Employer employer = employerService.getAuthEmployer();
+        JobOffer jobOffer = findOfferById(jobOfferId);
+
+        return jobOffer.getEmployer().getId().equals(employer.getId());
+    }
+
 }

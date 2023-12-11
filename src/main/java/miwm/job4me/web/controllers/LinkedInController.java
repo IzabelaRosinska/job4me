@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miwm.job4me.model.users.LinkedinCheckout;
 import miwm.job4me.model.users.Person;
-import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.LinkedinService;
@@ -17,10 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static miwm.job4me.messages.AppMessages.*;
@@ -69,46 +66,33 @@ public class LinkedInController {
         JsonNode jsonNode = objectMapper.readTree(response2.getBody());
         String accessToken = jsonNode.get("access_token").asText();
 
-        show_user(request, response, accessToken);
+        headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> linkedin_response = restTemplate.exchange(
+                BASIC_LINKEDIN_PROFILE_URL,
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+
+        String responseBody = linkedin_response.getBody();
+        objectMapper = new ObjectMapper();
+        jsonNode = objectMapper.readTree(responseBody);
+        String email = jsonNode.get("email").asText();
+        System.out.println(email);
+
+        Person user = authService.loadUserByUsername(email);
+        if(user == null)
+            user = authService.registerLinkedinUser(jsonNode);
+
+        String token = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().equals("anonymousUser")) {
+            token = authService.loginLinkedinUser(email);
+            response.sendRedirect(FRONT_HOST_AZURE + "/user?role=" + user.getUserRole().toString() + "&token=" + token);
+        }
     }
-
-    private void show_user(HttpServletRequest request, HttpServletResponse response, String accessToken) throws IOException {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + accessToken);
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> linkedin_response = restTemplate.exchange(
-                    BASIC_LINKEDIN_PROFILE_URL,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
-
-            String responseBody = linkedin_response.getBody();
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(responseBody);
-            String email = jsonNode.get("email").asText();
-            System.out.println(email);
-
-            Person user = authService.loadUserByUsername(email);
-            if(user == null)
-                user = authService.registerLinkedinUser(jsonNode);
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if(authentication.getPrincipal().equals("anonymousUser")) {
-                String token = authService.loginLinkedinUser(email);
-                response.getWriter().write(user.getUserRole().toString() + ';' + token);
-                response.setHeader("Authorization", "Token " + token);
-            }
-
-            if(user.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())){
-                employeeService.saveEmployeeDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST_AZURE + "/employee/account");
-            } else if(user.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
-                employerService.saveEmployerDataFromLinkedin(user, jsonNode);
-                response.sendRedirect(FRONT_HOST_AZURE + "/employer/account");
-            }
-    }
-
 }

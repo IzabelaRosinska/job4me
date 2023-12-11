@@ -5,7 +5,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.EmploymentForm;
 import miwm.job4me.repositories.offer.EmploymentFormRepository;
-import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.EmploymentFormValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
@@ -25,16 +24,14 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
     private final EmploymentFormValidator employmentFormValidator;
     private final IdValidator idValidator;
     private final PaginationValidator paginationValidator;
-    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_NAME = "EmploymentForm";
 
-    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
+    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.employmentFormRepository = employmentFormRepository;
         this.employmentFormMapper = employmentFormMapper;
         this.employmentFormValidator = employmentFormValidator;
         this.idValidator = idValidator;
         this.paginationValidator = paginationValidator;
-        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -70,7 +67,6 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
     @Override
     public Page<EmploymentFormDto> findByNameContaining(int page, int size, String name) {
         paginationValidator.validatePagination(page, size);
-        filterArgumentValidator.validateStringFilter(name, ENTITY_NAME, "name");
 
         return employmentFormRepository
                 .findByNameContaining(PageRequest.of(page, size), name)

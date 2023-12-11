@@ -6,6 +6,7 @@ import miwm.job4me.web.model.offer.JobOfferDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,12 +44,14 @@ public class JobOfferController {
         return new ResponseEntity<>(jobOfferService.findById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
     @PutMapping("employer/job-offers/{id}")
     @Operation(summary = "Update job offer", description = "Updates job offer in database")
     public ResponseEntity<JobOfferDto> updateJobOffer(@PathVariable Long id, @RequestBody JobOfferDto jobOfferDto) {
         return new ResponseEntity<>(jobOfferService.update(id, jobOfferDto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
     @DeleteMapping("employer/job-offers/{id}")
     @Operation(summary = "Delete job offer", description = "Deletes job offer from database")
     public ResponseEntity<Void> deleteJobOffer(@PathVariable Long id) {
@@ -56,15 +59,21 @@ public class JobOfferController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
     @PutMapping("employer/job-offers/{id}/activate")
     @Operation(summary = "Activate job offer", description = "Activates job offer in database")
     public ResponseEntity<JobOfferDto> activateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.activateOffer(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
     @PutMapping("employer/job-offers/{id}/deactivate")
     @Operation(summary = "Deactivate job offer", description = "Deactivates job offer in database")
     public ResponseEntity<JobOfferDto> deactivateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.deactivateOffer(id), HttpStatus.OK);
+    }
+
+    public boolean canEmployerHaveAccessToJobOffer(Long jobOfferId) {
+        return jobOfferService.canEmployerHaveAccessToJobOffer(jobOfferId);
     }
 }

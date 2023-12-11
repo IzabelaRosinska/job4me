@@ -5,7 +5,6 @@ import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.Localization;
 import miwm.job4me.repositories.offer.LocalizationRepository;
-import miwm.job4me.validators.arguments.FilterArgumentValidator;
 import miwm.job4me.validators.entity.offer.LocalizationValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
@@ -25,16 +24,14 @@ public class LocalizationServiceImpl implements LocalizationService {
     private final LocalizationValidator localizationValidator;
     private final IdValidator idValidator;
     private final PaginationValidator paginationValidator;
-    private final FilterArgumentValidator filterArgumentValidator;
     private final String ENTITY_CITY = "Localization";
 
-    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, PaginationValidator paginationValidator, FilterArgumentValidator filterArgumentValidator) {
+    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
         this.localizationRepository = localizationRepository;
         this.localizationMapper = localizationMapper;
         this.localizationValidator = localizationValidator;
         this.idValidator = idValidator;
         this.paginationValidator = paginationValidator;
-        this.filterArgumentValidator = filterArgumentValidator;
     }
 
     @Override
@@ -70,7 +67,6 @@ public class LocalizationServiceImpl implements LocalizationService {
     @Override
     public Page<LocalizationDto> findByCityContaining(int page, int size, String city) {
         paginationValidator.validatePagination(page, size);
-        filterArgumentValidator.validateStringFilter(city, ENTITY_CITY, "city");
 
         return localizationRepository
                 .findByCityContaining(PageRequest.of(page, size), city)

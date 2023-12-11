@@ -23,7 +23,13 @@ public class JobOfferListDisplayController {
     public ResponseEntity<Page<ListDisplayDto>> getAllActiveOffers(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "10") int size,
                                                                    @RequestParam(defaultValue = "1") String order) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffers(page, size, order), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffers(page, size, order);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("job-offers/list-display/filter")
@@ -32,7 +38,13 @@ public class JobOfferListDisplayController {
                                                                            @RequestParam(defaultValue = "10") int size,
                                                                            @RequestParam(defaultValue = "1") String order,
                                                                            @RequestBody JobOfferFilterDto jobOfferFilterDto) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersByFilter(page, size, order, jobOfferFilterDto), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffersByFilter(page, size, order, jobOfferFilterDto);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("job-offers/list-display/employer/{employerId}")
@@ -41,7 +53,13 @@ public class JobOfferListDisplayController {
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestParam(defaultValue = "1") String order,
                                                                              @PathVariable Long employerId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersOfEmployer(page, size, order, employerId), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffersOfEmployer(page, size, order, employerId);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("job-offers/list-display/employer/{employerId}/filter")
@@ -51,7 +69,13 @@ public class JobOfferListDisplayController {
                                                                                      @RequestParam(defaultValue = "1") String order,
                                                                                      @RequestBody JobOfferFilterDto jobOfferFilterDto,
                                                                                      @PathVariable Long employerId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersOfEmployerByFilter(page, size, order, jobOfferFilterDto, employerId), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffersOfEmployerByFilter(page, size, order, jobOfferFilterDto, employerId);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("employer/job-offers/list-display")
@@ -60,7 +84,13 @@ public class JobOfferListDisplayController {
                                                                                    @RequestParam(defaultValue = "10") int size,
                                                                                    @RequestParam(defaultValue = "1") String order,
                                                                                    @RequestParam(defaultValue = "null") Boolean isActive) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfEmployerEmployerView(page, size, order, isActive), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllOffersOfEmployerEmployerView(page, size, order, isActive);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("employer/job-offers/list-display/filter")
@@ -70,7 +100,13 @@ public class JobOfferListDisplayController {
                                                                                            @RequestParam(defaultValue = "1") String order,
                                                                                            @RequestBody JobOfferFilterDto jobOfferFilterDto,
                                                                                            @RequestParam(defaultValue = "null") Boolean isActive) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfEmployerByFilterEmployerView(page, size, order, jobOfferFilterDto, isActive), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllOffersOfEmployerByFilterEmployerView(page, size, order, jobOfferFilterDto, isActive);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("job-fairs/{jobFairId}/job-offers/list-display")
@@ -79,7 +115,13 @@ public class JobOfferListDisplayController {
                                                                             @RequestParam(defaultValue = "10") int size,
                                                                             @RequestParam(defaultValue = "1") String order,
                                                                             @PathVariable Long jobFairId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersOfJobFair(page, size, order, jobFairId), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffersOfJobFair(page, size, order, jobFairId);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("job-fairs/{jobFairId}/job-offers/list-display/filter")
@@ -89,7 +131,13 @@ public class JobOfferListDisplayController {
                                                                                     @RequestParam(defaultValue = "1") String order,
                                                                                     @RequestBody JobOfferFilterDto jobOfferFilterDto,
                                                                                     @PathVariable Long jobFairId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllActiveOffersOfJobFairByFilter(page, size, order, jobOfferFilterDto, jobFairId), HttpStatus.OK);
+        Page<ListDisplayDto> listDisplayDtoPage = jobOfferListDisplayService.findAllActiveOffersOfJobFairByFilter(page, size, order, jobOfferFilterDto, jobFairId);
+
+        if (listDisplayDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("employee/job-offers/list-display/saved")
@@ -97,7 +145,13 @@ public class JobOfferListDisplayController {
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllSavedOffersEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                                    @RequestParam(defaultValue = "10") int size,
                                                                                    @RequestParam(defaultValue = "1") String order) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllSavedOffersEmployeeView(page, size, order), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllSavedOffersEmployeeView(page, size, order);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("employee/job-offers/list-display/saved/filter")
@@ -106,7 +160,13 @@ public class JobOfferListDisplayController {
                                                                                            @RequestParam(defaultValue = "10") int size,
                                                                                            @RequestParam(defaultValue = "1") String order,
                                                                                            @RequestBody JobOfferFilterDto jobOfferFilterDto) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllSavedOffersByFilterEmployeeView(page, size, order, jobOfferFilterDto), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllSavedOffersByFilterEmployeeView(page, size, order, jobOfferFilterDto);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("employee/job-offers/list-display")
@@ -114,7 +174,13 @@ public class JobOfferListDisplayController {
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                               @RequestParam(defaultValue = "10") int size,
                                                                               @RequestParam(defaultValue = "1") String order) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersEmployeeView(page, size, order), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersEmployeeView(page, size, order);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("employee/job-offers/list-display/filter")
@@ -123,7 +189,13 @@ public class JobOfferListDisplayController {
                                                                                       @RequestParam(defaultValue = "10") int size,
                                                                                       @RequestParam(defaultValue = "1") String order,
                                                                                       @RequestBody JobOfferFilterDto jobOfferFilterDto) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersByFilterEmployeeView(page, size, order, jobOfferFilterDto), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersByFilterEmployeeView(page, size, order, jobOfferFilterDto);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("employee/job-offers/list-display/employer/{employerId}")
@@ -132,7 +204,13 @@ public class JobOfferListDisplayController {
                                                                                         @RequestParam(defaultValue = "10") int size,
                                                                                         @RequestParam(defaultValue = "1") String order,
                                                                                         @PathVariable Long employerId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfEmployerEmployeeView(page, size, order, employerId), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersOfEmployerEmployeeView(page, size, order, employerId);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("employee/job-offers/list-display/employer/{employerId}/filter")
@@ -142,7 +220,13 @@ public class JobOfferListDisplayController {
                                                                                                 @RequestParam(defaultValue = "1") String order,
                                                                                                 @RequestBody JobOfferFilterDto jobOfferFilterDto,
                                                                                                 @PathVariable Long employerId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfEmployerByFilterEmployeeView(page, size, order, jobOfferFilterDto, employerId), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersOfEmployerByFilterEmployeeView(page, size, order, jobOfferFilterDto, employerId);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("employee/job-offers/list-display/job-fair/{jobFairId}")
@@ -151,7 +235,13 @@ public class JobOfferListDisplayController {
                                                                                        @RequestParam(defaultValue = "10") int size,
                                                                                        @RequestParam(defaultValue = "1") String order,
                                                                                        @PathVariable Long jobFairId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfJobFairEmployeeView(page, size, order, jobFairId), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersOfJobFairEmployeeView(page, size, order, jobFairId);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
     @PostMapping("employee/job-offers/list-display/job-fair/{jobFairId}/filter")
@@ -161,7 +251,13 @@ public class JobOfferListDisplayController {
                                                                                                @RequestParam(defaultValue = "1") String order,
                                                                                                @RequestBody JobOfferFilterDto jobOfferFilterDto,
                                                                                                @PathVariable Long jobFairId) {
-        return new ResponseEntity<>(jobOfferListDisplayService.findAllOffersOfJobFairByFilterEmployeeView(page, size, order, jobOfferFilterDto, jobFairId), HttpStatus.OK);
+        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllOffersOfJobFairByFilterEmployeeView(page, size, order, jobOfferFilterDto, jobFairId);
+
+        if (listDisplaySavedDtoPage.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
 }

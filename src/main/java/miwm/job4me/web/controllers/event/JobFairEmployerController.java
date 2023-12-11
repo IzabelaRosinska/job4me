@@ -51,4 +51,5 @@ public class JobFairEmployerController {
 
         return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
+    
 }

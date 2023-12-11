@@ -3,20 +3,14 @@ package miwm.job4me.services.users;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Jwts;
 import miwm.job4me.emails.EMailService;
-import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.exceptions.UserAlreadyExistException;
 import miwm.job4me.jwt.JwtConfig;
-import miwm.job4me.messages.AppMessages;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.messages.UserMessages;
 import miwm.job4me.model.token.PasswordResetToken;
 import miwm.job4me.model.token.VerificationToken;
-import miwm.job4me.model.users.Employee;
-import miwm.job4me.model.users.Employer;
-import miwm.job4me.model.users.Organizer;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.*;
 import miwm.job4me.repositories.users.*;
 import miwm.job4me.security.ApplicationUserRole;
 import miwm.job4me.services.tokens.PasswordResetTokenService;
@@ -31,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,6 +41,7 @@ public class UserAuthenticationService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
     private final EmployerRepository employerRepository;
     private final OrganizerRepository organizerRepository;
+    private final AdminRepository adminRepository;
     private final VerificationTokenRepository verificationTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -59,11 +53,12 @@ public class UserAuthenticationService implements UserDetailsService {
     private final OrganizerService organizerService;
     private final PasswordResetTokenService passwordResetTokenService;
 
-    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, VerificationTokenRepository verificationTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService, EmployeeService employeeService, EmployerService employerService, OrganizerService organizerService, PasswordResetTokenService passwordResetTokenService) {
+    public UserAuthenticationService(EmployeeRepository clientRepository, PasswordEncoder passwordEncoder, EmployerRepository employerRepository, OrganizerRepository organizerRepository, AdminRepository adminRepository, VerificationTokenRepository verificationTokenRepository, JwtConfig jwtConfig, SecretKey secretKey, EMailService emailService, EmployeeService employeeService, EmployerService employerService, OrganizerService organizerService, PasswordResetTokenService passwordResetTokenService) {
         this.employeeRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
         this.employerRepository = employerRepository;
         this.organizerRepository = organizerRepository;
+        this.adminRepository = adminRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
@@ -80,12 +75,15 @@ public class UserAuthenticationService implements UserDetailsService {
             Employee employee = employeeRepository.selectEmployeeByUsername(username);
             Employer employer = employerRepository.selectEmployerByUsername(username);
             Organizer organizer = organizerRepository.selectOrganizerByUsername(username);
+            Admin admin = adminRepository.selectAdminByUsername(username);
             if (employee != null)
                 return employee;
             else if (employer != null)
                 return employer;
             else if (organizer != null)
                 return organizer;
+            else if (admin != null)
+                return admin;
             else
                 return null;
         } else
@@ -97,6 +95,7 @@ public class UserAuthenticationService implements UserDetailsService {
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
         Organizer organizer = organizerRepository.selectOrganizerByUsername(authentication.getName());
+        Admin admin = adminRepository.selectAdminByUsername(authentication.getName());
 
         if (employee != null)
             return employee;
@@ -104,6 +103,8 @@ public class UserAuthenticationService implements UserDetailsService {
             return employer;
         else if (organizer != null)
             return organizer;
+        else if (admin != null)
+            return admin;
         else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("username"));
     }
@@ -211,7 +212,7 @@ public class UserAuthenticationService implements UserDetailsService {
             String confirmationUrl = contextPath + CHANGE_PASSWORD_URL + token;
             String text = resetPasswordEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
 
-            emailService.sendSimpleMessage(recipientAddress, subject, text);
+            emailService.sendHtmlMessageWithTemplate(recipientAddress, subject, text);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Person"));
 

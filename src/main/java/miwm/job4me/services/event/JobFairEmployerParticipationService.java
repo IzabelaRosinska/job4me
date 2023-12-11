@@ -35,7 +35,7 @@ public interface JobFairEmployerParticipationService extends BaseDtoService<JobF
 
     boolean existsByJobFairIdAndEmployerId(Long jobFairId, Long employerId);
 
-    Boolean getParticipationStatus(Long jobFairId);
+    JobFairEmployerParticipationDto findForEmployerByJobFair(Long jobFairId);
 
     JobFairEmployerParticipationDto update(Long id, JobFairEmployerParticipationDto jobFairEmployerParticipation);
 
@@ -50,5 +50,11 @@ public interface JobFairEmployerParticipationService extends BaseDtoService<JobF
     void deleteParticipationRequestByEmployer(Long jobFairParticipationId);
 
     JobFairEmployerParticipation getJobFairEmployerParticipationById(Long jobFairParticipationId);
+
+    boolean canEmployerHaveAccessToJobFairEmployerParticipation(Long jobFairEmployerParticipationId);
+
+    boolean canOrganizerHaveAccessToJobFairEmployerParticipation(Long jobFairEmployerParticipationId);
+
+    boolean canOrganizerHaveAccessToJobFair(Long jobFairId);
 
 }
