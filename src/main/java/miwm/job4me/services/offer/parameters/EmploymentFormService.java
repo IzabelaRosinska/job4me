@@ -1,6 +1,6 @@
 package miwm.job4me.services.offer.parameters;
 
-import miwm.job4me.model.offer.EmploymentForm;
+import miwm.job4me.model.offer.parameters.EmploymentForm;
 import miwm.job4me.services.BaseDtoService;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
 import org.springframework.data.domain.Page;

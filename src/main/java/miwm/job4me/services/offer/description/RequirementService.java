@@ -1,6 +1,6 @@
 package miwm.job4me.services.offer.description;
 
-import miwm.job4me.model.offer.Requirement;
+import miwm.job4me.model.offer.description.Requirement;
 import miwm.job4me.services.BaseDtoService;
 import miwm.job4me.web.model.offer.RequirementDto;
 

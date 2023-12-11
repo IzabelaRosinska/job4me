@@ -1,6 +1,6 @@
 package miwm.job4me.services.offer.description;
 
-import miwm.job4me.model.offer.ExtraSkill;
+import miwm.job4me.model.offer.description.ExtraSkill;
 import miwm.job4me.services.BaseDtoService;
 import miwm.job4me.web.model.offer.ExtraSkillDto;
 

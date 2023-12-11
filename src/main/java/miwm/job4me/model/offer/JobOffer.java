@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
+import miwm.job4me.model.offer.description.ExtraSkill;
+import miwm.job4me.model.offer.description.Requirement;
+import miwm.job4me.model.offer.parameters.*;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.validators.fields.ValidSalaryRange;
 

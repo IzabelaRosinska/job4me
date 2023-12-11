@@ -1,10 +1,11 @@
-package miwm.job4me.model.offer;
+package miwm.job4me.model.offer.parameters;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
+import miwm.job4me.model.offer.JobOffer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,22 +19,21 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "contract_types")
-public class ContractType extends BaseEntity {
+@Table(name = "localizations")
+public class Localization extends BaseEntity {
 
     @Builder
-    public ContractType(Long id, String name, Set<JobOffer> jobOffers) {
+    public Localization(Long id, String city, Set<JobOffer> jobOffers) {
         super(id);
-        this.name = name;
+        this.city = city;
         this.jobOffers = jobOffers;
     }
 
-    @NotBlank
-    @Size(min = 1, max = 25, message = "ContractType name must be between 1 and 25 characters")
-    @Column(name = "name", length = 25)
-    private String name;
+    @NotBlank(message = "Localization city cannot be blank")
+    @Size(min = 1, max = 50, message = "Localization city must be between 1 and 50 characters")
+    @Column(name = "city", length = 50)
+    private String city;
 
-    @ManyToMany(mappedBy = "contractTypes")
+    @ManyToMany(mappedBy = "localizations")
     private Set<JobOffer> jobOffers;
-
 }

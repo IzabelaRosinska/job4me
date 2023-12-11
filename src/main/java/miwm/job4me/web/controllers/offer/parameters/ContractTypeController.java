@@ -1,4 +1,4 @@
-package miwm.job4me.web.controllers.offer;
+package miwm.job4me.web.controllers.offer.parameters;
 
 import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.services.offer.parameters.ContractTypeService;

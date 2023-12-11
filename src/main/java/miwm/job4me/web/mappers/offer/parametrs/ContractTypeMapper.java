@@ -1,6 +1,6 @@
-package miwm.job4me.web.mappers.offer;
+package miwm.job4me.web.mappers.offer.parametrs;
 
-import miwm.job4me.model.offer.ContractType;
+import miwm.job4me.model.offer.parameters.ContractType;
 import miwm.job4me.web.model.offer.ContractTypeDto;
 import org.springframework.stereotype.Component;
 

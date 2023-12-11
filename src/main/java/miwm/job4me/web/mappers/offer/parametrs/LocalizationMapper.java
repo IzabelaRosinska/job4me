@@ -1,6 +1,6 @@
-package miwm.job4me.web.mappers.offer;
+package miwm.job4me.web.mappers.offer.parametrs;
 
-import miwm.job4me.model.offer.Localization;
+import miwm.job4me.model.offer.parameters.Localization;
 import miwm.job4me.web.model.offer.LocalizationDto;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package miwm.job4me.repositories.offer;
 
-import miwm.job4me.model.offer.ExtraSkill;
+import miwm.job4me.model.offer.description.ExtraSkill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
