@@ -2,6 +2,7 @@ package miwm.job4me.web.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import miwm.job4me.model.users.LinkedinCheckout;
 import miwm.job4me.model.users.Account;
 import miwm.job4me.services.users.EmployeeService;
@@ -42,11 +43,13 @@ public class LinkedInController {
     }
 
     @GetMapping("/linkedin")
+    @Operation(summary = "Gets LinkedIn URL", description = "Gets LinkedIn URL")
     public ResponseEntity<LinkedinCheckout> getUrlForLinkedinAccount() {
         return ResponseEntity.ok(linkedinService.loginLinkedinAccount());
     }
 
     @GetMapping("/auth/linkedin/callback")
+    @Operation(summary = "Gets LinkedIn callback", description = "Gets LinkedIn callback")
     public void linkedinCallback(@RequestParam(name = "code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         String authorizationCode = LINKEDIN_AUTH_CODE + code;

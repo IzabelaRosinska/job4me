@@ -70,13 +70,15 @@ public class EmployeeController {
         return new ResponseEntity<>(savedOfferService.findOfferWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("offer/{id}")
+    @PostMapping("job-offers/{id}")
+    @Operation(summary = "Save job offer by id", description = "Save job offer from database by id")
     public ResponseEntity<?> saveOfferForEmployee(@PathVariable Long id) {
         savedOfferService.addOfferToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("offer/{id}")
+    @DeleteMapping("job-offers/{id}")
+    @Operation(summary = "Delete job offer by id", description = "Delete job offer from database by id")
     public ResponseEntity<?> deleteOfferForEmployee(@PathVariable Long id) {
         savedOfferService.deleteOfferFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -89,24 +91,28 @@ public class EmployeeController {
     }
 
     @PostMapping("employer/{id}")
+    @Operation(summary = "Save employer with given id for employee", description = "Saves employer with given id for employee")
     public ResponseEntity<?> saveEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.addEmployerToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @DeleteMapping("employer/{id}")
+    @Operation(summary = "Delete saved employer by id", description = "Delete saved employer from database by id")
     public ResponseEntity<?> deleteEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.deleteEmployerFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping("employers")
+    @Operation(summary = "Get saved employer by id", description = "Gets employer from database by id")
     public ResponseEntity<List<EmployerReviewDto>> getSavedEmployers() {
         List<EmployerReviewDto> employers = savedEmployerService.getSavedEmployers();
         return new ResponseEntity<>(employers, HttpStatus.CREATED);
     }
 
-    @GetMapping("saved-offers")
+    @GetMapping("jobs-offers")
+    @Operation(summary = "Get saved offers by id", description = "Gets saved offers from database by id")
     public ResponseEntity<List<JobOfferReviewDto>> getSavedOffers() {
         List<JobOfferReviewDto> offers = savedOfferService.getSavedOffers();
         return new ResponseEntity<>(offers, HttpStatus.CREATED);
@@ -141,6 +147,7 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/code")
+    @Operation(summary = "Get qr code for employee account", description = "Gets eqr code for employee account")
     public ResponseEntity<QRDto> getQRCode() throws Exception {
         return new ResponseEntity<>(employeeService.generateQRCodeImage(), HttpStatus.OK);
     }

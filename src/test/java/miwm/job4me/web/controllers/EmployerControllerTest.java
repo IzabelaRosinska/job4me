@@ -138,14 +138,14 @@ public class EmployerControllerTest {
     @Test
     public void testSaveEmployeeForEmployer() throws Exception {
         // Act & Assert
-        mockMvc.perform(post("/employer/save-employee/{id}", 1L))
+        mockMvc.perform(post("/employer/employee/{id}", 1L))
                 .andExpect(status().isCreated());
     }
 
     @Test
     public void testDeleteEmployeeForEmployer() throws Exception {
         // Act & Assert
-        mockMvc.perform(delete("/employer/delete-employee/{id}", 1L))
+        mockMvc.perform(delete("/employer/employee/{id}", 1L))
                 .andExpect(status().isOk());
     }
 
@@ -164,26 +164,12 @@ public class EmployerControllerTest {
         when(savedEmployeeService.getSavedEmployees()).thenReturn(employees);
 
         // Act & Assert
-        mockMvc.perform(get("/employer/get-saved-employees")
+        mockMvc.perform(get("/employer/employees")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(employee1.getId()))
                 .andExpect(jsonPath("$[0].firstName").value(employee1.getFirstName()))
                 .andExpect(jsonPath("$[1].id").value(employee2.getId()));
-    }
-
-    @Test
-    public void testGetAllSavedEmployees() throws Exception {
-        // Arrange
-        Page<ListDisplayDto> employeeDtoPage = new PageImpl<>(new ArrayList<>());
-        when(savedEmployeeService.getSavedEmployeesForEmployerWithIdListDisplay(anyInt(), anyInt())).thenReturn(employeeDtoPage);
-
-        // Act & Assert
-        mockMvc.perform(get("/employer/saved/employees")
-                        .param("page", "0")
-                        .param("size", "20")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
     }
 }

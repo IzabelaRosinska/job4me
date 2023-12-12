@@ -51,24 +51,27 @@ public class EmployerController {
     }
 
     @GetMapping("employee/{id}/account")
-    @Operation(summary = "Gets employee with given id", description = "Gets employee with given id")
+    @Operation(summary = "Gets saved employee with given id", description = "Gets employee with given id")
     public ResponseEntity<EmployeeReviewDto> getEmployeeWithIdForEmployer(@PathVariable Long id) {
         return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(id), HttpStatus.OK);
     }
 
     @PostMapping("employee/{id}")
+    @Operation(summary = "Saves employee with given id to saved", description = "Saves employee with given id")
     public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.addEmployeeToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @DeleteMapping("employee/{id}")
+    @Operation(summary = "Deletes employee with given id from saved", description = "Deletes employee with given id")
     public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.deleteEmployeeFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping("employees")
+    @Operation(summary = "Gets saved employees", description = "Gets saved employees")
     public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
         List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
