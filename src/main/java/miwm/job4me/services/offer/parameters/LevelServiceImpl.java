@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.LevelRepository;
 import miwm.job4me.validators.entity.offer.parameters.LevelValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
-import miwm.job4me.web.mappers.offer.parametrs.LevelMapper;
+import miwm.job4me.web.mappers.offer.parameters.LevelMapper;
 import miwm.job4me.web.model.offer.LevelDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

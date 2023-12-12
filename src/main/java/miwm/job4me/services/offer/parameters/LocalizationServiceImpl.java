@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.LocalizationRepository;
 import miwm.job4me.validators.entity.offer.parameters.LocalizationValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
-import miwm.job4me.web.mappers.offer.parametrs.LocalizationMapper;
+import miwm.job4me.web.mappers.offer.parameters.LocalizationMapper;
 import miwm.job4me.web.model.offer.LocalizationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

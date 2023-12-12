@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.EmploymentFormRepository;
 import miwm.job4me.validators.entity.offer.parameters.EmploymentFormValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
-import miwm.job4me.web.mappers.offer.parametrs.EmploymentFormMapper;
+import miwm.job4me.web.mappers.offer.parameters.EmploymentFormMapper;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
