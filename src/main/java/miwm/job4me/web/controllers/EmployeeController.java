@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -82,7 +83,7 @@ public class EmployeeController {
     }
 
     @GetMapping("employer/{id}/account")
-    @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")  
+    @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")
     public ResponseEntity<EmployerReviewDto> getEmployerWithIdForEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(savedEmployerService.findEmployerWithIdByUser(id), HttpStatus.OK);
     }
@@ -111,7 +112,7 @@ public class EmployeeController {
         return new ResponseEntity<>(offers, HttpStatus.CREATED);
     }
 
-    @GetMapping("saved/employers")
+    @GetMapping("employers/list-display")
     @Operation(summary = "Gets all saved employers in paginated list display form", description = "Gets all saved employers of logged in employee in paginated list display form database")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployers(
             @RequestParam(defaultValue = "0") int page,
@@ -125,7 +126,7 @@ public class EmployeeController {
         return new ResponseEntity<>(employerDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("saved/offers")
+    @GetMapping("job-offers/saved/list-display")
     @Operation(summary = "Gets all saved offers in paginated list display form", description = "Gets all saved offers of logged in employee in paginated list display form database")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedOffers(
             @RequestParam(defaultValue = "0") int page,

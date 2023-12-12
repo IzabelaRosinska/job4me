@@ -16,7 +16,7 @@ public class LocalizationController {
         this.localizationService = localizationService;
     }
 
-    @PostMapping("localizations")
+    @PostMapping("admin/localizations")
     @Operation(summary = "Create localization", description = "Creates new localization in database")
     public ResponseEntity<LocalizationDto> createLocalization(@RequestBody LocalizationDto localizationDto) {
         return new ResponseEntity<>(localizationService.saveDto(localizationDto), HttpStatus.CREATED);
@@ -44,13 +44,13 @@ public class LocalizationController {
         return new ResponseEntity<>(localizationService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("localizations/{id}")
+    @PutMapping("admin/localizations/{id}")
     @Operation(summary = "Update localization", description = "Updates localization in database")
     public ResponseEntity<LocalizationDto> updateLocalization(@PathVariable Long id, @RequestBody LocalizationDto localizationDto) {
         return new ResponseEntity<>(localizationService.update(id, localizationDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("localizations/{id}")
+    @DeleteMapping("admin/localizations/{id}")
     @Operation(summary = "Delete localization", description = "Deletes localization from database")
     public ResponseEntity<Void> deleteLocalization(@PathVariable Long id) {
         localizationService.deleteById(id);

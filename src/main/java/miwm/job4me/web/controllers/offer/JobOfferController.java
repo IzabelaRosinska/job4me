@@ -60,14 +60,14 @@ public class JobOfferController {
     }
 
     @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
-    @PutMapping("employer/job-offers/{id}/activate")
+    @PutMapping("employer/job-offers/{id}/activation")
     @Operation(summary = "Activate job offer", description = "Activates job offer in database")
     public ResponseEntity<JobOfferDto> activateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.activateOffer(id), HttpStatus.OK);
     }
 
     @PreAuthorize("@jobOfferController.canEmployerHaveAccessToJobOffer(#id)")
-    @PutMapping("employer/job-offers/{id}/deactivate")
+    @PutMapping("employer/job-offers/{id}/deactivation")
     @Operation(summary = "Deactivate job offer", description = "Deactivates job offer in database")
     public ResponseEntity<JobOfferDto> deactivateJobOffer(@PathVariable Long id) {
         return new ResponseEntity<>(jobOfferService.deactivateOffer(id), HttpStatus.OK);

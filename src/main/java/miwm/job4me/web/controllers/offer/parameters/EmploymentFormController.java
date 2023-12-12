@@ -16,7 +16,7 @@ public class EmploymentFormController {
         this.employmentFormService = employmentFormService;
     }
 
-    @PostMapping("employment-forms")
+    @PostMapping("admin/employment-forms")
     @Operation(summary = "Create employment form", description = "Creates new employment form in database")
     public ResponseEntity<EmploymentFormDto> createEmploymentForm(@RequestBody EmploymentFormDto employmentFormDto) {
         return new ResponseEntity<>(employmentFormService.saveDto(employmentFormDto), HttpStatus.CREATED);
@@ -44,13 +44,13 @@ public class EmploymentFormController {
         return new ResponseEntity<>(employmentFormService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("employment-forms/{id}")
+    @PutMapping("admin/employment-forms/{id}")
     @Operation(summary = "Update employment form", description = "Updates employment form in database")
     public ResponseEntity<EmploymentFormDto> updateEmploymentForm(@PathVariable Long id, @RequestBody EmploymentFormDto employmentFormDto) {
         return new ResponseEntity<>(employmentFormService.update(id, employmentFormDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("employment-forms/{id}")
+    @DeleteMapping("admin/employment-forms/{id}")
     @Operation(summary = "Delete employment form", description = "Deletes employment form from database")
     public ResponseEntity<Void> deleteEmploymentForm(@PathVariable Long id) {
         employmentFormService.deleteById(id);

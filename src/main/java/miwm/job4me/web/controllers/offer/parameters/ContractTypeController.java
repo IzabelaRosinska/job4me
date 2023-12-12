@@ -16,7 +16,7 @@ public class ContractTypeController {
         this.contractTypeService = contractTypeService;
     }
 
-    @PostMapping("contract-types")
+    @PostMapping("admin/contract-types")
     @Operation(summary = "Create contract type", description = "Creates new contract type in database")
     public ResponseEntity<ContractTypeDto> createContractType(@RequestBody ContractTypeDto contractTypeDto) {
         return new ResponseEntity<>(contractTypeService.saveDto(contractTypeDto), HttpStatus.CREATED);
@@ -44,13 +44,13 @@ public class ContractTypeController {
         return new ResponseEntity<>(contractTypeService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("contract-types/{id}")
+    @PutMapping("admin/contract-types/{id}")
     @Operation(summary = "Update contract type", description = "Updates contract type in database")
     public ResponseEntity<ContractTypeDto> updateContractType(@PathVariable Long id, @RequestBody ContractTypeDto contractTypeDto) {
         return new ResponseEntity<>(contractTypeService.update(id, contractTypeDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("contract-types/{id}")
+    @DeleteMapping("admin/contract-types/{id}")
     @Operation(summary = "Delete contract type", description = "Deletes contract type from database")
     public ResponseEntity<Void> deleteContractType(@PathVariable Long id) {
         contractTypeService.deleteById(id);

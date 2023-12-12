@@ -16,7 +16,7 @@ public class IndustryController {
         this.industryService = industryService;
     }
 
-    @PostMapping("industries")
+    @PostMapping("admin/industries")
     @Operation(summary = "Create industry", description = "Creates new industry in database")
     public ResponseEntity<IndustryDto> createIndustry(@RequestBody IndustryDto industryDto) {
         return new ResponseEntity<>(industryService.saveDto(industryDto), HttpStatus.CREATED);
@@ -44,13 +44,13 @@ public class IndustryController {
         return new ResponseEntity<>(industryService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("industries/{id}")
+    @PutMapping("admin/industries/{id}")
     @Operation(summary = "Update industry", description = "Updates industry in database")
     public ResponseEntity<IndustryDto> updateIndustry(@PathVariable Long id, @RequestBody IndustryDto industryDto) {
         return new ResponseEntity<>(industryService.update(id, industryDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("industries/{id}")
+    @DeleteMapping("admin/industries/{id}")
     @Operation(summary = "Delete industry", description = "Deletes industry from database")
     public ResponseEntity<Void> deleteIndustry(@PathVariable Long id) {
         industryService.deleteById(id);

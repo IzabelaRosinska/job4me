@@ -16,7 +16,7 @@ public class LevelController {
         this.levelService = levelService;
     }
 
-    @PostMapping("levels")
+    @PostMapping("admin/levels")
     @Operation(summary = "Create level", description = "Creates new level in database")
     public ResponseEntity<LevelDto> createLevel(@RequestBody LevelDto levelDto) {
         return new ResponseEntity<>(levelService.saveDto(levelDto), HttpStatus.CREATED);
@@ -44,13 +44,13 @@ public class LevelController {
         return new ResponseEntity<>(levelService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("levels/{id}")
+    @PutMapping("admin/levels/{id}")
     @Operation(summary = "Update level", description = "Updates level in database")
     public ResponseEntity<LevelDto> updateLevel(@PathVariable Long id, @RequestBody LevelDto levelDto) {
         return new ResponseEntity<>(levelService.update(id, levelDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("levels/{id}")
+    @DeleteMapping("admin/levels/{id}")
     @Operation(summary = "Delete level", description = "Deletes level from database")
     public ResponseEntity<Void> deleteLevel(@PathVariable Long id) {
         levelService.deleteById(id);

@@ -140,35 +140,6 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("employee/job-offers/list-display/saved")
-    @Operation(summary = "Get all saved job offers of logged in employee", description = "Gets all saved job offers of logged in employee from database and returns them in list display saved dto")
-    public ResponseEntity<Page<ListDisplaySavedDto>> getAllSavedOffersEmployeeView(@RequestParam(defaultValue = "0") int page,
-                                                                                   @RequestParam(defaultValue = "10") int size,
-                                                                                   @RequestParam(defaultValue = "1") String order) {
-        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllSavedOffersEmployeeView(page, size, order);
-
-        if (listDisplaySavedDtoPage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
-    }
-
-    @PostMapping("employee/job-offers/list-display/saved/filter")
-    @Operation(summary = "Get all saved job offers of logged in employee by filter (get with body)", description = "Gets all saved job offers of logged in employee from database by filter and returns them in list display saved dto")
-    public ResponseEntity<Page<ListDisplaySavedDto>> getAllSavedOffersByFilterEmployeeView(@RequestParam(defaultValue = "0") int page,
-                                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                                           @RequestParam(defaultValue = "1") String order,
-                                                                                           @RequestBody JobOfferFilterDto jobOfferFilterDto) {
-        Page<ListDisplaySavedDto> listDisplaySavedDtoPage = jobOfferListDisplayService.findAllSavedOffersByFilterEmployeeView(page, size, order, jobOfferFilterDto);
-
-        if (listDisplaySavedDtoPage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
-    }
-
     @GetMapping("employee/job-offers/list-display")
     @Operation(summary = "Get all job offers for logged in employee", description = "Gets all job offers for from database and returns them in list display saved dto with saved field set to true if job offer is saved by logged in employee")
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersEmployeeView(@RequestParam(defaultValue = "0") int page,

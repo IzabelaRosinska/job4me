@@ -74,7 +74,7 @@ public class EmployerController {
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
     }
 
-    @GetMapping("saved/employees")
+    @GetMapping("employees/list-display")
     @Operation(summary = "Gets all saved employees in paginated list display form", description = "Gets all saved employees of logged in employer in paginated list display form")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployees(
             @RequestParam(defaultValue = "0") int page,
