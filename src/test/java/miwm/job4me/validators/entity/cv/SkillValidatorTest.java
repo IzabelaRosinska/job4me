@@ -65,8 +65,8 @@ class SkillValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate dto - fail validation when DescriptionValidator fails (description is null)")
-    void validateDtoDescriptionValidatorFails() {
+    @DisplayName("Validate dto - fail validation when StringFieldValidator fails (description is null)")
+    void validateDtoStringFieldValidatorFails() {
         skillDto.setDescription(null);
 
         doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(skillDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
@@ -78,4 +78,39 @@ class SkillValidatorTest {
             assertEquals(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME), e.getMessage());
         }
     }
+
+    @Test
+    @DisplayName("test validate - pass validation when skill is valid")
+    void validateValidSkill() {
+        doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(skill.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+
+        assertDoesNotThrow(() -> skillValidator.validate(skill));
+    }
+
+    @Test
+    @DisplayName("test validate - fail validation when skill is null")
+    void validateNullSkill() {
+        try {
+            skillValidator.validate(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("test validate - fail validation when StringFieldValidator fails (description is null)")
+    void validateStringFieldValidatorFails() {
+        skill.setDescription(null);
+
+        doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(skill.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+
+        try {
+            skillValidator.validate(skill);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME), e.getMessage());
+        }
+    }
+
 }
