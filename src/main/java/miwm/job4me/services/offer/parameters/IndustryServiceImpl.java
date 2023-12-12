@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.IndustryRepository;
 import miwm.job4me.validators.entity.offer.parameters.IndustryValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
-import miwm.job4me.web.mappers.offer.parametrs.IndustryMapper;
+import miwm.job4me.web.mappers.offer.parameters.IndustryMapper;
 import miwm.job4me.web.model.offer.IndustryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

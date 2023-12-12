@@ -8,7 +8,7 @@ import miwm.job4me.repositories.offer.ContractTypeRepository;
 import miwm.job4me.validators.entity.offer.parameters.ContractTypeValidator;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
-import miwm.job4me.web.mappers.offer.parametrs.ContractTypeMapper;
+import miwm.job4me.web.mappers.offer.parameters.ContractTypeMapper;
 import miwm.job4me.web.model.offer.ContractTypeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

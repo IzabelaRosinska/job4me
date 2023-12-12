@@ -1,4 +1,4 @@
-package miwm.job4me.web.mappers.offer.parametrs;
+package miwm.job4me.web.mappers.offer.parameters;
 
 import miwm.job4me.model.offer.parameters.Localization;
 import miwm.job4me.web.model.offer.LocalizationDto;
