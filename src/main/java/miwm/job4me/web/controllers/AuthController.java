@@ -6,7 +6,7 @@ import miwm.job4me.model.token.VerificationToken;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.security.OnRegistrationCompleteEvent;
 import miwm.job4me.services.users.UserAuthenticationService;
 import miwm.job4me.web.mappers.users.UserMapper;
@@ -43,16 +43,16 @@ public class AuthController {
     public ResponseEntity<UserDto> registerUserAccount(@RequestBody RegisterData registerData, HttpServletRequest request) {
         UserDto userDto;
         try {
-            Person person = userAuthService.registerNewUserAccount(registerData);
-            userDto = userMapper.toDto(person);
+            Account account = userAuthService.registerNewUserAccount(registerData);
+            userDto = userMapper.toDto(account);
 
             String appUrl = request.getContextPath();
             if(registerData.getRole().equals(EMPLOYEE))
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employee)person, request.getLocale(), appUrl));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employee) account, request.getLocale(), appUrl));
             else if(registerData.getRole().equals(EMPLOYER))
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employer)person, request.getLocale(), appUrl));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Employer) account, request.getLocale(), appUrl));
             else if(registerData.getRole().equals(ORGANIZER))
-                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Organizer)person, request.getLocale(), appUrl));
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent((Organizer) account, request.getLocale(), appUrl));
 
         } catch (UserAlreadyExistException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -60,7 +60,7 @@ public class AuthController {
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/registration-confirm")
+    @GetMapping("/registration")
     @Operation(summary = "Confirms user registration", description = "Confirm registration and unlock user")
     public void confirmRegistration(HttpServletResponse response, @RequestParam("token") String token) throws IOException {
         VerificationToken verificationToken = userAuthService.getVerificationToken(token);
@@ -84,18 +84,18 @@ public class AuthController {
         response.sendRedirect(FRONT_HOST_AZURE + LOGIN_URL);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/password-reset")
     @Operation(summary = "Send password rest token", description = "Create token and send to user via email")
     public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
-        Person person = userAuthService.loadUserByUsername(userEmail);
-        if (person == null)
+        Account account = userAuthService.loadUserByUsername(userEmail);
+        if (account == null)
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 
-        userAuthService.sendResetToken(person, request.getContextPath());
+        userAuthService.sendResetToken(account, request.getContextPath());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("/change-password")
+    @GetMapping("/password-change")
     @Operation(summary = "Enable changing password", description = "Display password to reset password if token valid")
     public void showChangePasswordPage(HttpServletResponse response, @RequestParam(value = "token", required = false) String token) throws IOException {
         if(token != null && !userAuthService.isValidPasswordResetToken(token))
@@ -106,13 +106,13 @@ public class AuthController {
             response.sendRedirect(FRONT_HOST_AZURE + UPDATE_PASSWORD_URL);
     }
 
-    @PostMapping("/update-password")
+    @PostMapping("/password-update")
     @Operation(summary = "Save new user password after reset", description = "Save new password if token is valid")
     public ResponseEntity<?> updatePassword(@RequestParam(value = "token", required = false) String token, @Valid @RequestBody PasswordDto passwordDto) {
         if(token != null && !userAuthService.isValidPasswordResetToken(token))
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        Person user;
+        Account user;
         if(token != null)
             user = userAuthService.getUserByPasswordResetToken(token);
         else

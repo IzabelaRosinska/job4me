@@ -3,7 +3,7 @@ package miwm.job4me.web.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import miwm.job4me.model.users.LinkedinCheckout;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.services.users.EmployerService;
 import miwm.job4me.services.users.LinkedinService;
@@ -84,7 +84,7 @@ public class LinkedInController {
         String email = jsonNode.get("email").asText();
         System.out.println(email);
 
-        Person user = authService.loadUserByUsername(email);
+        Account user = authService.loadUserByUsername(email);
         if(user == null)
             user = authService.registerLinkedinUser(jsonNode);
 

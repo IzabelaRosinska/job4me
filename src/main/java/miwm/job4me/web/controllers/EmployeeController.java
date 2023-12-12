@@ -69,13 +69,13 @@ public class EmployeeController {
         return new ResponseEntity<>(savedOfferService.findOfferWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-offer/{id}")
+    @PostMapping("offer/{id}")
     public ResponseEntity<?> saveOfferForEmployee(@PathVariable Long id) {
         savedOfferService.addOfferToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-offer/{id}")
+    @DeleteMapping("offer/{id}")
     public ResponseEntity<?> deleteOfferForEmployee(@PathVariable Long id) {
         savedOfferService.deleteOfferFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -87,25 +87,25 @@ public class EmployeeController {
         return new ResponseEntity<>(savedEmployerService.findEmployerWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-employer/{id}")
+    @PostMapping("employer/{id}")
     public ResponseEntity<?> saveEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.addEmployerToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-employer/{id}")
+    @DeleteMapping("employer/{id}")
     public ResponseEntity<?> deleteEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.deleteEmployerFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("get-saved-employers")
+    @GetMapping("employers")
     public ResponseEntity<List<EmployerReviewDto>> getSavedEmployers() {
         List<EmployerReviewDto> employers = savedEmployerService.getSavedEmployers();
         return new ResponseEntity<>(employers, HttpStatus.CREATED);
     }
 
-    @GetMapping("get-saved-offers")
+    @GetMapping("saved-offers")
     public ResponseEntity<List<JobOfferReviewDto>> getSavedOffers() {
         List<JobOfferReviewDto> offers = savedOfferService.getSavedOffers();
         return new ResponseEntity<>(offers, HttpStatus.CREATED);

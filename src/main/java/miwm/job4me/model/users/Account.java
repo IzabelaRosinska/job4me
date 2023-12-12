@@ -24,9 +24,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public class Person extends BaseEntity implements UserDetails {
+public class Account extends BaseEntity implements UserDetails {
 
-    public Person(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {
+    public Account(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {
         super(id);
         this.telephone = telephone;
         this.email = email;

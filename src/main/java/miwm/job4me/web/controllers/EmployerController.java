@@ -56,19 +56,19 @@ public class EmployerController {
         return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-employee/{id}")
+    @PostMapping("employee/{id}")
     public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.addEmployeeToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-employee/{id}")
+    @DeleteMapping("employee/{id}")
     public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.deleteEmployeeFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("get-saved-employees")
+    @GetMapping("employees")
     public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
         List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
         return new ResponseEntity<>(employees, HttpStatus.CREATED);

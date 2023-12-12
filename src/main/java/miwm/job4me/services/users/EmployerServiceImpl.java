@@ -5,9 +5,8 @@ import miwm.job4me.exceptions.AuthException;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
-import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.validators.fields.IdValidator;
 import miwm.job4me.web.mappers.users.EmployerMapper;
@@ -57,7 +56,7 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     @Transactional
-    public void saveEmployerDataFromLinkedin(Person user, JsonNode jsonNode) {
+    public void saveEmployerDataFromLinkedin(Account user, JsonNode jsonNode) {
         if(user != null && jsonNode != null) {
             Employer employer = employerRepository.selectEmployerByUsername(user.getUsername());
             String name = jsonNode.get("name").asText();

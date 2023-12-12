@@ -1,7 +1,7 @@
 package miwm.job4me.security;
 
 import miwm.job4me.emails.EMailService;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.services.users.UserAuthenticationService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -34,10 +34,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     }
 
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
-        Person person = event.getPerson();
+        Account account = event.getAccount();
         String token = UUID.randomUUID().toString();
-        userAuthenticationService.createVerificationToken(person, token);
-        String recipientAddress = person.getEmail();
+        userAuthenticationService.createVerificationToken(account, token);
+        String recipientAddress = account.getEmail();
         String subject = confirmRegistrationEmailSubject();
         String confirmationUrl = event.getAppUrl() + REGISTRATION_URL + token;
         String text = confirmRegistrationEmailText() + BACKEND_HOST_AZURE + confirmationUrl;

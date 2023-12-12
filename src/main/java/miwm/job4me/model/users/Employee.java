@@ -22,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "employees")
-public class Employee extends Person {
+public class Employee extends Account {
 
     @Builder
     public Employee(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole, String firstName, String lastName, String contactEmail, Set<Education> education, Set<Experience> experience, Set<Skill> skills, Set<Project> projects, String aboutMe, String interests, boolean isEmbeddingCurrent) {

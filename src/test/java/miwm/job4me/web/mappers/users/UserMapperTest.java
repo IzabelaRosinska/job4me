@@ -1,6 +1,6 @@
 package miwm.job4me.web.mappers.users;
 
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.web.model.users.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,21 +18,21 @@ public class UserMapperTest {
     @InjectMocks
     private UserMapper userMapper;
 
-    private Person person;
+    private Account account;
 
     @BeforeEach
     public void setUp() {
-        person = new Person(1L, "1234567890", "test@test.com", "password", false, new SimpleGrantedAuthority("ROLE_USER"));
+        account = new Account(1L, "1234567890", "test@test.com", "password", false, new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Test
     public void testToDtoWhenValidPersonThenReturnUserDto() {
         // Act
-        UserDto userDto = userMapper.toDto(person);
+        UserDto userDto = userMapper.toDto(account);
 
         // Assert
-        assertEquals(person.getEmail(), userDto.getUsername());
-        assertEquals(person.getPassword(), userDto.getPassword());
-        assertEquals(person.getUserRole().getAuthority(), userDto.getRole());
+        assertEquals(account.getEmail(), userDto.getUsername());
+        assertEquals(account.getPassword(), userDto.getPassword());
+        assertEquals(account.getUserRole().getAuthority(), userDto.getRole());
     }
 }

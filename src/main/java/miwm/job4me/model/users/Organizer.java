@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "organizers")
-public class Organizer extends Person {
+public class Organizer extends Account {
 
     @Builder
     public Organizer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {

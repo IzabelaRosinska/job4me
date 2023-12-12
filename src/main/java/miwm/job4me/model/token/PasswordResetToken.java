@@ -8,7 +8,7 @@ import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -29,15 +29,15 @@ public class PasswordResetToken extends BaseEntity {
     private String token;
 
     @Builder
-    public PasswordResetToken(Long id, String token, Person person) {
+    public PasswordResetToken(Long id, String token, Account account) {
         super(id);
         this.token = token;
-        if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYEE_ENABLED)) {
-            this.employee = (Employee) person;
-        } else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER_ENABLED)) {
-            this.employer = (Employer) person;
-        } else if(person.getUserRole().getAuthority().equals(ROLE_ORGANIZER_ENABLED)) {
-            this.organizer = (Organizer) person;
+        if(account.getUserRole().getAuthority().equals(ROLE_EMPLOYEE_ENABLED)) {
+            this.employee = (Employee) account;
+        } else if(account.getUserRole().getAuthority().equals(ROLE_EMPLOYER_ENABLED)) {
+            this.employer = (Employer) account;
+        } else if(account.getUserRole().getAuthority().equals(ROLE_ORGANIZER_ENABLED)) {
+            this.organizer = (Organizer) account;
         }
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
