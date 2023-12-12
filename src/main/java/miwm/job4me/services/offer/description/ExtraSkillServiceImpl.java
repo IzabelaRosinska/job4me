@@ -66,8 +66,8 @@ public class ExtraSkillServiceImpl implements ExtraSkillService {
 
     @Override
     public ExtraSkillDto save(ExtraSkill extraSkill) {
-        idValidator.validateNoIdForCreate(extraSkill.getId(), ENTITY_NAME);
         extraSkillValidator.validate(extraSkill);
+        idValidator.validateNoIdForCreate(extraSkill.getId(), ENTITY_NAME);
         return extraSkillMapper.toDto(extraSkillRepository.save(extraSkill));
     }
 
@@ -93,8 +93,8 @@ public class ExtraSkillServiceImpl implements ExtraSkillService {
     @Transactional
     public ExtraSkillDto update(Long id, ExtraSkillDto extraSkill) {
         strictExistsById(id);
-        extraSkill.setId(id);
         extraSkillValidator.validateDto(extraSkill);
+        extraSkill.setId(id);
         return extraSkillMapper.toDto(extraSkillRepository.save(extraSkillMapper.toEntity(extraSkill)));
     }
 

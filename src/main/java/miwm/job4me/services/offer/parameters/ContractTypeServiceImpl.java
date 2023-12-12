@@ -7,6 +7,7 @@ import miwm.job4me.model.offer.parameters.ContractType;
 import miwm.job4me.repositories.offer.ContractTypeRepository;
 import miwm.job4me.validators.entity.offer.parameters.ContractTypeValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.parameters.ContractTypeMapper;
 import miwm.job4me.web.model.offer.ContractTypeDto;
@@ -23,14 +24,16 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     private final ContractTypeMapper contractTypeMapper;
     private final ContractTypeValidator contractTypeValidator;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final PaginationValidator paginationValidator;
     private final String ENTITY_NAME = "ContractType";
 
-    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
+    public ContractTypeServiceImpl(ContractTypeRepository contractTypeRepository, ContractTypeMapper contractTypeMapper, ContractTypeValidator contractTypeValidator, IdValidator idValidator, StringFieldValidator stringFieldValidator, PaginationValidator paginationValidator) {
         this.contractTypeRepository = contractTypeRepository;
         this.contractTypeMapper = contractTypeMapper;
         this.contractTypeValidator = contractTypeValidator;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +57,8 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public ContractTypeDto save(ContractType contractType) {
-        idValidator.validateNoIdForCreate(contractType.getId(), ENTITY_NAME);
         contractTypeValidator.validate(contractType);
+        idValidator.validateNoIdForCreate(contractType.getId(), ENTITY_NAME);
 
         if (existsByName(contractType.getName())) {
             throw new InvalidArgumentException(ExceptionMessages.elementAlreadyExists(ENTITY_NAME, "name", contractType.getName()));
@@ -104,6 +107,7 @@ public class ContractTypeServiceImpl implements ContractTypeService {
 
     @Override
     public boolean existsByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         return contractTypeRepository.existsByName(name);
     }
 
@@ -130,13 +134,14 @@ public class ContractTypeServiceImpl implements ContractTypeService {
     @Override
     public ContractTypeDto update(Long id, ContractTypeDto contractType) {
         strictExistsById(id);
-        contractType.setId(id);
         contractTypeValidator.validateDto(contractType);
+        contractType.setId(id);
         return contractTypeMapper.toDto(contractTypeRepository.save(contractTypeMapper.toEntity(contractType)));
     }
 
     @Override
     public ContractType findByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         ContractType contractType = contractTypeRepository.findByName(name);
 
         if (contractType == null) {
