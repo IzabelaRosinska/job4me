@@ -9,7 +9,7 @@ import miwm.job4me.model.offer.description.ExtraSkill;
 import miwm.job4me.model.offer.description.Requirement;
 import miwm.job4me.model.offer.parameters.*;
 import miwm.job4me.model.users.Employer;
-import miwm.job4me.validators.fields.ValidSalaryRange;
+import miwm.job4me.validators.fields.constraintValidators.ValidSalaryRange;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

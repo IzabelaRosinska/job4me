@@ -1,4 +1,4 @@
-package miwm.job4me.validators.fields;
+package miwm.job4me.validators.fields.constraintValidators;
 
 import miwm.job4me.model.event.JobFair;
 

@@ -65,14 +65,48 @@ class ProjectValidatorTest {
     }
 
     @Test
-    @DisplayName("Validate dto - fail validation when DescriptionValidator fails (description is null)")
-    void validateDtoDescriptionValidatorFails() {
+    @DisplayName("Validate dto - fail validation when StringFieldValidator fails (description is null)")
+    void validateDtoStringFieldValidatorFails() {
         projectDto.setDescription(null);
 
         doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(projectDto.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
 
         try {
             projectValidator.validateDto(projectDto);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("test validate - pass validation when experience is valid")
+    void validateValidExperience() {
+        doNothing().when(stringFieldValidator).validateClassicStringRestrictedField(project.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+
+        assertDoesNotThrow(() -> projectValidator.validate(project));
+    }
+
+    @Test
+    @DisplayName("test validate - fail validation when experience is null")
+    void validateNullExperience() {
+        try {
+            projectValidator.validate(null);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("test validate - fail validation when StringFieldValidator fails (description is null)")
+    void validateStringFieldValidatorFails() {
+        project.setDescription(null);
+
+        doThrow(new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME))).when(stringFieldValidator).validateClassicStringRestrictedField(project.getDescription(), ENTITY_NAME, DESCRIPTION_FIELD_NAME, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+
+        try {
+            projectValidator.validate(project);
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.notNullNotEmpty(DESCRIPTION_FIELD_NAME, ENTITY_NAME), e.getMessage());

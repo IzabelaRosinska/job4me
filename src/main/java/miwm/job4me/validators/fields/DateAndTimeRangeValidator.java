@@ -13,7 +13,7 @@ public class DateAndTimeRangeValidator {
 
     public void validateDateNotFromPast(LocalDateTime date, String entityName, String dateFieldName) {
         if (date == null) {
-            throw new InvalidArgumentException(ExceptionMessages.notNull(dateFieldName, entityName));
+            throw new InvalidArgumentException(ExceptionMessages.notNull(entityName, dateFieldName));
         }
 
         if (date.isBefore(LocalDateTime.now())) {
@@ -25,7 +25,7 @@ public class DateAndTimeRangeValidator {
         validateDateNotFromPast(dateStart, entityName, dateStartFieldName);
 
         if (dateEnd == null) {
-            throw new InvalidArgumentException(ExceptionMessages.notNull(dateEndFieldName, entityName));
+            throw new InvalidArgumentException(ExceptionMessages.notNull(entityName, dateEndFieldName));
         }
 
         if (dateStart.isAfter(dateEnd)) {
