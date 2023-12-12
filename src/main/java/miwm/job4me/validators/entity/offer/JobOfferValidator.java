@@ -3,6 +3,7 @@ package miwm.job4me.validators.entity.offer;
 import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
+import miwm.job4me.validators.fields.IntegerRangeValidator;
 import miwm.job4me.validators.fields.ListValidator;
 import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.web.model.offer.JobOfferDto;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JobOfferValidator {
+    private final IntegerRangeValidator integerRangeValidator;
     private final StringFieldValidator stringFieldValidator;
     private final ListValidator listValidator;
     private final int MIN_OFFER_NAME_LENGTH = 1;
@@ -45,7 +47,8 @@ public class JobOfferValidator {
 
     private final String ENTITY_NAME = "JobOffer";
 
-    public JobOfferValidator(StringFieldValidator stringFieldValidator, ListValidator listValidator) {
+    public JobOfferValidator(IntegerRangeValidator integerRangeValidator, StringFieldValidator stringFieldValidator, ListValidator listValidator) {
+        this.integerRangeValidator = integerRangeValidator;
         this.stringFieldValidator = stringFieldValidator;
         this.listValidator = listValidator;
     }
@@ -55,11 +58,7 @@ public class JobOfferValidator {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getOfferName(), ENTITY_NAME, "offerName", MIN_OFFER_NAME_LENGTH, MAX_OFFER_NAME_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getWorkingTime(), ENTITY_NAME, "workingTime", MIN_WORKING_TIME_LENGTH, MAX_WORKING_TIME_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDuties(), ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
-        validateSalaryRange(jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
+        validateFields(jobOffer.getOfferName(), jobOffer.getWorkingTime(), jobOffer.getDuties(), jobOffer.getDescription(), jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
         listValidator.validateRequiredListMinMaxSize(jobOffer.getIndustries(), "industries", ENTITY_NAME, MIN_SIZE_INDUSTRIES, MAX_SIZE_INDUSTRIES, MAX_LENGTH_INDUSTRY);
         listValidator.validateRequiredListMinMaxSize(jobOffer.getLocalizations(), "localizations", ENTITY_NAME, MIN_SIZE_LOCALIZATIONS, MAX_SIZE_LOCALIZATIONS, MAX_LENGTH_LOCALIZATION);
         listValidator.validateRequiredList(jobOffer.getEmploymentForms(), "employmentForms", ENTITY_NAME, MAX_LENGTH_EMPLOYMENT_FORM);
@@ -74,31 +73,14 @@ public class JobOfferValidator {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getOfferName(), ENTITY_NAME, "name", MIN_OFFER_NAME_LENGTH, MAX_OFFER_NAME_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getWorkingTime(), ENTITY_NAME, "workingTime", MIN_WORKING_TIME_LENGTH, MAX_WORKING_TIME_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDuties(), ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
-        stringFieldValidator.validateClassicStringRestrictedField(jobOffer.getDescription(), ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
-        validateSalaryRange(jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
+        validateFields(jobOffer.getOfferName(), jobOffer.getWorkingTime(), jobOffer.getDuties(), jobOffer.getDescription(), jobOffer.getSalaryFrom(), jobOffer.getSalaryTo());
     }
 
-    private void validateSalaryRange(Integer salaryFrom, Integer salaryTo) {
-        if (salaryFrom == null) {
-            throw new InvalidArgumentException(ExceptionMessages.notNull(ENTITY_NAME, "salaryFrom"));
-        }
-
-        validatePositive(salaryFrom, "salaryFrom");
-
-        if (salaryTo != null) {
-            validatePositive(salaryTo, "salaryTo");
-            if (salaryFrom > salaryTo) {
-                throw new InvalidArgumentException(ExceptionMessages.invalidRange(ENTITY_NAME, "salaryFrom", "salaryTo"));
-            }
-        }
-    }
-
-    private void validatePositive(Integer number, String fieldName) {
-        if (number <= 0) {
-            throw new InvalidArgumentException(ExceptionMessages.mustBePositive(ENTITY_NAME, fieldName));
-        }
+    private void validateFields(String offerName, String workingTime, String duties, String description, Integer salaryFrom, Integer salaryTo) {
+        stringFieldValidator.validateClassicStringRestrictedField(offerName, ENTITY_NAME, "offerName", MIN_OFFER_NAME_LENGTH, MAX_OFFER_NAME_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(workingTime, ENTITY_NAME, "workingTime", MIN_WORKING_TIME_LENGTH, MAX_WORKING_TIME_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(duties, ENTITY_NAME, "duties", MIN_DUTIES_LENGTH, MAX_DUTIES_LENGTH);
+        stringFieldValidator.validateClassicStringRestrictedField(description, ENTITY_NAME, "description", MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
+        integerRangeValidator.validateSalaryRange(salaryFrom, salaryTo, ENTITY_NAME);
     }
 }

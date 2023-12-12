@@ -1,4 +1,4 @@
-package miwm.job4me.validators.fields;
+package miwm.job4me.validators.fields.constraintValidators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

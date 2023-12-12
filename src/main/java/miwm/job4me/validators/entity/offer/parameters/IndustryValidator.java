@@ -28,7 +28,7 @@ public class IndustryValidator {
 
     public void validateDto(IndustryDto industry) {
         if (industry == null) {
-            throw new InvalidArgumentException("Industry cannot be null");
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
         }
 
         stringFieldValidator.validateClassicStringRestrictedField(industry.getName(), ENTITY_NAME, "name", MIN_NAME_LENGTH, MAX_NAME_LENGTH);

@@ -9,16 +9,16 @@ public class StringFieldValidator {
     public StringFieldValidator() {
     }
 
-    public void validateClassicStringRestrictedField(String description, String entityName, String descriptionFieldName, int minDescriptionLength, int maxDescriptionLength) {
-        if (description == null || description.isEmpty()) {
+    public void validateClassicStringRestrictedField(String field, String entityName, String descriptionFieldName, int minDescriptionLength, int maxDescriptionLength) {
+        if (field == null || field.isEmpty()) {
             throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(descriptionFieldName, entityName));
         }
 
-        if (description.length() < minDescriptionLength) {
+        if (field.length() < minDescriptionLength) {
             throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, descriptionFieldName, minDescriptionLength));
         }
 
-        if (description.length() > maxDescriptionLength) {
+        if (field.length() > maxDescriptionLength) {
             throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, descriptionFieldName, maxDescriptionLength));
         }
     }

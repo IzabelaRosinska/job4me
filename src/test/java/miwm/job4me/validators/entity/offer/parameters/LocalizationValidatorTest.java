@@ -26,7 +26,7 @@ class LocalizationValidatorTest {
     private Localization localization;
     private LocalizationDto localizationDto;
     private final int MIN_NAME_LENGTH = 1;
-    private final int MAX_NAME_LENGTH = 20;
+    private final int MAX_NAME_LENGTH = 50;
     private final String ENTITY_NAME = "Localization";
     private final String DATA_FIELD_NAME = "city";
 

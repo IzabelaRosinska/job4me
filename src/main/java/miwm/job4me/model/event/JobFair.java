@@ -7,7 +7,7 @@ import lombok.Setter;
 import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.payment.Payment;
 import miwm.job4me.model.users.Organizer;
-import miwm.job4me.validators.fields.ValidDateRange;
+import miwm.job4me.validators.fields.constraintValidators.ValidDateRange;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
