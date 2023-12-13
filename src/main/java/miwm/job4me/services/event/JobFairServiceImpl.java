@@ -218,10 +218,11 @@ public class JobFairServiceImpl implements JobFairService {
                 .creationTimestamp(LocalDateTime.now())
                 .build();
 
-        saveDto(jobFairDto, payment);
+        JobFairDto savedJobFairDto = saveDto(jobFairDto, payment);
 
         PaymentCheckout paymentCheckout = new PaymentCheckout();
         paymentCheckout.setUrl(session.getUrl());
+        paymentCheckout.setJobFairId(savedJobFairDto.getId());
 
         return paymentCheckout;
     }

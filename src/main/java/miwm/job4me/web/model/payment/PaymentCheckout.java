@@ -11,4 +11,7 @@ public class PaymentCheckout {
     @Schema(description = "Url to redirect to Stripe Checkout", example = "https://checkout.stripe.com/pay/")
     private String url;
 
+    @Schema(description = "Id of the created JobFair", example = "1")
+    private Long jobFairId;
+
 }

@@ -16,20 +16,30 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class PdfGenerateServiceImpl implements PdfGenerateService {
+public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     private final TemplateEngine templateEngine;
 
-    public PdfGenerateServiceImpl(TemplateEngine templateEngine) {
+    public PdfGeneratorServiceImpl(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 
     @Override
-    public PdfDto generateAndDownloadPdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
+    public PdfDto generatePdfFile(String templateName, Map<String, Object> data, List<String> fonts) {
         Context context = new Context();
         context.setVariables(data);
 
         String htmlContent = templateEngine.process(templateName, context);
 
+        byte[] pdfBytes = htmlToPdf(htmlContent, fonts);
+        String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
+
+        PdfDto pdfDto = new PdfDto();
+        pdfDto.setEncodedPdf(pdfBase64String);
+
+        return pdfDto;
+    }
+
+    private byte[] htmlToPdf(String htmlContent, List<String> fonts) {
         try {
             ByteArrayOutputStream target = new ByteArrayOutputStream();
             ITextRenderer renderer = new ITextRenderer();
@@ -45,17 +55,12 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             renderer.createPDF(target, false);
             renderer.finishPDF();
 
-            byte[] pdfBytes = target.toByteArray();
-            String pdfBase64String = Base64.getEncoder().encodeToString(pdfBytes);
-
-            PdfDto pdfDto = new PdfDto();
-            pdfDto.setEncodedPdf(pdfBase64String);
-
-            return pdfDto;
+            return target.toByteArray();
         } catch (DocumentException e) {
             throw new InvalidArgumentException("Document exception");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
