@@ -9,17 +9,23 @@ public class StringFieldValidator {
     public StringFieldValidator() {
     }
 
-    public void validateClassicStringRestrictedField(String field, String entityName, String descriptionFieldName, int minDescriptionLength, int maxDescriptionLength) {
+    public void validateClassicStringRestrictedField(String field, String entityName, String fieldName, int minLength, int maxLength) {
         if (field == null || field.isEmpty()) {
-            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(descriptionFieldName, entityName));
+            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(fieldName, entityName));
         }
 
-        if (field.length() < minDescriptionLength) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, descriptionFieldName, minDescriptionLength));
+        if (field.length() < minLength) {
+            throw new InvalidArgumentException(ExceptionMessages.textTooShort(entityName, fieldName, minLength));
         }
 
-        if (field.length() > maxDescriptionLength) {
-            throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, descriptionFieldName, maxDescriptionLength));
+        if (field.length() > maxLength) {
+            throw new InvalidArgumentException(ExceptionMessages.textTooLong(entityName, fieldName, maxLength));
+        }
+    }
+
+    public void validateNotNullNotEmpty(String field, String entityName, String fieldName) {
+        if (field == null || field.isEmpty()) {
+            throw new InvalidArgumentException(ExceptionMessages.notNullNotEmpty(fieldName, entityName));
         }
     }
 }

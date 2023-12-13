@@ -112,6 +112,8 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test strictExistsById - throw NoSuchElementFoundException when Education object does not exist")
     public void testStrictExistsByIdDoesNotExist() {
+        String expectedMessage = ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId());
+
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
         doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
@@ -119,20 +121,22 @@ class EducationServiceImplTest {
             educationServiceImpl.strictExistsById(education1.getId());
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test strictExistsById - throw InvalidArgumentException when id is null")
     public void testStrictExistsByIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.strictExistsById(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -174,26 +178,29 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test findById - throw NoSuchElementFoundException when Education object does not exist")
     public void testFindByIdNullId() {
+        String expectedMessage = ExceptionMessages.elementNotFound("Education", education1.getId());
         when(educationRepository.findById(education1.getId())).thenReturn(java.util.Optional.empty());
 
         try {
             educationServiceImpl.findById(education1.getId());
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound("Education", education1.getId()), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test findById - throw InvalidArgumentException when id is null")
     public void testFindByIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.findById(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -212,19 +219,23 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when Education object is null")
     public void testSaveThrowExceptionNull() {
+        String expectedMessage = ExceptionMessages.nullArgument(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validate(null);
 
         try {
             educationServiceImpl.save(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test save - throw InvalidArgumentException when EducationValidator fails")
     public void testSaveThrowExceptionEducationValidatorFails() {
+        String expectedMessage = ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH);
+
         education1.setDescription("a".repeat(MAX_DESCRIPTION_LENGTH + 1));
         doThrow(new InvalidArgumentException(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH))).when(educationValidator).validate(education1);
 
@@ -232,7 +243,7 @@ class EducationServiceImplTest {
             educationServiceImpl.save(education1);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, "description", MAX_DESCRIPTION_LENGTH), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -249,6 +260,7 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test delete - Education object does not exist")
     public void testDeleteEducationDoesNotExist() {
+        String expectedMessage = ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId());
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
         doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
@@ -256,24 +268,28 @@ class EducationServiceImplTest {
             educationServiceImpl.delete(education1);
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test delete - Education object is null")
     public void testDeleteEducationNull() {
+        String expectedMessage = ExceptionMessages.nullArgument(ENTITY_NAME);
+
         try {
             educationServiceImpl.delete(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test delete - Education id is null")
     public void testDeleteEducationIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
         education1.setId(null);
 
@@ -281,7 +297,7 @@ class EducationServiceImplTest {
             educationServiceImpl.delete(education1);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -298,6 +314,8 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test delete by id - Education object does not exist")
     public void testDeleteByIdDoesNotExist() {
+        String expectedMessage = ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId());
+
         when(educationRepository.existsById(education1.getId())).thenReturn(false);
         doNothing().when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
@@ -305,20 +323,22 @@ class EducationServiceImplTest {
             educationServiceImpl.deleteById(education1.getId());
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test delete by id - id is null")
     public void testDeleteByIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.deleteById(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -340,26 +360,28 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test update - throw NoSuchElementFoundException when IdValidator fails")
     public void testUpdateEducationDoesNotExist() {
+        String expectedMessage = ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId());
         doThrow(new NoSuchElementFoundException(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()))).when(idValidator).validateLongId(education1.getId(), ENTITY_NAME);
 
         try {
             educationServiceImpl.update(educationDto1);
             fail();
         } catch (NoSuchElementFoundException e) {
-            assertEquals(ExceptionMessages.elementNotFound(ENTITY_NAME, education1.getId()), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test
     @DisplayName("Test update - throw InvalidArgumentException when EducationDto object is null and EducationValidator fails")
     public void testUpdateEducationDtoNull() {
+        String expectedMessage = ExceptionMessages.nullArgument(ENTITY_NAME);
         doThrow(new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME))).when(educationValidator).validateDto(null);
 
         try {
             educationServiceImpl.update(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.nullArgument(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -390,13 +412,15 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test findAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testFindAllByEmployeeIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
+
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.findAllByEmployeeId(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -412,13 +436,14 @@ class EducationServiceImplTest {
     @Test
     @DisplayName("Test deleteAllByEmployeeId - throw InvalidArgumentException when id is null")
     public void testDeleteAllByEmployeeIdNull() {
+        String expectedMessage = ExceptionMessages.idCannotBeNull(ENTITY_NAME);
         doThrow(new InvalidArgumentException(ExceptionMessages.idCannotBeNull(ENTITY_NAME))).when(idValidator).validateLongId(null, ENTITY_NAME);
 
         try {
             educationServiceImpl.deleteAllByEmployeeId(null);
             fail();
         } catch (InvalidArgumentException e) {
-            assertEquals(ExceptionMessages.idCannotBeNull(ENTITY_NAME), e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 }

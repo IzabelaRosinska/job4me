@@ -27,7 +27,7 @@ class PaginationValidatorTest {
             paginationValidator.validatePagination(-1, 1);
             fail("Expected InvalidArgumentException");
         } catch (InvalidArgumentException e) {
-            assertEquals(PaginationValidator.invalidPageNumber("page"), e.getMessage());
+            assertEquals(PaginationValidator.invalidPageNumber(), e.getMessage());
         }
     }
 
@@ -38,7 +38,7 @@ class PaginationValidatorTest {
             paginationValidator.validatePagination(0, 0);
             fail("Expected InvalidArgumentException");
         } catch (InvalidArgumentException e) {
-            assertEquals(PaginationValidator.invalidSizeNumber("size"), e.getMessage());
+            assertEquals(PaginationValidator.invalidSizeNumber(), e.getMessage());
         }
     }
 

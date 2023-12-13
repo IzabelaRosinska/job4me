@@ -7,6 +7,7 @@ import miwm.job4me.model.offer.parameters.Level;
 import miwm.job4me.repositories.offer.LevelRepository;
 import miwm.job4me.validators.entity.offer.parameters.LevelValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.parameters.LevelMapper;
 import miwm.job4me.web.model.offer.LevelDto;
@@ -23,14 +24,16 @@ public class LevelServiceImpl implements LevelService {
     private final LevelMapper levelMapper;
     private final LevelValidator levelValidator;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final PaginationValidator paginationValidator;
     private final String ENTITY_NAME = "Level";
 
-    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
+    public LevelServiceImpl(LevelRepository levelRepository, LevelMapper levelMapper, LevelValidator levelValidator, IdValidator idValidator, StringFieldValidator stringFieldValidator, PaginationValidator paginationValidator) {
         this.levelRepository = levelRepository;
         this.levelMapper = levelMapper;
         this.levelValidator = levelValidator;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +57,8 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public LevelDto save(Level level) {
-        idValidator.validateNoIdForCreate(level.getId(), ENTITY_NAME);
         levelValidator.validate(level);
+        idValidator.validateNoIdForCreate(level.getId(), ENTITY_NAME);
 
         if (existsByName(level.getName())) {
             throw new InvalidArgumentException(ExceptionMessages.elementAlreadyExists(ENTITY_NAME, "name", level.getName()));
@@ -104,6 +107,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public boolean existsByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         return levelRepository.existsByName(name);
     }
 
@@ -129,14 +133,15 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public LevelDto update(Long id, LevelDto level) {
-        strictExistsById(level.getId());
-        level.setId(id);
+        strictExistsById(id);
         levelValidator.validateDto(level);
+        level.setId(id);
         return levelMapper.toDto(levelRepository.save(levelMapper.toEntity(level)));
     }
 
     @Override
     public Level findByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         Level level = levelRepository.findByName(name);
 
         if (level == null) {

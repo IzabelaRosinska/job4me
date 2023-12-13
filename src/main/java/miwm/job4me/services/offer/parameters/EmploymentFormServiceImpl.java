@@ -7,6 +7,7 @@ import miwm.job4me.model.offer.parameters.EmploymentForm;
 import miwm.job4me.repositories.offer.EmploymentFormRepository;
 import miwm.job4me.validators.entity.offer.parameters.EmploymentFormValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.parameters.EmploymentFormMapper;
 import miwm.job4me.web.model.offer.EmploymentFormDto;
@@ -23,14 +24,16 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
     private final EmploymentFormMapper employmentFormMapper;
     private final EmploymentFormValidator employmentFormValidator;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final PaginationValidator paginationValidator;
     private final String ENTITY_NAME = "EmploymentForm";
 
-    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
+    public EmploymentFormServiceImpl(EmploymentFormRepository employmentFormRepository, EmploymentFormMapper employmentFormMapper, EmploymentFormValidator employmentFormValidator, IdValidator idValidator, StringFieldValidator stringFieldValidator, PaginationValidator paginationValidator) {
         this.employmentFormRepository = employmentFormRepository;
         this.employmentFormMapper = employmentFormMapper;
         this.employmentFormValidator = employmentFormValidator;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +57,8 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
 
     @Override
     public EmploymentFormDto save(EmploymentForm employmentForm) {
-        idValidator.validateNoIdForCreate(employmentForm.getId(), ENTITY_NAME);
         employmentFormValidator.validate(employmentForm);
+        idValidator.validateNoIdForCreate(employmentForm.getId(), ENTITY_NAME);
 
         if (existsByName(employmentForm.getName())) {
             throw new InvalidArgumentException(ExceptionMessages.elementAlreadyExists(ENTITY_NAME, "name", employmentForm.getName()));
@@ -105,6 +108,7 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
 
     @Override
     public boolean existsByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         return employmentFormRepository.existsByName(name);
     }
 
@@ -131,13 +135,14 @@ public class EmploymentFormServiceImpl implements EmploymentFormService {
     @Override
     public EmploymentFormDto update(Long id, EmploymentFormDto employmentForm) {
         strictExistsById(id);
-        employmentForm.setId(id);
         employmentFormValidator.validateDto(employmentForm);
+        employmentForm.setId(id);
         return employmentFormMapper.toDto(employmentFormRepository.save(employmentFormMapper.toEntity(employmentForm)));
     }
 
     @Override
     public EmploymentForm findByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         EmploymentForm employmentForm = employmentFormRepository.findByName(name);
 
         if (employmentForm == null) {

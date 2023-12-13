@@ -66,8 +66,8 @@ public class RequirementServiceImpl implements RequirementService {
 
     @Override
     public RequirementDto save(Requirement requirement) {
-        idValidator.validateNoIdForCreate(requirement.getId(), ENTITY_NAME);
         requirementValidator.validate(requirement);
+        idValidator.validateNoIdForCreate(requirement.getId(), ENTITY_NAME);
         return requirementMapper.toDto(requirementRepository.save(requirement));
     }
 
@@ -92,9 +92,9 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     @Transactional
     public RequirementDto update(Long id, RequirementDto requirement) {
-        strictExistsById(requirement.getId());
-        requirement.setId(id);
+        strictExistsById(id);
         requirementValidator.validateDto(requirement);
+        requirement.setId(id);
         return requirementMapper.toDto(requirementRepository.save(requirementMapper.toEntity(requirement)));
     }
 

@@ -7,6 +7,7 @@ import miwm.job4me.model.offer.parameters.Localization;
 import miwm.job4me.repositories.offer.LocalizationRepository;
 import miwm.job4me.validators.entity.offer.parameters.LocalizationValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.parameters.LocalizationMapper;
 import miwm.job4me.web.model.offer.LocalizationDto;
@@ -23,14 +24,16 @@ public class LocalizationServiceImpl implements LocalizationService {
     private final LocalizationMapper localizationMapper;
     private final LocalizationValidator localizationValidator;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final PaginationValidator paginationValidator;
     private final String ENTITY_CITY = "Localization";
 
-    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
+    public LocalizationServiceImpl(LocalizationRepository localizationRepository, LocalizationMapper localizationMapper, LocalizationValidator localizationValidator, IdValidator idValidator, StringFieldValidator stringFieldValidator, PaginationValidator paginationValidator) {
         this.localizationRepository = localizationRepository;
         this.localizationMapper = localizationMapper;
         this.localizationValidator = localizationValidator;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +57,8 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public LocalizationDto save(Localization Localization) {
-        idValidator.validateNoIdForCreate(Localization.getId(), ENTITY_CITY);
         localizationValidator.validate(Localization);
+        idValidator.validateNoIdForCreate(Localization.getId(), ENTITY_CITY);
 
         if (existsByCity(Localization.getCity())) {
             throw new InvalidArgumentException(ExceptionMessages.elementAlreadyExists(ENTITY_CITY, "city", Localization.getCity()));
@@ -106,6 +109,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public boolean existsByCity(String city) {
+        stringFieldValidator.validateNotNullNotEmpty(city, ENTITY_CITY, "city");
         return localizationRepository.existsByCity(city);
     }
 
@@ -131,14 +135,15 @@ public class LocalizationServiceImpl implements LocalizationService {
 
     @Override
     public LocalizationDto update(Long id, LocalizationDto localization) {
-        strictExistsById(localization.getId());
-        localization.setId(id);
+        strictExistsById(id);
         localizationValidator.validateDto(localization);
+        localization.setId(id);
         return localizationMapper.toDto(localizationRepository.save(localizationMapper.toEntity(localization)));
     }
 
     @Override
     public Localization findByCity(String city) {
+        stringFieldValidator.validateNotNullNotEmpty(city, ENTITY_CITY, "city");
         Localization localization = localizationRepository.findByCity(city);
 
         if (localization == null) {

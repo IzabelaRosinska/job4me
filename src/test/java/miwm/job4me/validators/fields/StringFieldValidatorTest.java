@@ -19,14 +19,14 @@ class StringFieldValidatorTest {
     private final String STRING_FIELD_NAME = "StringField";
 
     @Test
-    @DisplayName("validate StringField - pass validation when StringField is valid")
+    @DisplayName("test validateClassicStringRestrictedField - pass validation when StringField is valid")
     void validateStringFieldValidStringField() {
         assertDoesNotThrow(() -> stringFieldValidator.validateClassicStringRestrictedField("test", ENTITY_NAME,
                 STRING_FIELD_NAME, 1, 100));
     }
 
     @Test
-    @DisplayName("validate StringField - fail validation when StringField is null or empty")
+    @DisplayName("test validateClassicStringRestrictedField - fail validation when StringField is null or empty")
     void validateStringFieldNullOrEmptyStringField() {
         try {
             stringFieldValidator.validateClassicStringRestrictedField(null, ENTITY_NAME, STRING_FIELD_NAME, 1, 100);
@@ -44,7 +44,7 @@ class StringFieldValidatorTest {
     }
 
     @Test
-    @DisplayName("validate StringField - fail validation when StringField is too short")
+    @DisplayName("test validateClassicStringRestrictedField - fail validation when StringField is too short")
     void validateStringFieldTooShortStringField() {
         int minStringFieldLength = 2;
         String StringField = "a".repeat(minStringFieldLength - 1);
@@ -58,7 +58,7 @@ class StringFieldValidatorTest {
     }
 
     @Test
-    @DisplayName("validate StringField - fail validation when StringField is too long")
+    @DisplayName("test validateClassicStringRestrictedField - fail validation when StringField is too long")
     void validateStringFieldTooLongStringField() {
         int maxStringFieldLength = 20;
         String StringField = "a".repeat(maxStringFieldLength + 1);
@@ -68,6 +68,34 @@ class StringFieldValidatorTest {
             fail();
         } catch (InvalidArgumentException e) {
             assertEquals(ExceptionMessages.textTooLong(ENTITY_NAME, STRING_FIELD_NAME, maxStringFieldLength), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("test validateNotNullNotEmpty - pass validation when StringField is valid")
+    void validateNotNullNotEmptyValidStringField() {
+        assertDoesNotThrow(() -> stringFieldValidator.validateNotNullNotEmpty("test", ENTITY_NAME, STRING_FIELD_NAME));
+    }
+
+    @Test
+    @DisplayName("test validateNotNullNotEmpty - fail validation when StringField is null")
+    void validateNotNullNotEmptyNullOrEmptyStringField() {
+        try {
+            stringFieldValidator.validateNotNullNotEmpty(null, ENTITY_NAME, STRING_FIELD_NAME);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.notNullNotEmpty(STRING_FIELD_NAME, ENTITY_NAME), e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("test validateNotNullNotEmpty - fail validation when StringField is empty")
+    void validateNotNullNotEmptyEmptyStringField() {
+        try {
+            stringFieldValidator.validateNotNullNotEmpty("", ENTITY_NAME, STRING_FIELD_NAME);
+            fail();
+        } catch (InvalidArgumentException e) {
+            assertEquals(ExceptionMessages.notNullNotEmpty(STRING_FIELD_NAME, ENTITY_NAME), e.getMessage());
         }
     }
 

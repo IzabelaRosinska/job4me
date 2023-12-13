@@ -7,6 +7,7 @@ import miwm.job4me.model.offer.parameters.Industry;
 import miwm.job4me.repositories.offer.IndustryRepository;
 import miwm.job4me.validators.entity.offer.parameters.IndustryValidator;
 import miwm.job4me.validators.fields.IdValidator;
+import miwm.job4me.validators.fields.StringFieldValidator;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.mappers.offer.parameters.IndustryMapper;
 import miwm.job4me.web.model.offer.IndustryDto;
@@ -23,14 +24,16 @@ public class IndustryServiceImpl implements IndustryService {
     private final IndustryMapper industryMapper;
     private final IndustryValidator industryValidator;
     private final IdValidator idValidator;
+    private final StringFieldValidator stringFieldValidator;
     private final PaginationValidator paginationValidator;
     private final String ENTITY_NAME = "Industry";
 
-    public IndustryServiceImpl(IndustryRepository industryRepository, IndustryMapper industryMapper, IndustryValidator industryValidator, IdValidator idValidator, PaginationValidator paginationValidator) {
+    public IndustryServiceImpl(IndustryRepository industryRepository, IndustryMapper industryMapper, IndustryValidator industryValidator, IdValidator idValidator, StringFieldValidator stringFieldValidator, PaginationValidator paginationValidator) {
         this.industryRepository = industryRepository;
         this.industryMapper = industryMapper;
         this.industryValidator = industryValidator;
         this.idValidator = idValidator;
+        this.stringFieldValidator = stringFieldValidator;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +57,8 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public IndustryDto save(Industry industry) {
-        idValidator.validateNoIdForCreate(industry.getId(), ENTITY_NAME);
         industryValidator.validate(industry);
+        idValidator.validateNoIdForCreate(industry.getId(), ENTITY_NAME);
 
         if (existsByName(industry.getName())) {
             throw new InvalidArgumentException(ExceptionMessages.elementAlreadyExists(ENTITY_NAME, "name", industry.getName()));
@@ -104,6 +107,7 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public boolean existsByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         return industryRepository.existsByName(name);
     }
 
@@ -129,14 +133,15 @@ public class IndustryServiceImpl implements IndustryService {
 
     @Override
     public IndustryDto update(Long id, IndustryDto industry) {
-        strictExistsById(industry.getId());
-        industry.setId(id);
+        strictExistsById(id);
         industryValidator.validateDto(industry);
+        industry.setId(id);
         return industryMapper.toDto(industryRepository.save(industryMapper.toEntity(industry)));
     }
 
     @Override
     public Industry findByName(String name) {
+        stringFieldValidator.validateNotNullNotEmpty(name, ENTITY_NAME, "name");
         Industry industry = industryRepository.findByName(name);
 
         if (industry == null) {
