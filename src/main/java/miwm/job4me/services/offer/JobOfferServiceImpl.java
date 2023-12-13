@@ -1,5 +1,6 @@
 package miwm.job4me.services.offer;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.exceptions.NoSuchElementFoundException;
 import miwm.job4me.messages.ExceptionMessages;
 import miwm.job4me.model.offer.JobOffer;
@@ -94,10 +95,10 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     public JobOfferDto save(JobOffer jobOffer) {
         Employer employer = employerService.getAuthEmployer();
+        jobOfferValidator.validate(jobOffer);
         jobOffer.setEmployer(employer);
 
         idValidator.validateNoIdForCreate(jobOffer.getId(), ENTITY_NAME);
-        jobOfferValidator.validate(jobOffer);
 
         if (jobOffer.getIsActive() == null) {
             jobOffer.setIsActive(true);
@@ -113,6 +114,10 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public void delete(JobOffer jobOffer) {
+        if (jobOffer == null) {
+            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
+        }
+
         strictExistsById(jobOffer.getId());
         jobOfferRepository.delete(jobOffer);
         recommendationNotifierService.notifyRemovedOffer(jobOffer.getId());
@@ -235,12 +240,12 @@ public class JobOfferServiceImpl implements JobOfferService {
         jobOfferDto.setEmployerId(employer.getId());
 
         idValidator.validateNoIdForCreate(jobOfferDto.getId(), ENTITY_NAME);
+        jobOfferValidator.validateDto(jobOfferDto);
 
         return saveJobOfferDto(jobOfferDto);
     }
 
     private JobOfferDto saveJobOfferDto(JobOfferDto jobOfferDto) {
-        jobOfferValidator.validateDto(jobOfferDto);
         JobOffer jobOffer = jobOfferMapper.toEntity(jobOfferDto);
 
         jobOffer.setContractTypes(jobOfferDto.getContractTypes()
@@ -298,6 +303,7 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Transactional
     public JobOfferDto update(Long id, JobOfferDto jobOffer) {
         strictExistsById(id);
+        jobOfferValidator.validateDto(jobOffer);
         requirementService.deleteAllByJobOfferId(id);
         extraSkillService.deleteAllByJobOfferId(id);
         return saveJobOfferDto(jobOffer);

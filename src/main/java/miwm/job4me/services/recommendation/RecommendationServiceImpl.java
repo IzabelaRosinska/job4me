@@ -48,18 +48,18 @@ public class RecommendationServiceImpl implements RecommendationService {
     public Page<ListDisplaySavedDto> getRecommendedOffers(int page, int size, Long jobFairId) {
         jobFairService.strictExistsById(jobFairId);
         Long employeeId = employeeService.getAuthEmployee().getId();
-        paginationValidator.validatePagination(size, page);
+        paginationValidator.validatePagination(page, size);
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
         int numberOfOffers = recommendedOffersIds.size();
-        recommendedOffersIds = createSublist(recommendedOffersIds, size, page);
+        recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
 
         List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
                 .stream()
                 .map(jobOfferListDisplayService::findByOfferId)
                 .toList();
 
-        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, size, page, numberOfOffers);
+        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, page, size, numberOfOffers);
     }
 
     @Override
@@ -80,14 +80,14 @@ public class RecommendationServiceImpl implements RecommendationService {
             }
         }
 
-        recommendedOffersIds = createSublist(recommendedOffersIds, size, page);
+        recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
 
         List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
                 .stream()
                 .map(jobOfferListDisplayService::findByOfferId)
                 .toList();
 
-        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, size, page, numberOfOffers);
+        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, page, size, numberOfOffers);
     }
 
     private List<Long> createSublist(List<Long> list, int pageSize, int pageNumber) {

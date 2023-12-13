@@ -98,7 +98,7 @@ public class SavedOfferServiceImpl implements SavedOfferService {
     @Override
     public Page<SavedOffer> getSavedJobOffersForEmployeeWithId(int page, int size, Long employeeId) {
         idValidator.validateLongId(employeeId, ENTITY_EMPLOYEE);
-        paginationValidator.validatePagination(size, page);
+        paginationValidator.validatePagination(page, size);
 
         return savedOfferRepository.findAllByEmployeeIdOrderByIdDesc(PageRequest.of(page, size), employeeId);
     }

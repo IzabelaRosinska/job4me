@@ -108,7 +108,7 @@ public class SavedEmployeeServiceImpl implements SavedEmployeeService {
     @Override
     public Page<SavedEmployee> getSavedEmployeesForEmployerWithId(int page, int size, Long employerId) {
         idValidator.validateLongId(employerId, ENTITY_EMPLOYER);
-        paginationValidator.validatePagination(size, page);
+        paginationValidator.validatePagination(page, size);
 
         return savedEmployeeRepository.findAllByEmployerIdOrderByIdDesc(PageRequest.of(page, size), employerId);
     }
