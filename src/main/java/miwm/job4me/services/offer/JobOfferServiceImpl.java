@@ -135,8 +135,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
         Boolean isActive = true;
 
-        return jobOfferRepository.findAllOfferIdsByFilters(null,
-                isActive,
+        return jobOfferRepository.findAllOfferIdsByFilters(isActive,
                 jobOfferFilterDto.getCities(),
                 jobOfferFilterDto.getEmploymentFormNames(),
                 jobOfferFilterDto.getLevelNames(),
@@ -144,8 +143,7 @@ public class JobOfferServiceImpl implements JobOfferService {
                 jobOfferFilterDto.getSalaryFrom(),
                 jobOfferFilterDto.getSalaryTo(),
                 jobOfferFilterDto.getIndustryNames(),
-                jobOfferFilterDto.getOfferName(),
-                null);
+                jobOfferFilterDto.getOfferName());
     }
 
     @Override
