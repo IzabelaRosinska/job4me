@@ -90,14 +90,14 @@ public class EmployeeController {
         return new ResponseEntity<>(savedEmployerService.findEmployerWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("employer/{id}")
+    @PostMapping("employers/{id}")
     @Operation(summary = "Save employer with given id for employee", description = "Saves employer with given id for employee")
     public ResponseEntity<?> saveEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.addEmployerToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("employer/{id}")
+    @DeleteMapping("employers/{id}")
     @Operation(summary = "Delete saved employer by id", description = "Delete saved employer from database by id")
     public ResponseEntity<?> deleteEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.deleteEmployerFromSaved(id);
@@ -105,14 +105,14 @@ public class EmployeeController {
     }
 
     @GetMapping("employers")
-    @Operation(summary = "Get saved employer by id", description = "Gets employer from database by id")
+    @Operation(summary = "Get saved employers", description = "Gets employer from database")
     public ResponseEntity<List<EmployerReviewDto>> getSavedEmployers() {
         List<EmployerReviewDto> employers = savedEmployerService.getSavedEmployers();
         return new ResponseEntity<>(employers, HttpStatus.CREATED);
     }
 
     @GetMapping("jobs-offers")
-    @Operation(summary = "Get saved offers by id", description = "Gets saved offers from database by id")
+    @Operation(summary = "Get saved offers", description = "Gets saved offers from database")
     public ResponseEntity<List<JobOfferReviewDto>> getSavedOffers() {
         List<JobOfferReviewDto> offers = savedOfferService.getSavedOffers();
         return new ResponseEntity<>(offers, HttpStatus.CREATED);
