@@ -145,12 +145,12 @@ class ListDisplaySavedPageServiceImplTest {
     }
 
     @Test
-    @DisplayName("test createPageGivenSublist - fail when sublist size is different than size")
+    @DisplayName("test createPageGivenSublist - fail when sublist size is greater than size")
     void testCreatePageGivenSublistReturnsPageWithCorrectSizeWhenNotAllElementsFitOnPage2() {
         // given
         int page = 0;
         int size = 3;
-        int totalSize = 2;
+        int totalSize = 1;
         List<ListDisplaySavedDto> list = List.of(listDisplaySavedDto1, listDisplaySavedDto2);
         String exceptionMessage = ListDisplaySavedPageServiceImpl.sublistSizeInvalidMessage(list.size(), size, totalSize);
         // when

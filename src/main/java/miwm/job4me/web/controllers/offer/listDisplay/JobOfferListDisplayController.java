@@ -200,7 +200,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("employee/job-offers/list-display/job-fair/{jobFairId}")
+    @GetMapping("employee/job-offers/list-display/job-fairs/{jobFairId}")
     @Operation(summary = "Get all job offers of job fair for logged in employee", description = "Gets all job offers of job fair from database and returns them in list display saved dto with saved field set to true if job offer is saved by logged in employee")
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersOfJobFairEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                                        @RequestParam(defaultValue = "10") int size,
@@ -215,7 +215,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
-    @PostMapping("employee/job-offers/list-display/job-fair/{jobFairId}/filter")
+    @PostMapping("employee/job-offers/list-display/job-fairs/{jobFairId}/filter")
     @Operation(summary = "Get all job offers of job fair by filter (get with body) for logged in employee", description = "Gets all job offers of job fair from database by filter and returns them in list display saved dto with saved field set to true if job offer is saved by logged in employee")
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersOfJobFairByFilterEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                                                @RequestParam(defaultValue = "10") int size,
