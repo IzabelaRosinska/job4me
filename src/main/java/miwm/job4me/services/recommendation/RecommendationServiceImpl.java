@@ -68,13 +68,13 @@ public class RecommendationServiceImpl implements RecommendationService {
         Long employeeId = employeeService.getAuthEmployee().getId();
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
-        int numberOfOffers = recommendedOffersIds.size();
 
         if (jobOfferFilterDto != null) {
             List<Long> filteredOffersIds = jobOfferListDisplayService.findAllOfferIdsByFilters(jobOfferFilterDto);
             recommendedOffersIds.removeIf(id -> !filteredOffersIds.contains(id));
         }
 
+        int numberOfOffers = recommendedOffersIds.size();
         recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
 
         List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds

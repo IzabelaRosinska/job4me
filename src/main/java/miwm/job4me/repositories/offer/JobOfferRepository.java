@@ -69,8 +69,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "AND (:salaryTo IS NULL OR j.salaryTo <= :salaryTo) " +
             "AND (COALESCE(:industryNames, '') = '' OR industry.name IN (:industryNames)) " +
             "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(CONCAT('%', :offerName, '%')))")
-    List<Long> findAllOfferIdsByFilters(Pageable pageable,
-                                        @Param("employerIds") List<Long> employerIds,
+    List<Long> findAllOfferIdsByFilters(@Param("employerIds") List<Long> employerIds,
                                         @Param("isActive") Boolean isActive,
                                         @Param("cities") List<String> cities,
                                         @Param("employmentFormNames") List<String> employmentFormNames,

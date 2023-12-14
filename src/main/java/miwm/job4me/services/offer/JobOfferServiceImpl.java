@@ -135,8 +135,7 @@ public class JobOfferServiceImpl implements JobOfferService {
         jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
         Boolean isActive = true;
 
-        return jobOfferRepository.findAllOfferIdsByFilters(PageRequest.of(0, Integer.MAX_VALUE),
-                null,
+        return jobOfferRepository.findAllOfferIdsByFilters(null,
                 isActive,
                 jobOfferFilterDto.getCities(),
                 jobOfferFilterDto.getEmploymentFormNames(),
