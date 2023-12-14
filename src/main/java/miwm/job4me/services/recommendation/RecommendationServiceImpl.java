@@ -51,15 +51,8 @@ public class RecommendationServiceImpl implements RecommendationService {
         paginationValidator.validatePagination(page, size);
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
-        int numberOfOffers = recommendedOffersIds.size();
-        recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
 
-        List<ListDisplaySavedDto> recommendedOffers = recommendedOffersIds
-                .stream()
-                .map(jobOfferListDisplayService::findByOfferId)
-                .toList();
-
-        return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, page, size, numberOfOffers);
+        return createPageRecommendedOffers(recommendedOffersIds, page, size);
     }
 
     @Override
@@ -74,6 +67,10 @@ public class RecommendationServiceImpl implements RecommendationService {
             recommendedOffersIds.removeIf(id -> !filteredOffersIds.contains(id));
         }
 
+        return createPageRecommendedOffers(recommendedOffersIds, page, size);
+    }
+
+    private Page<ListDisplaySavedDto> createPageRecommendedOffers(List<Long> recommendedOffersIds, int page, int size) {
         int numberOfOffers = recommendedOffersIds.size();
         recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
 

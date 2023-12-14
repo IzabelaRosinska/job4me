@@ -34,7 +34,7 @@ public class ListDisplaySavedPageServiceImpl implements PageService<ListDisplayS
     public Page<ListDisplaySavedDto> createPageGivenSublist(List<ListDisplaySavedDto> sublist, int page, int size, int totalSize) {
         paginationValidator.validatePagination(page, size);
 
-        if (sublist.size() > totalSize || sublist.size() != size) {
+        if (sublist.size() > totalSize || sublist.size() > size) {
             throw new InvalidArgumentException(sublistSizeInvalidMessage(sublist.size(), size, totalSize));
         }
 
@@ -44,8 +44,7 @@ public class ListDisplaySavedPageServiceImpl implements PageService<ListDisplayS
     }
 
     public static String sublistSizeInvalidMessage(int sublistSize, int size, int totalSize) {
-        return String.format("Sublist size %d cannot be less than size %d or greater than total size %d", sublistSize, size, totalSize);
+        return String.format("Sublist size %d cannot be greater than size %d or greater than total size %d", sublistSize, size, totalSize);
     }
-
 
 }
