@@ -36,7 +36,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "AND (COALESCE(:levelNames, '') = '' OR lev.name IN (:levelNames)) " +
             "AND (COALESCE(:contractTypeNames, '') = '' OR contractType.name IN (:contractTypeNames)) " +
             "AND (:salaryFrom IS NULL OR j.salaryFrom >= :salaryFrom) " +
-            "AND (:salaryTo IS NULL OR j.salaryTo <= :salaryTo) " +
+            "AND (:salaryTo IS NULL OR j.salaryFrom <= :salaryTo) " +
             "AND (COALESCE(:industryNames, '') = '' OR industry.name IN (:industryNames)) " +
             "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(CONCAT('%', :offerName, '%')))")
     Page<JobOffer> findAllOffersByFilters(Pageable pageable,
@@ -64,7 +64,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
             "AND (COALESCE(:levelNames, '') = '' OR lev.name IN (:levelNames)) " +
             "AND (COALESCE(:contractTypeNames, '') = '' OR contractType.name IN (:contractTypeNames)) " +
             "AND (:salaryFrom IS NULL OR j.salaryFrom >= :salaryFrom) " +
-            "AND (:salaryTo IS NULL OR j.salaryTo <= :salaryTo) " +
+            "AND (:salaryTo IS NULL OR j.salaryFrom <= :salaryTo) " +
             "AND (COALESCE(:industryNames, '') = '' OR industry.name IN (:industryNames)) " +
             "AND (:offerName IS NULL OR LOWER(j.offerName) LIKE LOWER(CONCAT('%', :offerName, '%')))")
     List<Long> findAllOfferIdsByFilters(@Param("isActive") Boolean isActive,
