@@ -43,4 +43,7 @@ public interface JobOfferListDisplayService {
     Page<ListDisplaySavedDto> findAllById(int page, int size, List<Long> offerIds);
 
     ListDisplaySavedDto findByOfferId(Long offerId);
+
+    List<Long> findAllOfferIdsByFilters(JobOfferFilterDto jobOfferFilterDto);
+
 }

@@ -131,6 +131,25 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
+    public List<Long> findAllOfferIdsByFilters(JobOfferFilterDto jobOfferFilterDto) {
+        jobOfferFilterDto = prepareFilter(jobOfferFilterDto);
+        Boolean isActive = true;
+
+        return jobOfferRepository.findAllOfferIdsByFilters(PageRequest.of(0, Integer.MAX_VALUE),
+                null,
+                isActive,
+                jobOfferFilterDto.getCities(),
+                jobOfferFilterDto.getEmploymentFormNames(),
+                jobOfferFilterDto.getLevelNames(),
+                jobOfferFilterDto.getContractTypeNames(),
+                jobOfferFilterDto.getSalaryFrom(),
+                jobOfferFilterDto.getSalaryTo(),
+                jobOfferFilterDto.getIndustryNames(),
+                jobOfferFilterDto.getOfferName(),
+                null);
+    }
+
+    @Override
     public Page<JobOfferDto> findAllByPage(int page, int size, String order) {
         paginationValidator.validatePagination(page, size);
         return jobOfferRepository.findAll(PageRequest.of(page, size, prepareSort(order)))

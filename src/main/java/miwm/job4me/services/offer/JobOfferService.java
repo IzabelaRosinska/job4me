@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface JobOfferService extends BaseDtoService<JobOffer, JobOfferDto, Long> {
+    List<Long> findAllOfferIdsByFilters(JobOfferFilterDto jobOfferFilterDto);
+
     Page<JobOfferDto> findAllByPage(int page, int size, String order);
 
     Page<JobOffer> findByPage(int page, int size, String order, Boolean isActive, List<Long> offerIds);

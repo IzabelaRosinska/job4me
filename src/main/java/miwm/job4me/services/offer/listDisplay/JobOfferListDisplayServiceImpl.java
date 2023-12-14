@@ -272,4 +272,9 @@ public class JobOfferListDisplayServiceImpl implements JobOfferListDisplayServic
         return setSaved(listDisplaySavedDto);
     }
 
+    @Override
+    public List<Long> findAllOfferIdsByFilters(JobOfferFilterDto jobOfferFilterDto) {
+        return jobOfferService.findAllOfferIdsByFilters(jobOfferFilterDto);
+    }
+
 }

@@ -69,15 +69,10 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Long> recommendedOffersIds = getRecommendedOffersIds(employeeId, jobFairId);
         int numberOfOffers = recommendedOffersIds.size();
-        List<Long> filteredOffersIds = jobOfferListDisplayService
-                .findAllOffersByFilterEmployeeView(page, size, "1", jobOfferFilterDto)
-                .map(ListDisplaySavedDto::getId)
-                .toList();
 
-        for (Long id : filteredOffersIds) {
-            if (!recommendedOffersIds.contains(id)) {
-                recommendedOffersIds.remove(id);
-            }
+        if (jobOfferFilterDto != null) {
+            List<Long> filteredOffersIds = jobOfferListDisplayService.findAllOfferIdsByFilters(jobOfferFilterDto);
+            recommendedOffersIds.removeIf(id -> !filteredOffersIds.contains(id));
         }
 
         recommendedOffersIds = createSublist(recommendedOffersIds, page, size);
@@ -90,9 +85,9 @@ public class RecommendationServiceImpl implements RecommendationService {
         return listDisplaySavedPageServiceImpl.createPageGivenSublist(recommendedOffers, page, size, numberOfOffers);
     }
 
-    private List<Long> createSublist(List<Long> list, int pageSize, int pageNumber) {
-        int start = pageNumber * pageSize;
-        int end = Math.min((start + pageSize), list.size());
+    private List<Long> createSublist(List<Long> list, int page, int size) {
+        int start = page * size;
+        int end = Math.min((start + size), list.size());
         return list.subList(start, end);
     }
 
@@ -124,8 +119,6 @@ public class RecommendationServiceImpl implements RecommendationService {
             for (int i = 0; i < jsonArray.length(); i++) {
                 recommendedOffersIds.add(jsonArray.getLong(i));
             }
-
-            System.out.println("recommendedOffersIds: " + recommendedOffersIds);
 
             return recommendedOffersIds;
         }
