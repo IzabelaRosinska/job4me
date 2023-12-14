@@ -173,13 +173,18 @@ public class JobFairServiceImpl implements JobFairService {
 
     @Override
     public JobFairDto update(Long id, JobFairDto jobFair) {
-        idValidator.validateLongId(id, ENTITY_NAME);
-        strictExistsById(id);
-        jobFair.setId(id);
         Organizer organizer = organizerService.getAuthOrganizer();
-        jobFair.setOrganizerId(organizer.getId());
+
+        idValidator.validateLongId(id, ENTITY_NAME);
         jobFairValidator.validateDto(jobFair);
-        return jobFairMapper.toDto(jobFairRepository.save(jobFairMapper.toEntity(jobFair)));
+
+        JobFair savedJobFair = getJobFairById(id);
+        JobFair mappedJobFair = jobFairMapper.toEntity(jobFair);
+        mappedJobFair.setId(id);
+        mappedJobFair.setOrganizer(organizer);
+        mappedJobFair.setPayment(savedJobFair.getPayment());
+
+        return jobFairMapper.toDto(jobFairRepository.save(savedJobFair));
     }
 
     @Override
