@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Entity
 @Table(name = "admins")
-public class Admin extends Person {
+public class Admin extends Account {
 
     @Builder
     public Admin(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole) {

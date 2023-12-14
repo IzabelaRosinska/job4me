@@ -51,30 +51,33 @@ public class EmployerController {
     }
 
     @GetMapping("employee/{id}/account")
-    @Operation(summary = "Gets employee with given id", description = "Gets employee with given id")
+    @Operation(summary = "Gets saved employee with given id", description = "Gets employee with given id")
     public ResponseEntity<EmployeeReviewDto> getEmployeeWithIdForEmployer(@PathVariable Long id) {
         return new ResponseEntity<>(savedEmployeeService.findEmployeeWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-employee/{id}")
+    @PostMapping("employee/{id}")
+    @Operation(summary = "Saves employee with given id to saved", description = "Saves employee with given id")
     public ResponseEntity<?> saveEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.addEmployeeToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-employee/{id}")
+    @DeleteMapping("employee/{id}")
+    @Operation(summary = "Deletes employee with given id from saved", description = "Deletes employee with given id")
     public ResponseEntity<?> deleteEmployeeForEmployer(@PathVariable Long id) {
         savedEmployeeService.deleteEmployeeFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("get-saved-employees")
+    @GetMapping("employees")
+    @Operation(summary = "Gets saved employees", description = "Gets saved employees")
     public ResponseEntity<List<EmployeeReviewDto>> getSavedEmployees() {
         List<EmployeeReviewDto> employees = savedEmployeeService.getSavedEmployees();
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
     }
 
-    @GetMapping("saved/employees")
+    @GetMapping("employees/list-display")
     @Operation(summary = "Gets all saved employees in paginated list display form", description = "Gets all saved employees of logged in employer in paginated list display form")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployees(
             @RequestParam(defaultValue = "0") int page,

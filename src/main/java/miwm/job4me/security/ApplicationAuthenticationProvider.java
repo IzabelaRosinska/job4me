@@ -1,7 +1,7 @@
 package miwm.job4me.security;
 
 import miwm.job4me.messages.UserMessages;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.services.users.UserAuthenticationService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,7 +25,7 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
     public Authentication authenticate(Authentication authentication) {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        Person user = userAuthService.loadUserByUsername(username);
+        Account user = userAuthService.loadUserByUsername(username);
 
         if (user != null && passwordEncoder.matches(password, user.getPassword()))
             return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());

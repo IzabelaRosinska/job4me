@@ -8,7 +8,7 @@ import miwm.job4me.model.BaseEntity;
 import miwm.job4me.model.users.Employee;
 import miwm.job4me.model.users.Employer;
 import miwm.job4me.model.users.Organizer;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -26,15 +26,15 @@ public class VerificationToken extends BaseEntity {
     private String token;
 
     @Builder
-    public VerificationToken(Long id, String token, Person person) {
+    public VerificationToken(Long id, String token, Account account) {
         super(id);
         this.token = token;
-        if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYEE)) {
-            this.employee = (Employee) person;
-        } else if(person.getUserRole().getAuthority().equals(ROLE_EMPLOYER)) {
-            this.employer = (Employer) person;
-        } else if(person.getUserRole().getAuthority().equals(ROLE_ORGANIZER)) {
-            this.organizer = (Organizer) person;
+        if(account.getUserRole().getAuthority().equals(ROLE_EMPLOYEE)) {
+            this.employee = (Employee) account;
+        } else if(account.getUserRole().getAuthority().equals(ROLE_EMPLOYER)) {
+            this.employer = (Employer) account;
+        } else if(account.getUserRole().getAuthority().equals(ROLE_ORGANIZER)) {
+            this.organizer = (Organizer) account;
         }
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }

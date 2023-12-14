@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "employers")
-public class Employer extends Person {
+public class Employer extends Account {
     @Builder
     public Employer(Long id, String telephone, String email, String password, boolean locked, SimpleGrantedAuthority userRole, String companyName, String contactEmail, String description, String displayDescription, String photo, String address, Set<SavedEmployee> savedEmployees, Set<JobFairEmployerParticipation> jobFairEmployerParticipation) {
         super(id, telephone, email, password, locked, userRole);

@@ -6,7 +6,7 @@ import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.services.BaseService;
 import miwm.job4me.web.model.cv.EducationDto;
 import miwm.job4me.web.model.cv.ExperienceDto;
@@ -14,8 +14,7 @@ import miwm.job4me.web.model.cv.ProjectDto;
 import miwm.job4me.web.model.cv.SkillDto;
 import miwm.job4me.web.model.users.EmployeeDto;
 import miwm.job4me.web.model.users.QRDto;
-import org.springframework.stereotype.Service;
-import java.awt.image.BufferedImage;
+
 import java.util.Optional;
 
 public interface EmployeeService extends BaseService<Employee, Long> {
@@ -31,7 +30,7 @@ public interface EmployeeService extends BaseService<Employee, Long> {
 
     EmployeeDto findCurrentEmployee();
 
-    void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode);
+    void saveEmployeeDataFromLinkedin(Account user, JsonNode jsonNode);
 
     EducationDto saveEducation(Education education);
 

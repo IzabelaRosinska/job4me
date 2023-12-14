@@ -70,7 +70,7 @@ public class UserAuthenticationService implements UserDetailsService {
     }
 
     @Override
-    public Person loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Account loadUserByUsername(String username) throws UsernameNotFoundException {
         if(username != null) {
             Employee employee = employeeRepository.selectEmployeeByUsername(username);
             Employer employer = employerRepository.selectEmployerByUsername(username);
@@ -90,7 +90,7 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("username"));
     }
 
-    public Person getAuthenticatedUser() {
+    public Account getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Employee employee = employeeRepository.selectEmployeeByUsername(authentication.getName());
         Employer employer = employerRepository.selectEmployerByUsername(authentication.getName());
@@ -116,7 +116,7 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("VerificationToken"));
     }
 
-    public Person registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
+    public Account registerNewUserAccount(RegisterData userDto) throws UserAlreadyExistException {
         if (userDto != null && !emailExist(userDto.getUsername())) {
             if(userDto.getRole().equals(EMPLOYEE)) {
                 Employee newEmployee = Employee.builder()
@@ -186,28 +186,28 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Organizer"));
     }
 
-    public void createVerificationToken(Person person, String token) {
-        if(person != null) {
-            VerificationToken myToken = VerificationToken.builder().token(token).person(person).build();
+    public void createVerificationToken(Account account, String token) {
+        if(account != null) {
+            VerificationToken myToken = VerificationToken.builder().token(token).account(account).build();
             verificationTokenRepository.save(myToken);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Person"));
     }
 
-    public void createPasswordResetTokenForUser(Person person, String token) {
-        if(person != null) {
-            PasswordResetToken resetToken = PasswordResetToken.builder().token(token).person(person).build();
+    public void createPasswordResetTokenForUser(Account account, String token) {
+        if(account != null) {
+            PasswordResetToken resetToken = PasswordResetToken.builder().token(token).account(account).build();
             passwordResetTokenService.save(resetToken);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Person"));
     }
 
-    public void sendResetToken(Person person, String contextPath) {
-        if(person != null) {
+    public void sendResetToken(Account account, String contextPath) {
+        if(account != null) {
             String token = UUID.randomUUID().toString();
-            createPasswordResetTokenForUser(person, token);
+            createPasswordResetTokenForUser(account, token);
 
-            String recipientAddress = person.getEmail();
+            String recipientAddress = account.getEmail();
             String subject = resetPasswordEmailSubject(recipientAddress);
             String confirmationUrl = contextPath + CHANGE_PASSWORD_URL + token;
             String text = resetPasswordEmailText() + BACKEND_HOST_AZURE + confirmationUrl;
@@ -238,7 +238,7 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("PasswordResetToken"));
     }
 
-    public Person getUserByPasswordResetToken(String token) {
+    public Account getUserByPasswordResetToken(String token) {
         if(token != null) {
             Optional<Employee> employee = employeeService.getEmployeeByToken(token);
             Optional<Employer> employer = employerService.getEmployerByToken(token);
@@ -255,19 +255,19 @@ public class UserAuthenticationService implements UserDetailsService {
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("PasswordResetToken"));
     }
 
-    public void changeUserPassword(Person person, String password) {
-        if(person != null && password != null) {
-            if (person.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())) {
-                employeeService.updatePassword((Employee) person, password);
-            } else if (person.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
-                employerService.updatePassword((Employer) person, password);
-            } else if (person.getUserRole().equals(ApplicationUserRole.ORGANIZER_ENABLED.getUserRole()))
-                organizerService.updatePassword((Organizer) person, password);
+    public void changeUserPassword(Account account, String password) {
+        if(account != null && password != null) {
+            if (account.getUserRole().equals(ApplicationUserRole.EMPLOYEE_ENABLED.getUserRole())) {
+                employeeService.updatePassword((Employee) account, password);
+            } else if (account.getUserRole().equals(ApplicationUserRole.EMPLOYER_ENABLED.getUserRole())) {
+                employerService.updatePassword((Employer) account, password);
+            } else if (account.getUserRole().equals(ApplicationUserRole.ORGANIZER_ENABLED.getUserRole()))
+                organizerService.updatePassword((Organizer) account, password);
         } else
             throw new InvalidArgumentException(ExceptionMessages.nullArgument("Person"));
     }
 
-    public Person registerLinkedinUser(JsonNode jsonNode) {
+    public Account registerLinkedinUser(JsonNode jsonNode) {
         if(jsonNode != null) {
             Employee newEmployee = Employee.builder()
                     .email(jsonNode.get("email").asText())

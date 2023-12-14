@@ -10,7 +10,7 @@ import miwm.job4me.model.cv.Experience;
 import miwm.job4me.model.cv.Project;
 import miwm.job4me.model.cv.Skill;
 import miwm.job4me.model.users.Employee;
-import miwm.job4me.model.users.Person;
+import miwm.job4me.model.users.Account;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.services.cv.EducationService;
 import miwm.job4me.services.cv.ExperienceService;
@@ -33,10 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -188,7 +185,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void saveEmployeeDataFromLinkedin(Person user, JsonNode jsonNode) {
+    public void saveEmployeeDataFromLinkedin(Account user, JsonNode jsonNode) {
         if (user != null && jsonNode != null) {
             Employee employee = employeeRepository.selectEmployeeByUsername(user.getUsername());
             String username = jsonNode.get("given_name").asText();

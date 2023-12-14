@@ -67,9 +67,9 @@ public class AppMessages {
     public static final String SUCCESS_URL = "/";
     public static final String LOGIN_URL = "/login";
     public static final String LOGOUT_URL = "/logout";
-    public static final String UPDATE_PASSWORD_URL = "/update-password?token=";
-    public static final String CHANGE_PASSWORD_URL = "/change-password?token=";
-    public static final String REGISTRATION_URL = "/registration-confirm?token=";
+    public static final String UPDATE_PASSWORD_URL = "/password-update?token=";
+    public static final String CHANGE_PASSWORD_URL = "/password-change?token=";
+    public static final String REGISTRATION_URL = "/registration?token=";
     public static final String JWT_TOKEN_NAME = "token";
     public static final String TEST_USER = "user";
 

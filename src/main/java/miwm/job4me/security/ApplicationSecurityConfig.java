@@ -48,6 +48,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/employer/**").hasAnyRole(EMPLOYER_ENABLED, ADMIN)
                     .antMatchers("/organizer/**").hasAnyRole(ORGANIZER_ENABLED, ADMIN)
                     .antMatchers("/fragments/**").hasAnyRole(EMPLOYEE, EMPLOYEE, ORGANIZER, ADMIN)
+                    .antMatchers("/admin/**").hasAnyRole(ADMIN)
                     .antMatchers("/home").permitAll()
                     .antMatchers("/account/**").permitAll()
                     .antMatchers("/levels").permitAll()

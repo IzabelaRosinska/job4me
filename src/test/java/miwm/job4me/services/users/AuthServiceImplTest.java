@@ -2,14 +2,12 @@ package miwm.job4me.services.users;
 
 import miwm.job4me.jwt.JwtConfig;
 import miwm.job4me.model.users.Employer;
-import miwm.job4me.model.users.Person;
 import miwm.job4me.repositories.users.EmployeeRepository;
 import miwm.job4me.repositories.users.EmployerRepository;
 import miwm.job4me.repositories.users.OrganizerRepository;
 import miwm.job4me.repositories.users.VerificationTokenRepository;
 import miwm.job4me.services.tokens.PasswordResetTokenService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,7 +27,6 @@ import javax.crypto.SecretKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)

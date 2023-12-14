@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -69,49 +70,55 @@ public class EmployeeController {
         return new ResponseEntity<>(savedOfferService.findOfferWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-offer/{id}")
+    @PostMapping("job-offers/{id}")
+    @Operation(summary = "Save job offer by id", description = "Save job offer from database by id")
     public ResponseEntity<?> saveOfferForEmployee(@PathVariable Long id) {
         savedOfferService.addOfferToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-offer/{id}")
+    @DeleteMapping("job-offers/{id}")
+    @Operation(summary = "Delete job offer by id", description = "Delete job offer from database by id")
     public ResponseEntity<?> deleteOfferForEmployee(@PathVariable Long id) {
         savedOfferService.deleteOfferFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping("employer/{id}/account")
-    @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")  
+    @Operation(summary = "Gets employer with given id", description = "Gets employer with given id")
     public ResponseEntity<EmployerReviewDto> getEmployerWithIdForEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(savedEmployerService.findEmployerWithIdByUser(id), HttpStatus.OK);
     }
 
-    @PostMapping("save-employer/{id}")
+    @PostMapping("employers/{id}")
+    @Operation(summary = "Save employer with given id for employee", description = "Saves employer with given id for employee")
     public ResponseEntity<?> saveEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.addEmployerToSaved(id);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("delete-employer/{id}")
+    @DeleteMapping("employers/{id}")
+    @Operation(summary = "Delete saved employer by id", description = "Delete saved employer from database by id")
     public ResponseEntity<?> deleteEmployerForEmployee(@PathVariable Long id) {
         savedEmployerService.deleteEmployerFromSaved(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("get-saved-employers")
+    @GetMapping("employers")
+    @Operation(summary = "Get saved employers", description = "Gets employer from database")
     public ResponseEntity<List<EmployerReviewDto>> getSavedEmployers() {
         List<EmployerReviewDto> employers = savedEmployerService.getSavedEmployers();
         return new ResponseEntity<>(employers, HttpStatus.CREATED);
     }
 
-    @GetMapping("get-saved-offers")
+    @GetMapping("jobs-offers")
+    @Operation(summary = "Get saved offers", description = "Gets saved offers from database")
     public ResponseEntity<List<JobOfferReviewDto>> getSavedOffers() {
         List<JobOfferReviewDto> offers = savedOfferService.getSavedOffers();
         return new ResponseEntity<>(offers, HttpStatus.CREATED);
     }
 
-    @GetMapping("saved/employers")
+    @GetMapping("employers/list-display")
     @Operation(summary = "Gets all saved employers in paginated list display form", description = "Gets all saved employers of logged in employee in paginated list display form database")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedEmployers(
             @RequestParam(defaultValue = "0") int page,
@@ -125,7 +132,7 @@ public class EmployeeController {
         return new ResponseEntity<>(employerDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("saved/offers")
+    @GetMapping("job-offers/saved/list-display")
     @Operation(summary = "Gets all saved offers in paginated list display form", description = "Gets all saved offers of logged in employee in paginated list display form database")
     public ResponseEntity<Page<ListDisplayDto>> getAllSavedOffers(
             @RequestParam(defaultValue = "0") int page,
@@ -140,6 +147,7 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/code")
+    @Operation(summary = "Get qr code for employee account", description = "Gets eqr code for employee account")
     public ResponseEntity<QRDto> getQRCode() throws Exception {
         return new ResponseEntity<>(employeeService.generateQRCodeImage(), HttpStatus.OK);
     }

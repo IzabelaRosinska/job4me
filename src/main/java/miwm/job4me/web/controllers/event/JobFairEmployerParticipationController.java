@@ -108,14 +108,14 @@ public class JobFairEmployerParticipationController {
     }
 
     @PreAuthorize("@jobFairEmployerParticipationController.canOrganizerHaveAccessToJobFairEmployerParticipation(#requestId)")
-    @PutMapping("organizer/employer-participation/{requestId}/accept")
+    @PutMapping("organizer/employer-participation/{requestId}/approval")
     @Operation(summary = "Accept job fair employer participation request", description = "Accepts job fair employer participation request in database")
     public ResponseEntity<JobFairEmployerParticipationDto> acceptJobFairEmployerParticipationRequest(@PathVariable Long requestId) {
         return new ResponseEntity<>(jobFairEmployerParticipationService.acceptParticipationRequestByOrganizer(requestId), HttpStatus.CREATED);
     }
 
     @PreAuthorize("@jobFairEmployerParticipationController.canOrganizerHaveAccessToJobFairEmployerParticipation(#requestId)")
-    @DeleteMapping("organizer/employer-participation/{requestId}/reject")
+    @DeleteMapping("organizer/employer-participation/{requestId}/approval")
     @Operation(summary = "Reject job fair employer participation request", description = "Rejects job fair employer participation request in database")
     public ResponseEntity<Void> rejectJobFairEmployerParticipationRequest(@PathVariable Long requestId) {
         jobFairEmployerParticipationService.rejectParticipationRequestByOrganizer(requestId);
