@@ -72,17 +72,14 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
     @Override
     public JobFairEmployerParticipationDto findById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         return jobFairEmployerParticipationMapper.toDto(getJobFairEmployerParticipationById(id));
     }
 
     @Override
     public JobFairEmployerParticipationDto save(JobFairEmployerParticipation jobFairEmployerParticipation) {
-        if (jobFairEmployerParticipation == null) {
-            throw new InvalidArgumentException(ExceptionMessages.nullArgument(ENTITY_NAME));
-        }
-
-        jobFairEmployerParticipation.setIsAccepted(false);
         jobFairEmployerParticipationValidator.validate(jobFairEmployerParticipation);
+        jobFairEmployerParticipation.setIsAccepted(false);
         preSaveValidation(jobFairEmployerParticipation.getId(), jobFairEmployerParticipation.getJobFair().getId(), jobFairEmployerParticipation.getEmployer().getId());
         return jobFairEmployerParticipationMapper.toDto(jobFairEmployerParticipationRepository.save(jobFairEmployerParticipation));
     }
@@ -201,6 +198,7 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
 
     @Override
     public boolean existsById(Long id) {
+        idValidator.validateLongId(id, ENTITY_NAME);
         return jobFairEmployerParticipationRepository.existsById(id);
     }
 
@@ -229,8 +227,8 @@ public class JobFairEmployerParticipationServiceImpl implements JobFairEmployerP
     @Override
     public JobFairEmployerParticipationDto update(Long id, JobFairEmployerParticipationDto jobFairEmployerParticipation) {
         strictExistsById(id);
-        jobFairEmployerParticipation.setId(id);
         jobFairEmployerParticipationValidator.validateDto(jobFairEmployerParticipation);
+        jobFairEmployerParticipation.setId(id);
         return mapAndSaveDto(jobFairEmployerParticipation);
     }
 

@@ -1,6 +1,6 @@
 package miwm.job4me.services.pdf.cv;
 
-import miwm.job4me.services.pdf.PdfGenerateService;
+import miwm.job4me.services.pdf.PdfGeneratorService;
 import miwm.job4me.services.users.EmployeeService;
 import miwm.job4me.web.model.pdf.PdfDto;
 import miwm.job4me.web.model.users.EmployeeDto;
@@ -13,21 +13,21 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
+public class CvPdfGeneratorServiceImpl implements CvPdfGeneratorService {
     private final EmployeeService employeeService;
-    private final PdfGenerateService pdfGenerateService;
+    private final PdfGeneratorService pdfGeneratorService;
     private final String CV_TEMPLATE_NAME = "cv";
 
     @Value("${cv.font}")
     private String font;
 
-    public CvPdfGenerateServiceImpl(EmployeeService employeeService, PdfGenerateService pdfGenerateService) {
+    public CvPdfGeneratorServiceImpl(EmployeeService employeeService, PdfGeneratorService pdfGeneratorService) {
         this.employeeService = employeeService;
-        this.pdfGenerateService = pdfGenerateService;
+        this.pdfGeneratorService = pdfGeneratorService;
     }
 
     @Override
-    public PdfDto downloadCvFile() {
+    public PdfDto generateCvFile() {
         EmployeeDto employee = employeeService.findCurrentEmployee();
         Map<String, Object> data = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class CvPdfGenerateServiceImpl implements CvPdfGenerateService {
         List<String> fonts = new ArrayList<>();
         fonts.add(font);
 
-        return pdfGenerateService.generateAndDownloadPdfFile(CV_TEMPLATE_NAME, data, fonts);
+        return pdfGeneratorService.generatePdfFile(CV_TEMPLATE_NAME, data, fonts);
     }
 
 }

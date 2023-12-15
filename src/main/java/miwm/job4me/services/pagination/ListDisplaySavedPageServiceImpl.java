@@ -1,5 +1,6 @@
 package miwm.job4me.services.pagination;
 
+import miwm.job4me.exceptions.InvalidArgumentException;
 import miwm.job4me.validators.pagination.PaginationValidator;
 import miwm.job4me.web.model.listDisplay.ListDisplaySavedDto;
 import org.springframework.data.domain.Page;
@@ -18,24 +19,32 @@ public class ListDisplaySavedPageServiceImpl implements PageService<ListDisplayS
     }
 
     @Override
-    public Page<ListDisplaySavedDto> createPage(List<ListDisplaySavedDto> list, int pageSize, int pageNumber) {
-        paginationValidator.validatePagination(pageSize, pageNumber);
+    public Page<ListDisplaySavedDto> createPage(List<ListDisplaySavedDto> list, int page, int size) {
+        paginationValidator.validatePagination(page, size);
 
-        int start = pageNumber * pageSize;
-        int end = Math.min((start + pageSize), list.size());
+        int start = page * size;
+        int end = Math.min((start + size), list.size());
         List<ListDisplaySavedDto> subList = list.subList(start, end);
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        PageRequest pageRequest = PageRequest.of(page, size);
 
         return new PageImpl<>(subList, pageRequest, list.size());
     }
 
     @Override
-    public Page<ListDisplaySavedDto> createPageGivenSublist(List<ListDisplaySavedDto> sublist, int pageSize, int pageNumber, int totalSize) {
-        paginationValidator.validatePagination(pageSize, pageNumber);
+    public Page<ListDisplaySavedDto> createPageGivenSublist(List<ListDisplaySavedDto> sublist, int page, int size, int totalSize) {
+        paginationValidator.validatePagination(page, size);
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        if (sublist.size() > totalSize || sublist.size() > size) {
+            throw new InvalidArgumentException(sublistSizeInvalidMessage(sublist.size(), size, totalSize));
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size);
 
         return new PageImpl<>(sublist, pageRequest, totalSize);
+    }
+
+    public static String sublistSizeInvalidMessage(int sublistSize, int size, int totalSize) {
+        return String.format("Sublist size %d cannot be greater than size %d or greater than total size %d", sublistSize, size, totalSize);
     }
 
 }

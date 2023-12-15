@@ -205,7 +205,7 @@ public class SavedEmployeeServiceImplTest {
         assertEquals(savedEmployees, result);
         verify(savedEmployeeRepository, times(1)).findAllByEmployerIdOrderByIdDesc(PageRequest.of(page, size), employerId);
         verify(idValidator, times(1)).validateLongId(employerId, "Employer");
-        verify(paginationValidator, times(1)).validatePagination(size, page);
+        verify(paginationValidator, times(1)).validatePagination(page, size);
     }
 
     @Test
