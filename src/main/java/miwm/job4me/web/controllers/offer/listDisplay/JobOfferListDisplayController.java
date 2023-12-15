@@ -47,7 +47,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("job-offers/list-display/employer/{employerId}")
+    @GetMapping("job-offers/list-display/employers/{employerId}")
     @Operation(summary = "Get all job offers of employer", description = "Gets all job offers of employer from database and returns them in list display dto")
     public ResponseEntity<Page<ListDisplayDto>> getAllActiveOffersOfEmployer(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size,
@@ -62,7 +62,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplayDtoPage, HttpStatus.OK);
     }
 
-    @PostMapping("job-offers/list-display/employer/{employerId}/filter")
+    @PostMapping("job-offers/list-display/employers/{employerId}/filter")
     @Operation(summary = "Get all job offers of employer by filter (get with body)", description = "Gets all job offers of employer from database by filter and returns them in list display dto")
     public ResponseEntity<Page<ListDisplayDto>> getAllActiveOffersOfEmployerByFilter(@RequestParam(defaultValue = "0") int page,
                                                                                      @RequestParam(defaultValue = "10") int size,
@@ -169,7 +169,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping("employee/job-offers/list-display/employer/{employerId}")
+    @GetMapping("employee/job-offers/list-display/employers/{employerId}")
     @Operation(summary = "Get all job offers of employer for logged in employee", description = "Gets all job offers of employer from database and returns them in list display saved dto with saved field set to true if job offer is saved by logged in employee")
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersOfEmployerEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                                         @RequestParam(defaultValue = "10") int size,
@@ -184,7 +184,7 @@ public class JobOfferListDisplayController {
         return new ResponseEntity<>(listDisplaySavedDtoPage, HttpStatus.OK);
     }
 
-    @PostMapping("employee/job-offers/list-display/employer/{employerId}/filter")
+    @PostMapping("employee/job-offers/list-display/employers/{employerId}/filter")
     @Operation(summary = "Get all job offers of employer by filter (get with body) for logged in employee", description = "Gets all job offers of employer from database by filter and returns them in list display saved dto with saved field set to true if job offer is saved by logged in employee")
     public ResponseEntity<Page<ListDisplaySavedDto>> getAllOffersOfEmployerByFilterEmployeeView(@RequestParam(defaultValue = "0") int page,
                                                                                                 @RequestParam(defaultValue = "10") int size,
