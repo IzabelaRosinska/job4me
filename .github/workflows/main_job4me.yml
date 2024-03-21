@@ -7,8 +7,10 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: windows-latest
@@ -28,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.war'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     runs-on: windows-latest
@@ -44,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -58,5 +60,18 @@ jobs:
         with:
           app-name: 'job4me'
           slot-name: 'Production'
-          package: '*.war'
+          package: '*.jar'
+          env: |
+            AZURE_DB: ${{ secrets.AZURE_DB }}
+            AZURE_DB_USER: ${{ secrets.AZURE_DB_USER }}
+            AZURE_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
+            EMAIL_USER: ${{ secrets.EMAIL_USER }}
+            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+            LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+            LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+            RECOMMENDATION_API_URL: ${{ secrets.RECOMMENDATION_API_URL }}
+            RECOMMENDATION_API_KEY: ${{ secrets.RECOMMENDATION_API_KEY }}
+            STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+            CV_FONT: ${{ secrets.CV_FONT }}
+            STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           
