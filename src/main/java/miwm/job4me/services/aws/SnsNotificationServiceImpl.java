@@ -13,18 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SnsNotificationServiceImpl implements SnsNotificationService {
 
-    @Value("${aws.access.key.id}")
-    private String awsAccessKeyId;
-
-    @Value("${aws.secret.access.key}")
-    private String awsSecretAccessKey;
-
-    @Value("${aws.session.token}")
-    private String awsSessionToken;
-
     private final AmazonSNS snsClient;
 
-    public SnsNotificationServiceImpl() {
+    public SnsNotificationServiceImpl(
+            @Value("${aws.access.key.id}") String awsAccessKeyId,
+            @Value("${aws.secret.access.key}") String awsSecretAccessKey,
+            @Value("${aws.session.token}") String awsSessionToken) {
         this.snsClient = AmazonSNSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(
                         new BasicSessionCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken)))
