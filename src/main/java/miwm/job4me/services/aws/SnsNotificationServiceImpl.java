@@ -22,9 +22,6 @@ public class SnsNotificationServiceImpl implements SnsNotificationService {
     @Value("${aws.session.token}")
     private String awsSessionToken;
 
-    @Value("${aws.region}")
-    private String awsRegion;
-
     private final AmazonSNS snsClient;
 
     public SnsNotificationServiceImpl() {
