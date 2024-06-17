@@ -2,6 +2,7 @@ package miwm.job4me.services.aws;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
@@ -30,7 +31,7 @@ public class SnsNotificationServiceImpl implements SnsNotificationService {
         this.snsClient = AmazonSNSClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(
                         new BasicSessionCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken)))
-                .withRegion(awsRegion)
+                .withRegion(Regions.US_EAST_1)
                 .build();
     }
 
