@@ -19,7 +19,7 @@ public class RecommendationNotifierServiceImpl implements RecommendationNotifier
     private String recommendationApiKey;
 
     @Value("${aws.sns.topic.arn}")
-    private String topicArn;
+    private String topicArn = "arn:aws:sns:us-east-1:502520883255:update-embeddings-topic";
 
     private final SnsNotificationService snsNotificationService;
 
