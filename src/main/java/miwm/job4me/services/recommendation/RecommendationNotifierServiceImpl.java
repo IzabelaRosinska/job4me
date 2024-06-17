@@ -1,6 +1,7 @@
 package miwm.job4me.services.recommendation;
 
 import miwm.job4me.exceptions.RecommendationException;
+import miwm.job4me.services.aws.SnsNotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,21 +18,29 @@ public class RecommendationNotifierServiceImpl implements RecommendationNotifier
     @Value("${recommendation.api.key}")
     private String recommendationApiKey;
 
+    @Value("${aws.sns.topic.arn}")
+    private String topicArn;
+
+    private final SnsNotificationService snsNotificationService;
+
     private final String RECOMMENDATION_EXCEPTION_MESSAGE = "Recommendation system failure";
 
-    public RecommendationNotifierServiceImpl() {
+    public RecommendationNotifierServiceImpl(SnsNotificationService snsNotificationService) {
+        this.snsNotificationService = snsNotificationService;
     }
 
     @Override
     public void notifyUpdatedOffer(Long offerId) {
-        String url = recommendationApiUrl + "/update-offer/" + offerId;
-        notifyRecommendationService(url);
+//        String url = recommendationApiUrl + "/update-offer/" + offerId;
+//        notifyRecommendationService(url);
+        snsNotificationService.sendNotification(topicArn, "offer " + offerId);
     }
 
     @Override
     public void notifyUpdatedEmployee(Long employeeId) {
-        String url = recommendationApiUrl + "/update-employee/" + employeeId;
-        notifyRecommendationService(url);
+//        String url = recommendationApiUrl + "/update-employee/" + employeeId;
+//        notifyRecommendationService(url);
+        snsNotificationService.sendNotification(topicArn, "employee " + employeeId);
     }
 
     @Override
